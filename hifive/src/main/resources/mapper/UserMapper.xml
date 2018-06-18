@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.musicweb.dao.UserDao">
+
+    <insert id="addUser" parameterType="User" statementType="PREPARED"
+            keyProperty="userID" useGeneratedKeys="true">
+        insert into User (userID,userName,userIcon,gender,securityQuestion,securityAnswer,password) values
+        (#{userID},#{userName},#{userIcon},#{gender},#{securityQuestion},#{securityAnswer},#{password})
+    </insert>
+
+</mapper>
