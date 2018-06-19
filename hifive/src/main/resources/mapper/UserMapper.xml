@@ -1,14 +1,82 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 为这个mapper指定一个唯一的namespace，namespace的值习惯上设置成包名+sql映射文件名，这样就能够保证namespace的值是唯一的
+例如namespace="me.gacl.mapping.userMapper"就是me.gacl.mapping(包名)+userMapper(userMapper.xml文件去除后缀)
+ -->
 <mapper namespace="com.musicweb.dao.UserDao">
-
-    <insert id="addUser" parameterType="User" statementType="PREPARED"
-            keyProperty="userID" useGeneratedKeys="true">
-        insert into User (userID,userName,userIcon,gender,securityQuestion,securityAnswer,password) values
-        (#{userID},#{userName},#{userIcon},#{gender},#{securityQuestion},#{securityAnswer},#{password})
+    
+        	<!--  insert user  -->
+    <insert id="insert" 
+    		parameterType="domain.User"
+    		useGeneratedKeys="true"
+    		keyProperty="id">
+        	insert into user (id,name,gender,pwd,security_question,security_answer,image,type)
+        	values (#{id},#{name},#{gender},#{pwd},#{securityQuestion},#{securityAnswer},#{image},#{type})
     </insert>
-
+    
+            <!--  insert Like Song  -->
+    <insert id="insertLikeSong">
+        	insert into user_song (user_id,song_id)
+        	values (#{userId},#{songId})
+    </insert>
+    
+            <!--  insert Like Album  -->
+    <insert id="insertLikeAlbum">
+        	insert into user_album (user_id,album_id)
+        	values (#{userId},#{albumId})
+    </insert>
+    
+            <!--  delete Like Songs  -->
+    <delete id="deleteLikeSong">
+    		delete from user_song where user_id=#{userId} and song_d=#{songId}
+    </delete>
+    
+            <!--  delete Like Albums  -->
+    <delete id="deleteLikeAlbum">
+    		delete from user_song where user_id=#{userId} and album_id=#{albumId}
+    </delete>
+    
+            <!--  update user information  -->
+    <update id="update">
+    		update user set
+    			name=#{name},
+    			security_question=#{securityQuestion},
+    			security_answer=#{securityAnswer},
+    			type=#{type}
+    		where id=#{id}
+    </update> 
+     
+            <!--  update user password  -->
+    <update id="updatePassword">
+    		update user set
+    			pwd=#{pwd}
+    		where id=#{id}
+    </update>
+    
+            <!--  select user  -->
+    <select id="select"
+    		parameterType="com.musicweb.domain.User"
+    		resultType="hashmap">
+    		SELECT * FROM user WHERE id=#{id}
+    </select>
+    
+            <!--  select password  -->
+    <select id="selectPassword">
+    		SELECT pwd FROM user WHERE id=#{id}
+    </select>
+ 
+            <!--  select Like Songs  -->
+    <select id="selectLikeSongs">
+    		SELECT * FROM user_song WHERE user_id=#{userId}
+    </select>
+    
+            <!--  select Like Albums  -->
+    <select id="selectLikeAlbums">
+    		SELECT * FROM user_albumm WHERE user_id=#{userId}
+    </select>
+    
+            <!--  select Playlists  -->
+    <select id="selectPlaylists">
+    		SELECT * FROM playlist WHERE user_id=#{userId}
+    </select>    
 </mapper>
