@@ -49,6 +49,12 @@ public class AlbumController {
 		return null;
 	}
 	
+	@RequestMapping(value = "/filterAlbumCount", method = RequestMethod.GET)
+	@ResponseBody
+	public int filterCount(int region, int style) {//get
+		return 0;
+	}
+	
 	@RequestMapping(value = "/addAlbum", method = RequestMethod.POST)
 	@ResponseBody
 	public Integer addAnAlbum(AlbumView album) {//post
@@ -61,6 +67,7 @@ public class AlbumController {
 		return false;
 	}
 	
+	@RequestMapping(value = "/getNewAlbums", method = RequestMethod.GET)
 	@ResponseBody
 	public List<SimpleAlbumView> showNewAlbums(int region) {//get
 		return null;

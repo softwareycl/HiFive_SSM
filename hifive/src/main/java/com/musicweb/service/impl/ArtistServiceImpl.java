@@ -83,4 +83,10 @@ public class ArtistServiceImpl implements ArtistService {
 		return false;
 	}
 
+	@Override
+	public int getFilterCount(String initial, int region, int gender) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

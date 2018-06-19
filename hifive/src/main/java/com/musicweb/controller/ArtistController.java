@@ -32,6 +32,12 @@ public class ArtistController {
 		return null;
 	}
 	
+	@RequestMapping(value = "/filterArtistCount", method = RequestMethod.GET)
+	@ResponseBody
+	public Integer filterCount(String initial, int region, int gender) {//get
+		return 0;
+	}
+	
 	@RequestMapping(value = "/getInfo", method = RequestMethod.GET)
 	@ResponseBody
 	public ArtistView showArtist(int id) {//get

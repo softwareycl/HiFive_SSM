@@ -9,7 +9,7 @@ public interface SongService {
 	List<Song> search(String songName, int page);
 
 	// 排行榜
-	List<Song> lookUpRank(int type);
+	List<Song> lookUpRank(int type, boolean isAll);
 
 	// 歌曲详情
 	Song getInfo(int id);
@@ -23,7 +23,11 @@ public interface SongService {
 
 	boolean modify(Song song);
 
-	boolean setImage(int id, String image);
+	boolean setImage(int id, String image);	
+	
+	boolean setLyricsPath(int id, String lyricsPath);
+	
+	boolean setFilePath(int id, String filePath);
 
 	List<Song> lookUpNewSongs(int region);
 

@@ -86,5 +86,11 @@ public class AlbumServiceImpl implements AlbumService {
 		return false;
 	}
 
+	@Override
+	public int getFilterCount(int region, int style) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 
 }

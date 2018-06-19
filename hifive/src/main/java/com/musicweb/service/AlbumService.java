@@ -14,6 +14,8 @@ public interface AlbumService {
 	List<Song> getSongList(int id);
 
 	List<Album> lookUpAlbumsByCatagory(int region, int style, int page);
+	
+	int getFilterCount(int region, int style);
 
 	int add(Album album);
 

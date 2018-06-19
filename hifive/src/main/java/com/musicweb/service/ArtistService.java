@@ -10,6 +10,8 @@ public interface ArtistService {
 	List<Artist> search(String name, int page);
 
 	List<Artist> lookUpArtistsByCatagory(String initial, int region, int gender, int page);
+	
+	int getFilterCount(String initial, int region, int gender);
 
 	Artist getInfo(int id);
 

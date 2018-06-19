@@ -20,6 +20,8 @@ public interface SongDao {
 	public int updateImage(int id, String image);
 
 	public int updateSongPath(int id, String songPath);
+	
+	public int updateFilePath(int id, String filePath);
 
 	public int updatePlayCount(int id, int playCount);
 

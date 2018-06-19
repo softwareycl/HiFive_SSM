@@ -23,7 +23,7 @@ public class SongServiceImpl implements SongService {
 	}
 
 	@Override
-	public List<Song> lookUpRank(int type) {
+	public List<Song> lookUpRank(int type, boolean isAll) {
 		// 根据type选择不同的dao方法
 		return null;
 	}
@@ -86,6 +86,18 @@ public class SongServiceImpl implements SongService {
 	public String getDuration(int id) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean setLyricsPath(int id, String lyricsPath) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean setFilePath(int id, String filePath) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

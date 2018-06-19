@@ -67,6 +67,7 @@ public class SongController {
 		return 0;
 	}
 	
+	@RequestMapping(value = "/getNewSongs", method = RequestMethod.GET)
 	@ResponseBody
 	public List<SimpleSongView> showNewSongs(int region) {//get
 		return null;
