@@ -45,7 +45,7 @@
     			type=#{type}
     		where id=#{id}
     </update>
-    
+     
             <!--  update user password  -->
     <update id="updatePassword">
     		update user set
