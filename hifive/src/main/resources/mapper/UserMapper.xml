@@ -44,7 +44,7 @@
     			security_answer=#{securityAnswer},
     			type=#{type}
     		where id=#{id}
-    </update>
+    </update> 
     
             <!--  update user password  -->
     <update id="updatePassword">
