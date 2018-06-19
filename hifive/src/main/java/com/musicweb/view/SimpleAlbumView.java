@@ -1,5 +1,7 @@
 package com.musicweb.view;
 
+import java.sql.Date;
+
 public class SimpleAlbumView {
 	private int id;
 	private String name;
@@ -7,6 +9,7 @@ public class SimpleAlbumView {
 	private int artistId;
 	private String artistName;
 	private int count;
+	private Date releaseDate;
 
 	public int getId() {
 		return id;
@@ -54,6 +57,14 @@ public class SimpleAlbumView {
 
 	public void setCount(int count) {
 		this.count = count;
+	}
+
+	public Date getReleaseDate() {
+		return releaseDate;
+	}
+
+	public void setReleaseDate(Date releaseDate) {
+		this.releaseDate = releaseDate;
 	}
 
 }
