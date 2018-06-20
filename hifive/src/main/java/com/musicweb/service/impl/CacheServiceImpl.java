@@ -46,6 +46,7 @@ public class CacheServiceImpl implements CacheService {
 	@Override
 	public Album getAndCacheAlbumByAlbumID(int albumID) {
 		// TODO Auto-generated method stub
+		//hahahaha
 		return null;
 	}
 
