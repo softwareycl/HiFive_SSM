@@ -32,7 +32,7 @@ public interface AlbumDao {
 
 	public Album select(int id);
 
-	public List<Album> selectByCategory(int region, int style, int offset, int count);//按播放量排序
+	public List<Album> selectByCategory(@Param("region")int region, @Param("style")int style, @Param("offset")int offset, @Param("count")int count);//按播放量排序
 	
 	public int selectCountByCategory(int region, int style);
 
