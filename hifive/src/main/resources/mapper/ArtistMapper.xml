@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.musicweb.dao.ArtistDao">
+
+	<!-- select -->
+	<select id="select"
+	resultType="com.musicweb.domain.Artist">
+	select * from artist 
+	where id=#{id}
+	</select>
+
+	<!-- selectByCategory -->
+	<select id="selectByCategory"
+	resultType="java.util.List">
+	select * from Artist 
+	where initial=#{initial} and region=#{region} and gender=#{gender}
+	order by play_count 
+	desc limit #{offset}, #{count}
+	</select>
+</mapper>
