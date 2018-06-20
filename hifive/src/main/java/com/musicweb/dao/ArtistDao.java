@@ -31,7 +31,7 @@ public interface ArtistDao {
 	
 	public int selectCountByName(String name);
 
-	public List<Artist> selectByCategory(int region, int style, int offset, int count);//按播放量排序
+	public List<Artist> selectByCategory(int initial, int region, int gender, int offset, int count);//按播放量排序
 	
 	public int selectCountByCategory(int region, int style);
 	
