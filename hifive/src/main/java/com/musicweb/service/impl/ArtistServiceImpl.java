@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 
 import com.musicweb.dao.AlbumDao;
 import com.musicweb.dao.ArtistDao;
+import com.musicweb.dao.PlaylistDao;
+import com.musicweb.dao.UserDao;
+import com.musicweb.dao.SongDao;
 import com.musicweb.domain.Album;
 import com.musicweb.domain.Artist;
 import com.musicweb.domain.Song;
@@ -25,6 +28,12 @@ public class ArtistServiceImpl implements ArtistService {
 	private ArtistDao artistDao;
 	@Resource
 	private AlbumDao albumDao;
+	@Resource
+	private UserDao userDao;
+	@Resource
+	private PlaylistDao playlistDao;
+	@Resource
+	private SongDao songDao;
 	@Resource
 	private RedisUtil redisUtil;
 	@Resource
@@ -68,24 +77,57 @@ public class ArtistServiceImpl implements ArtistService {
 
 	@Override
 	public boolean remove(int id) {
-		Object object = redisUtil.hget("artist", String.valueOf(id));
-		if(object != null) {
-			redisUtil.hdel("artist", String.valueOf(id));
+		//删缓存
+		redisUtil.hdel("artist", String.valueOf(id));
+		redisUtil.del("playlist");
+		redisUtil.del("artist_albums");
+		redisUtil.del("album_filter");
+		redisUtil.del("artist_filter");
+		redisUtil.del("album_filter_count");
+		redisUtil.del("artist_filter_count");
+		redisUtil.del("rank");
+		redisUtil.del("new_song");
+		redisUtil.del("new_album");
+		redisUtil.del("song_play_count");
+		redisUtil.del("album_play_count");
+		redisUtil.del("artist_play_count");
+		redisUtil.del("user_songs");
+		redisUtil.del("user_albums");
+		List<Album> albumList = lookUpAlbumsByArtist(id);
+		for(Album album:albumList) {
+			redisUtil.hdel("album", album.getId());
+			redisUtil.hdel("album_songs", album.getId());
+			userDao.deleteLikeAlbumInAll(album.getId());
+			albumDao.delete(album.getId());
 		}
-		return artistDao.delete(id) > 0 ? true : false;
+		List<Song> songList = lookUpSongsByArtist(id);
+		for(Song song: songList) {
+			redisUtil.hdel("song", song.getId());
+			playlistDao.deleteSongInAll(song.getId());
+			userDao.deleteLikeSongInAll(song.getId());
+			songDao.delete(song.getId());
+		}
+		//删数据库
+		artistDao.delete(id);
+		
+		//删除文件夹 TODO
+		return true;
 	}
 
 	@Override
 	public boolean modify(Artist artist) {
+		artistDao.update(artist);
 		Object object = redisUtil.hget("artist", String.valueOf(artist.getId()));
-		boolean modify = artistDao.update(artist) > 0 ? true : false;
 		if(object == null) {
 			redisUtil.hset("artist", String.valueOf(artist.getId()), artist, TimeConstant.A_DAY);
-			return modify;
 		}
-		redisUtil.hdel("artist", String.valueOf(artist.getId()));
-		redisUtil.hset("artist", String.valueOf(artist.getId()), artist, TimeConstant.A_DAY);
-		return modify;
+		else {
+			redisUtil.hdel("artist", String.valueOf(artist.getId()));
+			redisUtil.hset("artist", String.valueOf(artist.getId()), artist, TimeConstant.A_DAY);
+		}
+		redisUtil.del("artist_filter");
+		redisUtil.del("artist_filter_count");
+		return true;
 	}
 
 	@Override
