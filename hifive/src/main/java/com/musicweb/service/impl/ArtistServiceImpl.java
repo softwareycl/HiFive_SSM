@@ -117,14 +117,8 @@ public class ArtistServiceImpl implements ArtistService {
 	@Override
 	public boolean modify(Artist artist) {
 		artistDao.update(artist);
-		Object object = redisUtil.hget("artist", String.valueOf(artist.getId()));
-		if(object == null) {
-			redisUtil.hset("artist", String.valueOf(artist.getId()), artist, TimeConstant.A_DAY);
-		}
-		else {
-			redisUtil.hdel("artist", String.valueOf(artist.getId()));
-			redisUtil.hset("artist", String.valueOf(artist.getId()), artist, TimeConstant.A_DAY);
-		}
+		redisUtil.hdel("artist", String.valueOf(artist.getId()));
+		redisUtil.hset("artist", String.valueOf(artist.getId()), artist, TimeConstant.A_DAY);
 		redisUtil.del("artist_filter");
 		redisUtil.del("artist_filter_count");
 		return true;
@@ -178,11 +172,6 @@ public class ArtistServiceImpl implements ArtistService {
 
 	@Override
 	public boolean refreshPlayCount(int id, int playCount) {
-		Object object = redisUtil.hget("artist_play_count", String.valueOf("id"));
-		if(object == null) {
-			redisUtil.hset("artist_play_count", String.valueOf("id"), playCount);
-			return true;
-		}
 		redisUtil.hdel("artist_play_count", String.valueOf("id"));
 		redisUtil.hset("artist_play_count", String.valueOf("id"), playCount);
 		return true;

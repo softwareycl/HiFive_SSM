@@ -14,6 +14,7 @@ import com.musicweb.util.RedisUtil;
 import com.musicweb.constant.TimeConstant;
 import com.musicweb.dao.AlbumDao;
 import com.musicweb.dao.ArtistDao;
+import com.musicweb.dao.PlaylistDao;
 
 @Service("cacheService")
 public class CacheServiceImpl implements CacheService {
@@ -24,6 +25,8 @@ public class CacheServiceImpl implements CacheService {
 	private ArtistDao artistDao;
 	@Resource
 	private AlbumDao albumDao;
+	@Resource
+	private PlaylistDao playlistDao;
 	
 	@Override
 	public Artist getAndCacheSingerBySingerID(int singerID) {
@@ -67,8 +70,15 @@ public class CacheServiceImpl implements CacheService {
 
 	@Override
 	public Playlist getAndCachePlaylistByPlaylistID(int playlistID) {
-		// TODO Auto-generated method stub
-		return null;
+		Object object = redisUtil.hget("playlist", String.valueOf(playlistID));
+		if(object == null) {
+			Playlist playlist = playlistDao.select(playlistID);
+			if(playlist != null) {
+				redisUtil.hset("playlist", String.valueOf(playlistID), playlist, TimeConstant.A_DAY);
+			}
+			return playlist;
+		}
+		return (Playlist)object;
 	}
 
 	@Override

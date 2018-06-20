@@ -26,7 +26,4 @@ public interface PlaylistService {
 
 	boolean addAlbumToPlaylist(int albumId, int playlistId);
 	
-	//新增
-	int getSongCount(int playlistId);
-	
 }
