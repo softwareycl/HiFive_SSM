@@ -1,5 +1,6 @@
 package com.musicweb.service;
 
+import com.musicweb.domain.User;
 import com.musicweb.view.AlbumView;
 import com.musicweb.view.ArtistView;
 import com.musicweb.view.SongView;
@@ -12,5 +13,7 @@ public interface CacheService {
 
 	SongView getAndCacheSongBySongID(int songID);
 
-	PlaylistView getAndCacheSongByPlaylistID(int playlistID);
+	PlaylistView getAndCachePlaylistByPlaylistID(int playlistID);
+	
+	User getAndCacheUserByUserID(int userID);
 }
