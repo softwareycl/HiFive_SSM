@@ -16,6 +16,7 @@ public class Song {
 	private String style;
 	private Date releaseDate;
 	private String filePath;
+	private String duration;
 
 	public int getId() {
 		return id;
@@ -119,6 +120,14 @@ public class Song {
 
 	public void setArtistName(String artistName) {
 		this.artistName = artistName;
+	}
+
+	public String getDuration() {
+		return duration;
+	}
+
+	public void setDuration(String duration) {
+		this.duration = duration;
 	}
 	
 }
