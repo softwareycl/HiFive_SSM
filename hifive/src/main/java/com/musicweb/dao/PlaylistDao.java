@@ -20,6 +20,9 @@ public interface PlaylistDao {
 	
 	public int deleteSong(int playlistId, int songId);
 	
+	//删除表中对应的所有歌曲
+	public int deleteSongInAll(int id);
+	
 	//改
 	public int update(Playlist playlist);
 

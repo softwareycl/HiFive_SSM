@@ -2,6 +2,7 @@ package com.musicweb.service;
 
 import java.util.List;
 
+import com.musicweb.domain.Album;
 import com.musicweb.domain.Artist;
 import com.musicweb.domain.Song;
 
@@ -25,7 +26,7 @@ public interface ArtistService {
 
 	List<Song> lookUpSongsByArtist(int id);
 
-	List<Song> lookUpAlbumsByArtist(int id);
+	List<Album> lookUpAlbumsByArtist(int id);
 
 	int getSearchCount(String name);
 	

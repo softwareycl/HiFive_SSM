@@ -1,19 +1,19 @@
 package com.musicweb.service;
 
+import com.musicweb.domain.Album;
+import com.musicweb.domain.Artist;
+import com.musicweb.domain.Playlist;
+import com.musicweb.domain.Song;
 import com.musicweb.domain.User;
-import com.musicweb.view.AlbumView;
-import com.musicweb.view.ArtistView;
-import com.musicweb.view.SongView;
-import com.musicweb.view.PlaylistView;
 
 public interface CacheService {
-	ArtistView getAndCacheSingerBySingerID(int singerID);
+	Artist getAndCacheSingerBySingerID(int singerID);
 
-	AlbumView getAndCacheAlbumByAlbumID(int albumID);
+	Album getAndCacheAlbumByAlbumID(int albumID);
 
-	SongView getAndCacheSongBySongID(int songID);
+	Song getAndCacheSongBySongID(int songID);
 
-	PlaylistView getAndCachePlaylistByPlaylistID(int playlistID);
+	Playlist getAndCachePlaylistByPlaylistID(int playlistID);
 	
 	User getAndCacheUserByUserID(int userID);
 }
