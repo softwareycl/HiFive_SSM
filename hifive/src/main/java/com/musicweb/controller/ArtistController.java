@@ -47,7 +47,7 @@ public class ArtistController {
 	@RequestMapping(value = "/addArtist", method = RequestMethod.POST)
 	@ResponseBody
 	public Integer addAnArtist(ArtistView artist, HttpSession session) {//post
-		return 0;
+		return 1;
 	}
 	
 	@RequestMapping(value = "/removeArtist", method = RequestMethod.GET)

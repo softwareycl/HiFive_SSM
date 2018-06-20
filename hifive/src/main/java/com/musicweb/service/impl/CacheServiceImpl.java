@@ -2,6 +2,7 @@ package com.musicweb.service.impl;
 
 import org.springframework.stereotype.Service;
 
+import com.musicweb.domain.User;
 import com.musicweb.service.CacheService;
 import com.musicweb.view.AlbumView;
 import com.musicweb.view.ArtistView;
@@ -30,9 +31,16 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
-	public PlaylistView getAndCacheSongByPlaylistID(int playlistID) {
+	public PlaylistView getAndCachePlaylistByPlaylistID(int playlistID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public User getAndCacheUserByUserID(int userID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }
