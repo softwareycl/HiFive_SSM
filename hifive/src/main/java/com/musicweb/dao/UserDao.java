@@ -25,6 +25,12 @@ public interface UserDao {
 
 	public int deleteLikeAlbum(String userId, int albumId);
 	
+	//删除用户歌曲关系表中对应的所有歌曲
+	public int deleteLikeSongInAll(int id);
+
+	//删除用户专辑关系表中对应的所有专辑
+	public int deleteLikeAlbumInAll(int id);
+	
 	//改
 	public int update(User user);
 
