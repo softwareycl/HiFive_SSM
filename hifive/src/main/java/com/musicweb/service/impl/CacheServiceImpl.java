@@ -10,12 +10,9 @@ import com.musicweb.domain.Playlist;
 import com.musicweb.domain.Song;
 import com.musicweb.domain.User;
 import com.musicweb.service.CacheService;
-import com.musicweb.view.AlbumView;
-import com.musicweb.view.ArtistView;
-import com.musicweb.view.PlaylistView;
-import com.musicweb.view.SongView;
 import com.musicweb.util.RedisUtil;
 import com.musicweb.constant.TimeConstant;
+import com.musicweb.dao.AlbumDao;
 import com.musicweb.dao.ArtistDao;
 
 @Service("cacheService")
@@ -25,6 +22,8 @@ public class CacheServiceImpl implements CacheService {
 	private RedisUtil redisUtil;
 	@Resource
 	private ArtistDao artistDao;
+	@Resource
+	private AlbumDao albumDao;
 	
 	@Override
 	public Artist getAndCacheSingerBySingerID(int singerID) {
@@ -45,9 +44,19 @@ public class CacheServiceImpl implements CacheService {
 
 	@Override
 	public Album getAndCacheAlbumByAlbumID(int albumID) {
-		// TODO Auto-generated method stub
-		//hahahaha
-		return null;
+		Object object = redisUtil.hget("album", String.valueOf(albumID));
+		if(object == null) {
+			Album album = albumDao.select(albumID);
+			if(album != null) {
+				redisUtil.hset("album", String.valueOf(albumID), album, TimeConstant.A_DAY);
+			}
+			Object playCount = redisUtil.hget("album_play_count", String.valueOf(albumID));
+			if(playCount == null){
+				redisUtil.hset("album_play_count", String.valueOf(albumID), album.getPlayCount());
+			}
+			return album;
+		}
+		return (Album)object;
 	}
 
 	@Override
