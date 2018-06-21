@@ -41,5 +41,7 @@ public interface AlbumDao {
 	public List<Song> selectAllSongs(int albumId);
 	
 	public int selectSongCount(int albumId);
+	
+	public String selectImage(int id);
 
 }
