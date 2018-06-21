@@ -26,4 +26,6 @@ public interface PlaylistService {
 
 	boolean addAlbumToPlaylist(int albumId, int playlistId);
 	
+	List<Playlist> getPlaylistList(String userId);
+	
 }

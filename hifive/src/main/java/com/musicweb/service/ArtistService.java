@@ -30,6 +30,4 @@ public interface ArtistService {
 
 	int getSearchCount(String name);
 	
-	boolean refreshPlayCount(int id, int playCount);
-	
 }

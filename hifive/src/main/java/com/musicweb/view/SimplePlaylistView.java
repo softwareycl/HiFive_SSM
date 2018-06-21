@@ -5,6 +5,15 @@ public class SimplePlaylistView {
 	private String name;
 	private int count;
 	private String image;
+	private String intro;
+
+	public String getIntro() {
+		return intro;
+	}
+
+	public void setIntro(String intro) {
+		this.intro = intro;
+	}
 
 	public int getId() {
 		return id;
