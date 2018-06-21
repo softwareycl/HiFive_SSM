@@ -82,7 +82,7 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
-	public User getAndCacheUserByUserID(int userID) {
+	public User getAndCacheUserByUserID(String userID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
