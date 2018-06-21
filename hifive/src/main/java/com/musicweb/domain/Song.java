@@ -17,6 +17,7 @@ public class Song {
 	private Date releaseDate;
 	private String filePath;
 	private String duration;
+	private int region;
 
 	public int getId() {
 		return id;
@@ -128,6 +129,14 @@ public class Song {
 
 	public void setDuration(String duration) {
 		this.duration = duration;
+	}
+	
+	public int getRegion() {
+		return region;
+	}
+	
+	public void setRegion(int region) {
+		this.region=region;
 	}
 	
 }
