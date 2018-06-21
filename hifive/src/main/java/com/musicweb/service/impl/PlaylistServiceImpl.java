@@ -39,8 +39,8 @@ public class PlaylistServiceImpl implements PlaylistService {
 	}
 
 	@Override
-	public int create(Playlist playlist) {
-		int id = playlistDao.insert(playlist);
+	public int create(String userId, Playlist playlist) {
+		int id = playlistDao.insert(userId,playlist);
 		redisUtil.hset(PLAYLIST, String.valueOf(playlist.getId()), playlist, TimeConstant.A_DAY);
 		return id;
 	}

@@ -10,6 +10,19 @@ public class User {
 	private String securityAnswer;
 	private int type;
 
+	public User() {}
+	
+	public User(String id,String name,String pwd,String image,int gender,int securityQuestion,String securityAnswer,int type) {
+		this.id=id;
+		this.name=name;
+		this.pwd=pwd;
+		this.image=image;
+		this.gender=gender;
+		this.securityQuestion=securityQuestion;
+		this.securityAnswer=securityAnswer;
+		this.type=type;
+	}
+	
 	public String getId() {
 		return id;
 	}

@@ -8,7 +8,7 @@ import com.musicweb.domain.Song;
 public interface PlaylistService {
 	Playlist getInfo(int id);
 
-	int create(Playlist playlist);
+	int create(String userId,Playlist playlist);
 
 	boolean setImage(int id, String image);
 

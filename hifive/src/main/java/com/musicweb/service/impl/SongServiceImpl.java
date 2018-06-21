@@ -17,9 +17,9 @@ public class SongServiceImpl implements SongService {
 	private SongDao songDao;
 
 	@Override
-	public List<Song> search(String songName, int page) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Song> search(String name, int page) {
+		List<Song>songs = songDao.selectByName(name, page, 20);
+		return songs;
 	}
 
 	@Override

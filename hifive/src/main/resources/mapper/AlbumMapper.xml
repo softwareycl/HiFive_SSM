@@ -2,9 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.musicweb.dao.AlbumDao">
 
+	<resultMap type="com.musicweb.domain.Album" id="AlbumMap">
+		<id column="id" property="id"></id>
+		<result ></result>
+	</resultMap>
 	<!-- select -->
 	<select id="select"
-	resultType="com.musicweb.domain.Album">
+	resultMap="AlbumMap">
 	select * from album 
 	where id=#{id}
 	</select>

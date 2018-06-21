@@ -1,13 +1,46 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!-- 为这个mapper指定一个唯一的namespace，namespace的值习惯上设置成包名+sql映射文件名，这样就能够保证namespace的值是唯一的
-例如namespace="me.gacl.mapping.userMapper"就是me.gacl.mapping(包名)+userMapper(userMapper.xml文件去除后缀)
- -->
 <mapper namespace="com.musicweb.dao.UserDao">
+			<!--  resultMap SongMap  -->
+    <resultMap id="SongMap" type="com.musicweb.domain.Song">
+    	<id column="id" property="id" jdbcType="NUMERIC"/>
+    	<result column="name" property="name" jdbcType="VARCHAR"/>
+    	<result column="artist_id" property="artist_id" jdbcType="NUMERIC"/>
+    	<result column="album_id" property="album_id" jdbcType="NUMERIC"/>
+    	<result column="language" property="language" jdbcType="VARCHAR"/>
+    	<result column="style" property="style" jdbcType="TINYINT"/>
+    	<result column="release_date" property="release_date" jdbcType="DATE"/>
+    	<result column="lyrics_path" property="lyrics_path" jdbcType="VARCHAR"/>
+    	<result column="image" property="image" jdbcType="VARCHAR"/>
+    	<result column="play_count" property="play_count" jdbcType="NUMERIC"/>
+    	<result column="file_path" property="file_path" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    		<!--  resultMap AlbumMap  -->
+    <resultMap id="AlbumMap" type="com.musicweb.domain.Album">
+    	<id column="id" property="id" jdbcType="NUMERIC"/>
+    	<result column="name" property="name" jdbcType="VARCHAR"/>
+    	<result column="artist_id" property="artist_id" jdbcType="NUMERIC"/>
+    	<result column="region" property="region" jdbcType="TINYINT"/>
+    	<result column="style" property="style" jdbcType="TINYINT"/>
+    	<result column="intro" property="intro" jdbcType="VARCHAR"/>
+    	<result column="play_count" property="play_count" jdbcType="NUMERIC"/>
+    	<result column="release_date" property="release_date" jdbcType="DATE"/>
+    	<result column="image" property="image" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    		<!--  resultMap PlaylistMap  -->
+    <resultMap id="PlaylistMap" type="com.musicweb.domain.Playlist">
+    	<id column="id" property="id" jdbcType="NUMERIC"/>
+    	<result column="name" property="name" jdbcType="VARCHAR"/>
+    	<result column="user_id" property="user_id" jdbcType="VARCHAR"/>
+    	<result column="intro" property="intro" jdbcType="VARCHAR"/>
+    	<result column="image" property="image" jdbcType="VARCHAR"/>
+    </resultMap>
     
         	<!--  insert user  -->
     <insert id="insert" 
-    		parameterType="domain.User"
+    		parameterType="com.musicweb.domain.User"
     		useGeneratedKeys="true"
     		keyProperty="id">
         	insert into user (id,name,gender,pwd,security_question,security_answer,image,type)
@@ -15,25 +48,26 @@
     </insert>
     
             <!--  insert Like Song  -->
-    <insert id="insertLikeSong">
+    <insert id="insertLikeSong"
+    		parameterType="map">
         	insert into user_song (user_id,song_id)
-        	values (#{userId},#{songId})
+        	values (#{user_id},#{song_id})
     </insert>
     
             <!--  insert Like Album  -->
     <insert id="insertLikeAlbum">
         	insert into user_album (user_id,album_id)
-        	values (#{userId},#{albumId})
+        	values (#{user_id},#{album_id})
     </insert>
     
             <!--  delete Like Songs  -->
     <delete id="deleteLikeSong">
-    		delete from user_song where user_id=#{userId} and song_d=#{songId}
+    		delete from user_song where user_id=#{user_id} and song_id=#{song_id}
     </delete>
     
             <!--  delete Like Albums  -->
     <delete id="deleteLikeAlbum">
-    		delete from user_song where user_id=#{userId} and album_id=#{albumId}
+    		delete from user_album where user_id=#{user_id} and album_id=#{album_id}
     </delete>
     
             <!--  update user information  -->
@@ -53,30 +87,52 @@
     		where id=#{id}
     </update>
     
+            <!--  update user image  -->
+    <update id="updateImage">
+    		update user set
+    			image=#{image}
+    		where id=#{id}
+    </update>
+    
             <!--  select user  -->
     <select id="select"
-    		parameterType="com.musicweb.domain.User"
-    		resultType="hashmap">
+    		resultType="java.util.List">
     		SELECT * FROM user WHERE id=#{id}
     </select>
     
             <!--  select password  -->
-    <select id="selectPassword">
+    <select id="selectPassword"
+    		resultType="String">
     		SELECT pwd FROM user WHERE id=#{id}
     </select>
  
             <!--  select Like Songs  -->
-    <select id="selectLikeSongs">
+    <select id="selectLikeSongs"
+    		resultMap="SongMap">
     		SELECT * FROM user_song WHERE user_id=#{userId}
     </select>
     
+            <!--  select security question  -->
+    <select id="selectQuestion"
+    		resultType="INT">
+    		SELECT security_question FROM user WHERE id=#{id}
+    </select>
+    
+             <!--  select security answer  -->
+    <select id="selectAnswer"
+    		resultType="String">
+    		SELECT security_answer FROM user WHERE id=#{id}
+    </select>
+    
             <!--  select Like Albums  -->
-    <select id="selectLikeAlbums">
-    		SELECT * FROM user_albumm WHERE user_id=#{userId}
+    <select id="selectLikeAlbums"
+   			resultMap="AlbumMap">
+    		SELECT * FROM user_album WHERE user_id=#{userId}
     </select>
     
             <!--  select Playlists  -->
-    <select id="selectPlaylists">
+    <select id="selectPlaylists"
+    		resultMap="PlaylistMap">
     		SELECT * FROM playlist WHERE user_id=#{userId}
     </select>    
 </mapper>
