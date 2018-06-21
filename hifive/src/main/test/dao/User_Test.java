@@ -1,13 +1,15 @@
 package dao;
 
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
+import java.util.List;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import base.BaseTest;
 
 import com.musicweb.dao.UserDao;
+import com.musicweb.domain.Album;
+import com.musicweb.domain.Song;
 import com.musicweb.domain.User;
 
 public class User_Test extends BaseTest {
@@ -119,18 +121,26 @@ public class User_Test extends BaseTest {
 //	 @Test
 	public void test_selectLikeSongs() {
 		try {
-			usermapper.selectLikeSongs("guozyunzhe.se@gmail.com");
+			List<Song> S=usermapper.selectLikeSongs("guozyunzhe.se@gmail.com");
 			System.out.println("test_selectLikeSongs succeed");
+			for(Song s : S) {
+				System.out.println(s.getName());
+				System.out.println(s.getArtistName());
+			}
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-//	 @Test
+	 @Test
 	public void test_selectLikeAlbums() {
 		try {
-			usermapper.selectLikeAlbums("guozyunzhe.se@gmail.com");
+			List<Album> A= usermapper.selectLikeAlbums("guozyunzhe.se@gmail.com");
 			System.out.println("test_selectLikeAlbums succeed");
+			for(Album a : A) {
+				System.out.println(a.getName());
+				System.out.println(a.getArtistName());
+			}
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -156,7 +166,7 @@ public class User_Test extends BaseTest {
 		}
 	}
 
-	 @Test
+//	 @Test
 	public void test_selectPlaylists() {
 		try {
 			usermapper.selectPlaylists("guozyunzhe.se@gmail.com");
