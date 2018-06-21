@@ -13,7 +13,7 @@ public class Song {
 	private String lyricsPath;
 	private String image;
 	private String language;
-	private String style;
+	private int style;
 	private Date releaseDate;
 	private String filePath;
 	private String duration;
@@ -82,11 +82,11 @@ public class Song {
 		this.playCount = playCount;
 	}
 
-	public String getStyle() {
+	public int getStyle() {
 		return style;
 	}
 
-	public void setStyle(String style) {
+	public void setStyle(int style) {
 		this.style = style;
 	}
 
