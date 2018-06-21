@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.musicweb.dao.AlbumDao;
 
+import base.BaseTest;
+
 public class SongControllerTest extends BaseTest{
 
 	@Autowired
