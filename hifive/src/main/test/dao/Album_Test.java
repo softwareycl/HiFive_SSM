@@ -18,8 +18,12 @@ public class Album_Test extends BaseTest{
 //	@Test
 	public void test_selectByCategory() {
 		try {
-			albummapper.selectByCategory(1, 1, 10, 5);
+			List<Album> albums =albummapper.selectByCategory(1, 1, 10, 5);
 			System.out.println("test_selectByCategory succeed");
+			for(Album s : albums) {
+				System.out.println(s.getName());
+				System.out.println(s.getStyle());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -36,7 +40,7 @@ public class Album_Test extends BaseTest{
 		}
 	}
 	
-	@Test
+//	@Test
 	public void test_selectAllSongs() {
 		try {
 			List<Song> l = albummapper.selectAllSongs(1);
@@ -45,6 +49,18 @@ public class Album_Test extends BaseTest{
 				System.out.println(s.getName());
 				System.out.println(s.getAlbumName());
 			}
+				
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void test_selectCountByCatagory() {
+		try {
+			int count = albummapper.selectCountByCategory(2, 1);
+			System.out.println("test_select succeed");
+			System.out.println(count);
 				
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -98,12 +98,57 @@
 			s.album_id=#{id}
 	</select>
 
-		<!-- selectByCategory -->
+		<!-- select By Category -->
 	<select id="selectByCategory"
-			resultType="java.util.List">
-		select * from album 
-		where region=#{region} and style=#{style} 
-		order by play_count 
+			resultMap="AlbumMap">
+		SELECT
+			alb.id,
+			alb.name,
+			alb.artist_id,
+			alb.region,
+			alb.style,
+			alb.intro,
+			alb.play_count,
+			alb.release_date,
+			alb.image,
+			art.name artist_name
+		FROM 
+			album as alb
+		LEFT JOIN 
+			artist as art
+		ON
+			alb.artist_id=art.id
+		<where>
+			<if test="region !=null">
+			AND
+				alb.region=#{region}	
+			</if>
+			<if test="style !=null">
+			AND
+				alb.style=#{style}	
+			</if>
+		</where>
+		order by alb.play_count 
 		desc limit #{offset}, #{count}
 	</select>
+	
+		<!-- select Count By Category -->
+	<select id="selectCountByCategory"
+			resultType="INT">
+		SELECT
+			COUNT(*)
+		FROM 
+			album as alb
+		<where>
+			<if test="region !=null">
+			AND
+				alb.region=#{region}	
+			</if>
+			<if test="style !=null">
+			AND
+				alb.style=#{style}	
+			</if>
+		</where>
+	</select>
+	
 </mapper>
