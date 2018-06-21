@@ -5,6 +5,7 @@ public class Playlist {
 	private String name;
 	private String intro;
 	private String image;
+	private String user_id;
 
 	public int getId() {
 		return id;
@@ -16,6 +17,10 @@ public class Playlist {
 
 	public String getName() {
 		return name;
+	}
+	
+	public String user_id() {
+		return user_id;
 	}
 
 	public void setName(String name) {

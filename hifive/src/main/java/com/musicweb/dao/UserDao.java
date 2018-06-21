@@ -16,14 +16,15 @@ public interface UserDao {
 	//增
 	public int insert(User user);//返回id
 	
-	public int insertLikeSong(String userId, int songId);
+	public int insertLikeSong(@Param("user_id")String userId, @Param("song_id")int songId);
 
-	public int insertLikeAlbum(String userId, int albumId);
-	
+	public int insertLikeAlbum(@Param("user_id")String userId, @Param("album_id")int albumId);
+
 	//删
-	public int deleteLikeSong(String userId, int songId);
+	public int deleteLikeSong(@Param("user_id")String userId, @Param("song_id")int songId);
 
-	public int deleteLikeAlbum(String userId, int albumId);
+	public int deleteLikeAlbum(@Param("user_id")String userId, @Param("album_id")int albumId);
+
 	
 	//删除用户歌曲关系表中对应的所有歌曲
 	public int deleteLikeSongInAll(int id);
@@ -34,9 +35,10 @@ public interface UserDao {
 	//改
 	public int update(User user);
 
-	public int updateImage(String id, String image);
+	public int updateImage(@Param("id")String id, @Param("image")String image);
 	
-	public int updatePassword(String id, String pwd);
+	public int updatePassword(@Param("id")String id, @Param("pwd")String pwd);
+
 	
 	//查
 	public User select(String id);
@@ -52,5 +54,6 @@ public interface UserDao {
 	public List<Album> selectLikeAlbums(String userId);
 	
 	public List<Playlist> selectPlaylists(String userId);
+
 
 }
