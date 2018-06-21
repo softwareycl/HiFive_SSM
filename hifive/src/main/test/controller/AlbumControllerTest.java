@@ -12,6 +12,8 @@ import com.musicweb.controller.AlbumController;
 import com.musicweb.controller.UserController;
 import com.musicweb.dao.UserDao;
 
+import base.BaseTest;
+
 public class AlbumControllerTest extends BaseTest{
    @Autowired
    protected AlbumController albumController;

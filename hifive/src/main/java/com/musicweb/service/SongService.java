@@ -6,7 +6,7 @@ import com.musicweb.domain.Song;
 
 public interface SongService {
 	// 搜索
-	List<Song> search(String songName, int page);
+	List<Song> search(String name, int page);
 
 	// 排行榜
 	List<Song> lookUpRank(int type, boolean isAll);
@@ -32,8 +32,6 @@ public interface SongService {
 	List<Song> lookUpNewSongs(int region);
 
 	int getSearchCount(String name);
-	
-	boolean refreshPlayCount(int id, int playCount);
 	
 	String getDuration(int id);
 	

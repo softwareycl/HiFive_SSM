@@ -1,14 +1,17 @@
 package com.musicweb.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.musicweb.domain.Song;
 import com.musicweb.service.SongService;
 import com.musicweb.view.SimpleSongView;
 import com.musicweb.view.SongView;
@@ -22,7 +25,17 @@ public class SongController {
 	@RequestMapping(value = "/searchSong", method = RequestMethod.GET)
 	@ResponseBody
 	public List<SimpleSongView> search(String name, int page) {//get
-		return null;
+		List<Song> songs = songService.search(name, page);
+		List<SimpleSongView> songViews = new ArrayList<>();
+		if(songs == null)
+			return songViews;
+		for(Song song: songs) {
+			SimpleSongView songView = new SimpleSongView();
+			BeanUtils.copyProperties(song, songView);
+			songView.setDuration(songService.getDuration(song.getId()));
+			songViews.add(songView);
+		}
+		return songViews;
 	}
 	
 	@RequestMapping(value = "/rank", method = RequestMethod.GET)
