@@ -41,6 +41,7 @@ public class ArtistServiceImpl implements ArtistService {
 
 	@Override
 	public List<Artist> search(String name, int page) {
+		name.trim();
 		int num = DisplayConstant.SEARCH_PAGE_SINGER_SIZE;
 		List<Artist> artistList = artistDao.selectByName(name, (page - 1) * num, num);
 		return artistList;
@@ -49,6 +50,7 @@ public class ArtistServiceImpl implements ArtistService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Artist> lookUpArtistsByCatagory(String initial, int region, int gender, int page) {
+		initial.trim();
 		Object object = redisUtil.hget("artist_filter", initial + "_" + region + "_" + gender + "_" + page);
 		if (object == null) {
 			int num = DisplayConstant.SEARCH_PAGE_SINGER_SIZE;
@@ -70,6 +72,15 @@ public class ArtistServiceImpl implements ArtistService {
 
 	@Override
 	public int add(Artist artist) {
+		artist.setBirthplace(artist.getBirthplace().trim());
+		artist.setCountry(artist.getCountry().trim());
+		artist.setImage(artist.getImage().trim());
+		artist.setInitial(artist.getInitial().trim());
+		artist.setIntro(artist.getIntro().trim());
+		artist.setName(artist.getName().trim());
+		artist.setRepresentative(artist.getRepresentative().trim());
+		artist.setOccupation(artist.getOccupation().trim());
+		
 		int id = artistDao.insert(artist);
 		redisUtil.hset("artist", String.valueOf(id), artist, TimeConstant.A_DAY);
 		return id;
@@ -93,20 +104,23 @@ public class ArtistServiceImpl implements ArtistService {
 		redisUtil.del("artist_play_count");
 		redisUtil.del("user_songs");
 		redisUtil.del("user_albums");
-		List<Album> albumList = lookUpAlbumsByArtist(id);
-		for(Album album:albumList) {
-			redisUtil.hdel("album", album.getId());
-			redisUtil.hdel("album_songs", album.getId());
-			userDao.deleteLikeAlbumInAll(album.getId());
-			albumDao.delete(album.getId());
-		}
+		redisUtil.del("playlist_songs");
+		
 		List<Song> songList = lookUpSongsByArtist(id);
 		for(Song song: songList) {
-			redisUtil.hdel("song", song.getId());
+			redisUtil.hdel("song", String.valueOf(song.getId()));
 			playlistDao.deleteSongInAll(song.getId());
 			userDao.deleteLikeSongInAll(song.getId());
 			songDao.delete(song.getId());
 		}
+		List<Album> albumList = lookUpAlbumsByArtist(id);
+		for(Album album:albumList) {
+			redisUtil.hdel("album", String.valueOf(album.getId()));
+			redisUtil.hdel("album_songs", String.valueOf(album.getId()));
+			userDao.deleteLikeAlbumInAll(album.getId());
+			albumDao.delete(album.getId());
+		}
+
 		//删数据库
 		artistDao.delete(id);
 		
@@ -116,16 +130,61 @@ public class ArtistServiceImpl implements ArtistService {
 
 	@Override
 	public boolean modify(Artist artist) {
+		artist.setBirthplace(artist.getBirthplace().trim());
+		artist.setCountry(artist.getCountry().trim());
+		artist.setImage(artist.getImage().trim());
+		artist.setInitial(artist.getInitial().trim());
+		artist.setIntro(artist.getIntro().trim());
+		artist.setName(artist.getName().trim());
+		artist.setRepresentative(artist.getRepresentative().trim());
+		artist.setOccupation(artist.getOccupation().trim());
+		
+		//artist名称变化
+		Object object = redisUtil.hget("artist", String.valueOf(artist.getId()));
+		Artist artistOld = new Artist();
+		if(object == null) 
+			artistOld = artistDao.select(artist.getId());
+		else 
+			artistOld = (Artist) object;
+		if(!artistOld.getName().equals(artist.getName())) {
+			redisUtil.del("album_filter");
+			redisUtil.del("album_filter_count");
+			redisUtil.del("artist_filter");
+			redisUtil.del("artist_filter_count");
+			redisUtil.del("rank");
+			redisUtil.del("new_song");
+			redisUtil.del("user_songs");
+			redisUtil.del("user_albums");
+			redisUtil.del("playlist_songs");
+			
+			List<Album> albumList = lookUpAlbumsByArtist(artist.getId());
+			for(Album album:albumList) {
+				album.setArtistName(artist.getName());
+				int albumId = album.getId();
+				redisUtil.hdel("album", String.valueOf(albumId));
+				redisUtil.hset("album", String.valueOf(albumId), album);
+				redisUtil.hdel("album_songs", String.valueOf(albumId));
+				List<Song> songsInAlbumList = albumDao.selectAllSongs(albumId);
+				for(Song song: songsInAlbumList){
+					song.setArtistName(artist.getName());
+					redisUtil.hdel("song", String.valueOf(song.getId()));
+					redisUtil.hset("song",String.valueOf(song.getId()),song);
+				}
+				redisUtil.hset("album_songs", String.valueOf(albumId), songsInAlbumList);
+ 			}
+			redisUtil.hdel("artist_albums", String.valueOf(artist.getId()));
+			redisUtil.hset("artist_albums", String.valueOf(artist.getId()), albumList);
+		}
+		
 		artistDao.update(artist);
 		redisUtil.hdel("artist", String.valueOf(artist.getId()));
 		redisUtil.hset("artist", String.valueOf(artist.getId()), artist, TimeConstant.A_DAY);
-		redisUtil.del("artist_filter");
-		redisUtil.del("artist_filter_count");
 		return true;
 	}
 
 	@Override
 	public boolean setImage(int id, String image) {
+		image.trim();
 		return artistDao.updateImage(id, image) > 0 ? true : false;
 	}
 
@@ -167,18 +226,13 @@ public class ArtistServiceImpl implements ArtistService {
 
 	@Override
 	public int getSearchCount(String name) {
+		name.trim();
 		return artistDao.selectCountByName(name);
 	}
 
 	@Override
-	public boolean refreshPlayCount(int id, int playCount) {
-		redisUtil.hdel("artist_play_count", String.valueOf("id"));
-		redisUtil.hset("artist_play_count", String.valueOf("id"), playCount);
-		return true;
-	}
-
-	@Override
 	public int getFilterCount(String initial, int region, int gender) {
+		initial.trim();
 		Object object = redisUtil.hget("artist_filter_count", initial+"_"+region+"_"+gender);
 		if(object == null) {
 			int count = artistDao.selectCountByCategory(initial, region, gender);
