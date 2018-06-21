@@ -1,5 +1,6 @@
 package com.musicweb.service.impl;
 
+import java.io.File;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -13,6 +14,7 @@ import com.musicweb.domain.Playlist;
 import com.musicweb.domain.Song;
 import com.musicweb.domain.User;
 import com.musicweb.service.UserService;
+import com.musicweb.util.FileUtil;
 import com.musicweb.util.MD5Util;
 import com.musicweb.util.RedisUtil;
 import com.musicweb.service.CacheService;
@@ -36,6 +38,7 @@ public class UserServiceImpl implements UserService {
 	private static final String USER = "user";
 	private static final String USER_SONGS = "user_songs";
 	private static final String USER_ALBUMS = "user_albums";
+	private static final String USER_PLAYLISTS = "user_playlists";
 	
 	@Override
 	public int login(User user) {
@@ -63,37 +66,70 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean resetPassword(String id, String pwd) {
-		// TODO Auto-generated method stub
-		return false;
+		pwd.trim();
+		id.trim();
+		User user = cacheService.getAndCacheUserByUserID(id);
+		if(user == null) return false;
+		String pwdEncoded = MD5Util.getMD5(pwd);
+		user.setPwd(pwdEncoded);
+		userDao.updatePassword(id, pwd);
+		redisUtil.hset(USER, id, user, TimeConstant.A_DAY);
+		return true;
 	}
 
 	@Override
 	public User getInfo(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		User user = cacheService.getAndCacheUserByUserID(id);
+		return user;
 	}
 
 	@Override
 	public boolean setImage(String id, String image) {
-		// TODO Auto-generated method stub
-		return false;
+		User user = cacheService.getAndCacheUserByUserID(id);
+		String imageOld = user.getImage();
+		user.setImage(image);
+		redisUtil.hset(USER, id, user, TimeConstant.A_DAY);
+		userDao.updateImage(id, image);
+		if(!image.equals(imageOld)) {
+			String classPath = this.getClass().getClassLoader().getResource("").getPath();
+			String WebInfoPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
+			String userImageFilePath = WebInfoPath + imageOld;
+			FileUtil.deleteFile(new File(userImageFilePath));
+		}
+		return true;
 	}
 
 	@Override
 	public boolean modifyInfo(User user) {
-		// TODO Auto-generated method stub
-		return false;
+		user.setId(user.getId().trim());
+		user.setImage(user.getImage().trim());
+		user.setName(user.getName().trim());
+		user.setPwd(user.getPwd().trim());
+		user.setSecurityAnswer(user.getSecurityAnswer().trim());
+		userDao.update(user);
+		redisUtil.hset(USER, user.getId(), user, TimeConstant.A_DAY);
+		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Playlist> getMyPlaylists(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		id.trim();
+		List<Playlist> playlistList;
+		Object object = redisUtil.hget(USER_PLAYLISTS, id);
+		if(object == null) {
+			playlistList = userDao.selectPlaylists(id);
+			if(playlistList != null)
+				redisUtil.hset(USER_PLAYLISTS, id, playlistList, TimeConstant.A_DAY);
+		}
+		else playlistList = (List<Playlist>) object;
+		return playlistList;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Song> getLikedSongs(String userId) {
+		userId.trim();
 		List<Song> songList;
 		Object object = redisUtil.hget(USER_SONGS, userId);
 		if(object == null) {
@@ -112,6 +148,7 @@ public class UserServiceImpl implements UserService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Album> getLikeAlbums(String userId) {
+		userId.trim();
 		List<Album> albumList;
 		Object object = redisUtil.hget(USER_ALBUMS, userId);
 		if(object == null) {
@@ -126,6 +163,7 @@ public class UserServiceImpl implements UserService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean addLikeAlbum(String userId, int albumId) {
+		userId.trim();
 		userDao.insertLikeAlbum(userId, albumId);
 		List<Album> albumList;
 		Object object = redisUtil.hget(USER_ALBUMS, userId);
@@ -144,6 +182,7 @@ public class UserServiceImpl implements UserService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean addLikeSong(String userId, int songId) {
+		userId.trim();
 		userDao.insertLikeSong(userId, songId);
 		List<Song> songList;
 		Object object = redisUtil.hget(USER_SONGS, userId);
@@ -166,6 +205,7 @@ public class UserServiceImpl implements UserService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean removeLikeAlbum(String userId, int albumId) {
+		userId.trim();
 		userDao.deleteLikeAlbum(userId, albumId);
 		List<Album> albumList;
 		Object object = redisUtil.hget(USER_ALBUMS, userId);
@@ -188,6 +228,7 @@ public class UserServiceImpl implements UserService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean removeLikeSong(String userId, int songId) {
+		userId.trim();
 		userDao.deleteLikeSong(userId, songId);
 		List<Song> songList;
 		Object object = redisUtil.hget(USER_SONGS, userId);
@@ -213,6 +254,9 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean modifyPassword(String id, String oldPwd, String newPwd) {
+		oldPwd.trim();
+		newPwd.trim();
+		id.trim();
 		User user = cacheService.getAndCacheUserByUserID(id);
 		if(!MD5Util.getMD5(oldPwd).equals(user.getPwd())) return false;
 		String pwd = MD5Util.getMD5(newPwd);
