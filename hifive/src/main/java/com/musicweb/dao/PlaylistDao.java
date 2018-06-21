@@ -7,7 +7,7 @@ import com.musicweb.domain.Song;
 
 public interface PlaylistDao {
 	//增
-	public int insert(Playlist playlist);// 返回id
+	public int insert(String userId, Playlist playlist);// 返回id
 	
 	public int insertSong(int playlistId, int songId);
 	
