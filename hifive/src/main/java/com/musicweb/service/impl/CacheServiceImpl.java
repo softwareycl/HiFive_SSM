@@ -11,6 +11,7 @@ import com.musicweb.domain.Song;
 import com.musicweb.domain.User;
 import com.musicweb.service.CacheService;
 import com.musicweb.util.DurationUtil;
+import com.musicweb.util.FileUtil;
 import com.musicweb.util.RedisUtil;
 import com.musicweb.constant.TimeConstant;
 import com.musicweb.dao.AlbumDao;
@@ -74,7 +75,11 @@ public class CacheServiceImpl implements CacheService {
 			if(song.getImage() == null) {
 				song.setImage(albumDao.selectImage(song.getAlbumId()));
 			}
-			song.setDuration(DurationUtil.computeDuration(song.getFilePath()));
+			//拼接出歌曲音频文件的绝对路径
+			String classPath = this.getClass().getClassLoader().getResource("").getPath();
+			String WebInfoPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
+			String filePath = WebInfoPath + song.getFilePath();
+			song.setDuration(DurationUtil.computeDuration(filePath));
 			if(song != null) {
 				redisUtil.hset("song", String.valueOf(songID), song, TimeConstant.A_DAY);
 			}
