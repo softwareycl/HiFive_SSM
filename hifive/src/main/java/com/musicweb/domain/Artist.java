@@ -17,6 +17,66 @@ public class Artist {
 	private Date birthday;
 	private String representative;
 
+	public Artist() {
+		
+	}
+	
+	public Artist(
+			int id,
+			String name,
+			String initial,
+			String image,
+			int region,
+			String country,
+			String intro,
+			int playCount,
+			int gender,
+			String birthplace,
+			String occupation,
+			Date birthday,
+			String representative) {
+		this.id=id;
+		this.name=name;
+		this.initial=initial;
+		this.image=image;
+		this.region=region;
+		this.country=country;
+		this.intro=intro;
+		this.playCount=playCount;
+		this.gender=gender;
+		this.birthplace=birthplace;
+		this.occupation=occupation;
+		this.birthday=birthday;
+		this.representative=representative;
+	}
+	
+	public Artist(
+			String name,
+			String initial,
+			String image,
+			int region,
+			String country,
+			String intro,
+			int playCount,
+			int gender,
+			String birthplace,
+			String occupation,
+			Date birthday,
+			String representative) {
+		this.name=name;
+		this.initial=initial;
+		this.image=image;
+		this.region=region;
+		this.country=country;
+		this.occupation=occupation;
+		this.intro=intro;
+		this.playCount=playCount;
+		this.gender=gender;
+		this.birthplace=birthplace;
+		this.birthday=birthday;
+		this.representative=representative;
+	}
+	
 	public int getPlayCount() {
 		return playCount;
 	}
