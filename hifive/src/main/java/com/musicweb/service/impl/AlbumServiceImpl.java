@@ -59,7 +59,7 @@ public class AlbumServiceImpl implements AlbumService {
 	private String redisAlbumPlayCount = "album_play_count";
 	
 	private String classPath = this.getClass().getClassLoader().getResource("").getPath();
-	private String WebInfPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
+	private String WebInfPath = classPath.substring(0, classPath.indexOf("/classes"));
 	
 	@Override
 	public List<Album> search(String name, int page) {
