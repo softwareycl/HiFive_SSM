@@ -19,6 +19,66 @@ public class Song {
 	private String duration;
 	private int region;
 
+	
+	//FOR DATABASE INSERT
+	public Song(String name, int albumId, int artistId, int playCount, String lyricsPath, String image, String language,
+			int style, Date releaseDate, String filePath, int region) {
+		super();
+		this.name = name;
+		this.albumId = albumId;
+		this.artistId = artistId;
+		this.playCount = playCount;
+		this.lyricsPath = lyricsPath;
+		this.image = image;
+		this.language = language;
+		this.style = style;
+		this.releaseDate = releaseDate;
+		this.filePath = filePath;
+		this.region = region;
+	}
+	//FOR DATABASE UPDATE
+	public Song(int id, String name, int albumId, int artistId, int playCount, String lyricsPath, String image,
+			String language, int style, Date releaseDate, String filePath, int region) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.albumId = albumId;
+		this.artistId = artistId;
+		this.playCount = playCount;
+		this.lyricsPath = lyricsPath;
+		this.image = image;
+		this.language = language;
+		this.style = style;
+		this.releaseDate = releaseDate;
+		this.filePath = filePath;
+		this.region = region;
+	}
+
+	public Song(int id, String name, int albumId, String albumName, int artistId, String artistName, int playCount,
+			String lyricsPath, String image, String language, int style, Date releaseDate, String filePath,
+			String duration, int region) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.albumId = albumId;
+		this.albumName = albumName;
+		this.artistId = artistId;
+		this.artistName = artistName;
+		this.playCount = playCount;
+		this.lyricsPath = lyricsPath;
+		this.image = image;
+		this.language = language;
+		this.style = style;
+		this.releaseDate = releaseDate;
+		this.filePath = filePath;
+		this.duration = duration;
+		this.region = region;
+	}
+
+	public Song() {
+
+	}
+
 	public int getId() {
 		return id;
 	}
