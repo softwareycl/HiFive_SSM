@@ -1,8 +1,9 @@
 package dao;
 
 import java.util.List;
-
 import org.junit.Test;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import base.BaseTest;
@@ -118,7 +119,7 @@ public class Artist_Test extends BaseTest{
 		}
 	}
 	
-	@Test
+//	@Test
 	public void test_selectCountByCatagory() {
 		try {
 			int count = artistmapper.selectCountByCategory("Z", 0, 1);
@@ -130,4 +131,33 @@ public class Artist_Test extends BaseTest{
 		}
 	}
 	
+//	@Test
+	public void test_selectAllSongs() {
+		try {
+			List<Song> l = artistmapper.selectAllSongs(1);
+			System.out.println("test_selectAllSongs succeed");
+			for(Song s : l) {
+				System.out.println(s.getName());
+				System.out.println(s.getAlbumName());
+			}
+				
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void test_selectAllAlbums() {
+		try {
+			List<Album> l = artistmapper.selectAllAlbums(1);
+			System.out.println("test_selectAllSongs succeed");
+			for(Album s : l) {
+				System.out.println(s.getName());
+				System.out.println(s.getArtistName());
+			}
+				
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

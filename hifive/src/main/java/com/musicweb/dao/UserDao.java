@@ -3,10 +3,6 @@ package com.musicweb.dao;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
-
-import com.mchange.v2.encounter.StrongEqualityEncounterCounter;
 import com.musicweb.domain.Album;
 import com.musicweb.domain.Playlist;
 import com.musicweb.domain.Song;

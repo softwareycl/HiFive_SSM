@@ -190,4 +190,67 @@
 		</where>
 	</select>
 	
+		<!-- selectAllSongs -->
+	<select id="selectAllSongs"
+			resultMap="SongMap">
+		SELECT
+			s.id,
+			s.name,
+			s.album_id,
+			alb.name album_name,
+			s.artist_id,
+			art.name artist_name,
+			s.play_count,
+			s.lyrics_path,
+			s.image,
+			s.release_date,
+			s.language,
+			s.style,
+			s.file_path
+		FROM (
+			SELECT
+				*
+			FROM
+				artist
+			WHERE
+				id=#{artistId}
+		) as art
+		LEFT JOIN
+			album as alb
+		ON
+			alb.artist_id=art.id
+		LEFT JOIN
+			song as s
+		ON
+			s.artist_id=art.id
+	</select>
+	
+		<!-- selectAllAlbums -->
+	<select id="selectAllAlbums"
+			resultMap="AlbumMap">
+		SELECT
+			alb.id,
+			alb.name,
+			alb.artist_id,
+			alb.region,
+			alb.style,
+			alb.intro,
+			alb.play_count,
+			alb.release_date,
+			alb.image,
+			art.name artist_name
+		FROM (
+			SELECT
+				*
+			FROM
+				artist
+			WHERE
+				id=#{artistId}
+		) as art
+		LEFT JOIN
+			album as alb
+		ON
+			alb.artist_id=art.id
+	</select>
+	
 </mapper>
