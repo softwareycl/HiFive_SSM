@@ -56,7 +56,7 @@ public class UploadController {
 	private PicAttr headPicAttr;
 	
 	/**
-	 * 
+	 * 用来拼接绝对路径
 	 */
 	private String classPath = this.getClass().getClassLoader().getResource("").getPath();
 	private String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));

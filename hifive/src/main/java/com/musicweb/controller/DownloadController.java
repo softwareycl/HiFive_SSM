@@ -36,6 +36,12 @@ public class DownloadController {
 	private SongService songService; 
 	
 	/**
+	 * 用来拼接绝对路径
+	 */
+	private String classPath = this.getClass().getClassLoader().getResource("").getPath();
+	private String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
+	
+	/**
 	 * 下载歌曲音频文件
 	 * 
 	 * @param request http request，用于获取浏览器类型
@@ -52,7 +58,7 @@ public class DownloadController {
 			Song song = songService.getInfo(id);
 			if(song != null) {
 				String path = song.getFilePath();
-				File file = new File(path);
+				File file = new File(WebInfoPath + path);
 				if(file.exists()) {
 					try (OutputStream os = new BufferedOutputStream(response.getOutputStream())) {
 		                response.setContentType("application/octet-stream");
