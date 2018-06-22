@@ -173,7 +173,7 @@ public class ArtistServiceImpl implements ArtistService {
 		redisUtil.del("playlist_songs");
 		
 		String classPath = this.getClass().getClassLoader().getResource("").getPath();
-		String WebInfoPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
+		String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 		
 		List<Album> albumList = lookUpAlbumsByArtist(id);
 		for(Album album:albumList) {
@@ -250,7 +250,7 @@ public class ArtistServiceImpl implements ArtistService {
 			redisUtil.del("playlist_songs");
 			
 			String classPath = this.getClass().getClassLoader().getResource("").getPath();
-			String WebInfoPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
+			String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 			
 			//更新缓存
 			List<Album> albumList = lookUpAlbumsByArtist(artist.getId());
@@ -290,7 +290,7 @@ public class ArtistServiceImpl implements ArtistService {
 		redisUtil.del("artist_filter_count");
 		if(!image.equals(imageOld)) {
 			String classPath = this.getClass().getClassLoader().getResource("").getPath();
-			String WebInfoPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
+			String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 			String artistImageFilePath = WebInfoPath + imageOld;
 			FileUtil.deleteFile(new File(artistImageFilePath));
 		}
@@ -320,7 +320,7 @@ public class ArtistServiceImpl implements ArtistService {
 		else albumList = (List<Album>) object;
 		
 		String classPath = this.getClass().getClassLoader().getResource("").getPath();
-		String WebInfoPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
+		String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 		
 		//对每张专辑先查缓存
 		ArrayList<Song> songList = new ArrayList<Song>();

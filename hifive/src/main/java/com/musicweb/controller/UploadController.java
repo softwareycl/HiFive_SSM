@@ -26,6 +26,9 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import com.alibaba.fastjson.JSON;
 import com.musicweb.constant.UserConstant;
+import com.musicweb.domain.Album;
+import com.musicweb.domain.Playlist;
+import com.musicweb.domain.Song;
 import com.musicweb.service.AlbumService;
 import com.musicweb.service.ArtistService;
 import com.musicweb.service.PlaylistService;
@@ -52,6 +55,12 @@ public class UploadController {
 	 */
 	private PicAttr headPicAttr;
 	
+	/**
+	 * 用来拼接绝对路径
+	 */
+	private String classPath = this.getClass().getClassLoader().getResource("").getPath();
+	private String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
+	
 	@Resource
 	private UserService userService;
 	@Resource
@@ -66,8 +75,9 @@ public class UploadController {
 	@RequestMapping(value = "/uploadUserImage", method = RequestMethod.GET)
 	@ResponseBody
 	public Boolean uploadUserImage(HttpSession session, CommonsMultipartFile file, String avatar_data) {
+		String id = (String) session.getAttribute(UserConstant.USER_ID);
 		String fileName = file.getOriginalFilename();
-		String prefix = "";//获取用户头像路径
+		String prefix = WebInfoPath + "/image/user/" + userService.getInfo(id).getName() + "/";//获取用户头像路径
 		String filePath = prefix + fileName;
 		avatar_file = new File(filePath);
 		try {
@@ -86,7 +96,6 @@ public class UploadController {
 			e.printStackTrace();
 			return false;
 		}
-		String id = (String) session.getAttribute(UserConstant.USER_ID);
 		userService.setImage(id, filePath);
 		return true;
 	}
@@ -95,7 +104,7 @@ public class UploadController {
 	@ResponseBody
 	public Boolean uploadAlbumImage(CommonsMultipartFile file, int id) {
 		String fileName = file.getOriginalFilename();
-		String prefix = "";//获取专辑图片路径
+		String prefix = WebInfoPath + "/image/album/" + albumService.getInfo(id).getArtistName() + "/";//获取专辑图片路径
 		String filePath = prefix + fileName;
 		avatar_file = new File(filePath);
 		try {
@@ -113,7 +122,7 @@ public class UploadController {
 	@ResponseBody
 	public Boolean uploadArtistImage(CommonsMultipartFile file, int id) {
 		String fileName = file.getOriginalFilename();
-		String prefix = "";//获取用户头像路径
+		String prefix = WebInfoPath + "/singer/";//获取歌手头像路径
 		String filePath = prefix + fileName;
 		avatar_file = new File(filePath);
 		try {
@@ -148,7 +157,8 @@ public class UploadController {
             	MultipartFile file = multipartHttpServletRequest.getFile(fileName);
             	if (file != null) {
             		fileName = file.getOriginalFilename();
-            		String prefix = "";//获取歌词路径
+            		Song song = songService.getInfo(id);
+            		String prefix = WebInfoPath + "/lyrics/" + song.getArtistName() + "/" + song.getAlbumName() + "/";//获取歌词路径
             		String filePath = prefix + fileName;
             		try {
             			//将文件存储在硬盘上
@@ -186,7 +196,8 @@ public class UploadController {
             	MultipartFile file = multipartHttpServletRequest.getFile(fileName);//从request中获取文件
             	if (file != null) {
             		fileName = file.getOriginalFilename();
-            		String prefix = "";//获取歌词路径
+            		Song song = songService.getInfo(id);
+            		String prefix = WebInfoPath + "/music/" + song.getArtistName() + "/" + song.getAlbumName() + "/";//获取歌曲音频文件路径
             		String filePath = prefix + fileName;
             		try {
             			//将文件存储在硬盘上
@@ -207,7 +218,8 @@ public class UploadController {
 	@ResponseBody
 	public Boolean uploadSongImage(CommonsMultipartFile file, int id) {
 		String fileName = file.getOriginalFilename();
-		String prefix = "";//获取歌曲图片路径
+		Song song = songService.getInfo(id);
+		String prefix = WebInfoPath + "/image/song/" + song.getArtistName() + "/" + song.getAlbumName() + "/";;//获取歌曲图片路径
 		String filePath = prefix + fileName;
 		avatar_file = new File(filePath);
 		try {
@@ -223,9 +235,10 @@ public class UploadController {
 
 	@RequestMapping(value = "/uploadPlaylistImage", method = RequestMethod.GET)
 	@ResponseBody
-	public Boolean uploadPlaylistImage(CommonsMultipartFile file, int id) {
+	public Boolean uploadPlaylistImage(HttpSession session, CommonsMultipartFile file, int id) {
 		String fileName = file.getOriginalFilename();
-		String prefix = "";//获取歌曲图片路径
+		String userId = (String)session.getAttribute(UserConstant.USER_ID);
+		String prefix = WebInfoPath + "/image/user/" + userService.getInfo(userId).getName() + "/" + playlistService.getInfo(id).getName() + "/";//获取歌单图片路径
 		String filePath = prefix + fileName;
 		avatar_file = new File(filePath);
 		try {

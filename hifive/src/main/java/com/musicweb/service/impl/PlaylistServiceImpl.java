@@ -103,7 +103,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 		//新上传的歌单图片跟旧歌单图片不重名则删除文件夹中的图片文件
 		if(!image.equals(imageOld)) {
 			String classPath = this.getClass().getClassLoader().getResource("").getPath();
-			String WebInfoPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
+			String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 			String playlistImageFilePath = WebInfoPath + imageOld;
 			FileUtil.deleteFile(new File(playlistImageFilePath));
 		}
@@ -138,7 +138,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 	public boolean addSong(int playlistId, int songId) {
 		playlistDao.insertSong(playlistId, songId);
 		String classPath = this.getClass().getClassLoader().getResource("").getPath();
-		String WebInfoPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
+		String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 		
 		List<Song> songList;
 		//先判断缓存是否有目标数据
@@ -187,7 +187,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 		//若无，从数据库取出新增歌曲后的歌曲列表
 		if(object == null) {
 			String classPath = this.getClass().getClassLoader().getResource("").getPath();
-			String WebInfoPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
+			String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 			
 			songList = playlistDao.selectAllSongs(playlistId);
 			for(Song song: songList) {
@@ -228,7 +228,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 	public boolean addPlaylistToPlaylist(int fromId, int toId) {
 		playlistDao.insertPlaylistToPlaylist(fromId, toId);
 		String classPath = this.getClass().getClassLoader().getResource("").getPath();
-		String WebInfoPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
+		String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 		
 		List<Song> songListFrom;
 		//先判断缓存是否有被复制的歌单数据
@@ -286,7 +286,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 	public boolean addAlbumToPlaylist(int albumId, int playlistId) {
 		playlistDao.insertAlbumToPlaylist(albumId, playlistId);
 		String classPath = this.getClass().getClassLoader().getResource("").getPath();
-		String WebInfoPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
+		String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 
 		//先判断缓存是否有歌单的目标数据
 		List<Song> songList;
@@ -357,7 +357,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 		List<Song> songList;
 		if(object == null) {
 			String classPath = this.getClass().getClassLoader().getResource("").getPath();
-			String WebInfoPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
+			String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 
 			songList = playlistDao.selectAllSongs(playlistId);
 			for(Song song: songList) {

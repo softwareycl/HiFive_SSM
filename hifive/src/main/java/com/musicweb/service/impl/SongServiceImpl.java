@@ -180,7 +180,7 @@ public class SongServiceImpl implements SongService {
 			return false;
 		//拼接出歌曲文件夹路径，删除整个文件夹
 		String classPath = this.getClass().getClassLoader().getResource("").getPath();
-		String WebInfoPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
+		String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 		//删除歌曲图片
 		imagePath = WebInfoPath + song.getImage();;
 		FileUtil.deleteFile(new File(imagePath));
