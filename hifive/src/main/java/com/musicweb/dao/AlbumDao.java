@@ -21,12 +21,12 @@ public interface AlbumDao {
 	// 改
 	public int update(Album album);// 不更新歌曲
 
-	public int updateImage(int id, String image);
+	public int updateImage(@Param("id")int id, @Param("image")String image);
 	
-	public int updatePlayCount(int id, int playCount);
+	public int updatePlayCount(@Param("id")int id, @Param("playCount")int playCount);
 
 	// 查
-	public List<Album> selectByName(String name, int offset, int count);//按播放量排序
+	public List<Album> selectByName(@Param("name")String name, @Param("offset")int offset, @Param("count")int count);//按播放量排序
 	
 	public int selectCountByName(String name);
 

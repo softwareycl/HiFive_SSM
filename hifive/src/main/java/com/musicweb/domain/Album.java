@@ -14,6 +14,34 @@ public class Album {
 	private String image;
 	private Date releaseDate;
 
+	public Album(String name,Date realeaseDate,int region,int style,String intro,String image,int playCount,int artistId) {
+		this.name=name;
+		this.releaseDate=realeaseDate;
+		this.region=region;
+		this.style=style;
+		this.intro=intro;
+		this.image=image;
+		this.playCount=playCount;
+		this.artistId=artistId;
+	}
+	
+	public Album(int id,String name,Date realeaseDate,int region,int style,String intro,String image,int playCount,int artistId) {
+		this.id=id;;
+		this.name=name;
+		this.releaseDate=realeaseDate;
+		this.region=region;
+		this.style=style;
+		this.intro=intro;
+		this.image=image;
+		this.playCount=playCount;
+		this.artistId=artistId;
+		
+	}
+	
+	public Album() {
+		
+	}
+	
 	public int getId() {
 		return id;
 	}

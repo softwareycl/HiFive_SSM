@@ -37,10 +37,101 @@
 	<insert id="insert"
 			parameterType="com.musicweb.domain.Album">
 		INSERT INTO 
-			album(id,name,release_date,region,style,intro,image,play_count,artist_id)
+			album(name,release_date,region,style,intro,image,play_count,artist_id)
 		VALUES 
-			(#())
+			(#{name},#{releaseDate},#{region},#{style},#{intro},#{image},#{playCount},#{artistId})
 	</insert>
+	
+		<!--  delete   -->
+	<delete id="delete">
+		DELETE FROM
+			album
+		WHERE
+			id=#{id}
+	</delete>
+
+		<!--  update   -->
+	<update id="update">
+		UPDATE
+			album
+		SET
+			name=#{name},
+			release_date=#{releaseDate},
+			region=#{region},
+			style=#{style},
+			intro=#{intro},
+			play_count=#{playCount},
+			artist_id=#{artistId}
+		WHERE
+			id=#{id}
+	</update>
+	
+		<!--  updateImage   -->
+	<update id="updateImage">
+		UPDATE
+			album
+		SET
+			image=#{image}
+		WHERE
+			id=#{id}
+	</update>
+	
+		<!--  updatePlayCount   -->
+	<update id="updatePlayCount">
+		UPDATE
+			album
+		SET
+			play_count=#{playCount}
+		WHERE
+			id=#{id}
+	</update>
+
+		<!--  selectByName  -->
+	<select id="selectByName"
+			resultMap="AlbumMap">
+		SELECT
+			alb.id,
+			alb.name,
+			alb.artist_id,
+			alb.region,
+			alb.style,
+			alb.intro,
+			alb.play_count,
+			alb.release_date,
+			alb.image,
+			art.name artist_name
+		FROM (
+			SELECT
+				*
+			FROM
+				album
+			WHERE
+				name
+			LIKE
+				"%"#{name}"%"
+		)	as alb
+		LEFT JOIN 
+			artist as art
+		ON
+			alb.artist_id=art.id
+		ORDER BY 
+			alb.play_count 
+		DESC LIMIT 
+			#{offset}, #{count}
+	</select>
+	
+		<!--  selectCountByName  -->
+	<select id="selectCountByName"
+			resultType="INT">
+		SELECT
+			COUNT(*)
+		FROM
+			album
+		WHERE
+			name
+		LIKE
+			"%"#{name}"%"
+	</select>
 
 		<!--  select  -->
 	<select id="select"
@@ -128,8 +219,10 @@
 				alb.style=#{style}	
 			</if>
 		</where>
-		order by alb.play_count 
-		desc limit #{offset}, #{count}
+		ORDER BY 
+			alb.play_count 
+		DESC LIMIT 
+			#{offset}, #{count}
 	</select>
 	
 		<!-- select Count By Category -->
@@ -151,4 +244,57 @@
 		</where>
 	</select>
 	
+		<!--  selectLatest  -->
+	<select id="selectLatest"
+			resultMap="AlbumMap">
+		SELECT
+			alb.id,
+			alb.name,
+			alb.artist_id,
+			alb.region,
+			alb.style,
+			alb.intro,
+			alb.play_count,
+			alb.release_date,
+			alb.image,
+			art.name artist_name
+		FROM (
+			SELECT
+				*
+			FROM
+				album
+			ORDER BY 
+				release_date
+			DESC LIMIT 
+				0, #{count}
+		)	as alb
+		LEFT JOIN 
+			artist as art
+		ON
+			alb.artist_id=art.id
+	</select>
+	
+		<!--  selectSongCount  -->
+	<select id="selectSongCount"
+			resultType="INT">
+		SELECT
+			COUNT(*)
+		FROM
+			song
+		WHERE
+			album_id=#{id}
+	</select>
+
+	
+		<!--  selectImage  -->
+	<select id="selectImage"
+			resultType="String">
+		SELECT
+			image
+		FROM
+			song
+		WHERE
+			id=#{id}
+	</select>
+
 </mapper>
