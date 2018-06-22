@@ -188,6 +188,25 @@ public class ArtistController {
 	}
 	
 	/**
+	 * 设置歌手图片
+	 * @param id 歌手id
+	 * @param image 图片存储路径
+	 * @param session 获取管理员id
+	 * @return 操作状态
+	 */
+	@RequestMapping(value = "/setImage", method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean setImage(int id, String image, HttpSession session) {
+		Object object = session.getAttribute(UserConstant.ADMIN_ID);
+		if(object == null) {
+			return false;
+		}
+		return artistService.setImage(id, image);
+	}
+	
+	
+	
+	/**
 	 * 获取搜索结果的记录条数
 	 * @param name 搜索关键字
 	 * @return 记录数
