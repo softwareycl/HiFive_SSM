@@ -237,9 +237,8 @@ public class UploadController {
 	@ResponseBody
 	public Boolean uploadPlaylistImage(HttpSession session, CommonsMultipartFile file, int id) {
 		String fileName = file.getOriginalFilename();
-		Playlist playlist = playlistService.getInfo(id);
 		String userId = (String)session.getAttribute(UserConstant.USER_ID);
-		String prefix = WebInfoPath + "/image/user/" + playlist;//获取歌单图片路径
+		String prefix = WebInfoPath + "/image/user/" + userService.getInfo(userId).getName() + "/" + playlistService.getInfo(id).getName() + "/";//获取歌单图片路径
 		String filePath = prefix + fileName;
 		avatar_file = new File(filePath);
 		try {
