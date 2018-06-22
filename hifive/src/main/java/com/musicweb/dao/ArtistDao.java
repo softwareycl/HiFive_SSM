@@ -20,20 +20,20 @@ public interface ArtistDao {
 	// 改
 	public int update(Artist artist);
 
-	public int updateImage(int id, String image);
+	public int updateImage(@Param("id")int id,@Param("image") String image);
 	
-	public int updatePlayCount(int id, int playCount);
+	public int updatePlayCount(@Param("id")int id, @Param("playCount")int playCount);
 
 	// 查
 	public Artist select(int id);
 
-	public List<Artist> selectByName(String name, int offset, int count);//按播放量排序
+	public List<Artist> selectByName(@Param("name")String name, @Param("offset")int offset, @Param("count")int count);//按播放量排序
 	
 	public int selectCountByName(String name);
 
 	public List<Artist> selectByCategory(@Param("initial")String initial, @Param("region")int region, @Param("gender")int gender, @Param("offset")int offset, @Param("count")int count);//按播放量排序
 	
-	public int selectCountByCategory(String initial, int region, int gender);
+	public int selectCountByCategory(@Param("initial")String initial, @Param("region")int region, @Param("gender")int gender);
 	
 	public List<Song> selectAllSongs(int artistId);//按播放量排序
 	

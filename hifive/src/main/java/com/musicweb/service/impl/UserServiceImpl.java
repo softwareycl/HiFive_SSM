@@ -42,26 +42,33 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public int login(User user) {
-		// TODO Auto-generated method stub
+		String id = user.getId();
+		User userDB = cacheService.getAndCacheUserByUserID(id);
+		if(!checkUserExisted(id)) return -1;
+		if(!MD5Util.getMD5(user.getPwd()).equals(userDB.getPwd())) return -1;
 		return 0;
 	}
 
 	@Override
 	public boolean checkUserExisted(String id) {
-		// TODO Auto-generated method stub
-		return false;
+		id.trim();
+		User user = cacheService.getAndCacheUserByUserID(id);
+		return user == null;
 	}
 
 	@Override
 	public int getSecurityQuestion(String id) {
-		// TODO Auto-generated method stub
-		return 0;
+		id.trim();
+		User user = cacheService.getAndCacheUserByUserID(id);
+		return user.getSecurityQuestion();
 	}
 
 	@Override
 	public boolean checkSecurityAnswer(String id, String answer) {
-		// TODO Auto-generated method stub
-		return false;
+		answer.trim();
+		id.trim();
+		User user = cacheService.getAndCacheUserByUserID(id);
+		return user.getSecurityAnswer().equals(answer);
 	}
 
 	@Override
@@ -69,7 +76,6 @@ public class UserServiceImpl implements UserService {
 		pwd.trim();
 		id.trim();
 		User user = cacheService.getAndCacheUserByUserID(id);
-		if(user == null) return false;
 		String pwdEncoded = MD5Util.getMD5(pwd);
 		user.setPwd(pwdEncoded);
 		userDao.updatePassword(id, pwd);

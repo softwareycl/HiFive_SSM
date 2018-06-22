@@ -1,20 +1,256 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.musicweb.dao.ArtistDao">
+    	<!--  resultMap AlbumMap  -->
+    <resultMap id="AlbumMap" type="com.musicweb.domain.Album">
+    	<id column="id" property="id" jdbcType="NUMERIC"/>
+    	<result column="name" property="name" jdbcType="VARCHAR"/>
+    	<result column="artist_id" property="artistId" jdbcType="NUMERIC"/>
+    	<result column="region" property="region" jdbcType="TINYINT"/>
+    	<result column="style" property="style" jdbcType="TINYINT"/>
+    	<result column="intro" property="intro" jdbcType="VARCHAR"/>
+    	<result column="play_count" property="playCount" jdbcType="NUMERIC"/>
+    	<result column="release_date" property="releaseDate" jdbcType="DATE"/>
+    	<result column="image" property="image" jdbcType="VARCHAR"/>
+    	<result column="artist_name" property="artistName" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    	<!--  resultMap SongMap  -->
+    <resultMap id="SongMap" type="com.musicweb.domain.Song">
+    	<id column="id" property="id" jdbcType="NUMERIC"/>
+    	<result column="name" property="name" jdbcType="VARCHAR"/>
+    	<result column="album_id" property="albumId" jdbcType="NUMERIC"/>
+    	<result column="album_name" property="albumName" jdbcType="VARCHAR"/>
+    	<result column="artist_id" property="artistId" jdbcType="NUMERIC"/>
+    	<result column="artist_name" property="artistName" jdbcType="VARCHAR"/>
+    	<result column="play_count" property="playCount" jdbcType="NUMERIC"/>
+    	<result column="lyrics_path" property="lyricsPath" jdbcType="VARCHAR"/>
+    	<result column="image" property="image" jdbcType="VARCHAR"/>
+    	<result column="release_date" property="releaseDate" jdbcType="DATE"/>
+    	<result column="language" property="language" jdbcType="VARCHAR"/>
+    	<result column="style" property="style" jdbcType="NUMERIC"/>
+    	<result column="file_path" property="filePath" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+        	<!--  resultMap ArtistMap  -->
+    <resultMap id="ArtistMap" type="com.musicweb.domain.Artist">
+    	<id column="id" property="id" jdbcType="NUMERIC"/>
+    	<result column="name" property="name" jdbcType="VARCHAR"/>
+    	<result column="initial" property="initial" jdbcType="NUMERIC"/>
+    	<result column="image" property="image" jdbcType="VARCHAR"/>
+    	<result column="region" property="region" jdbcType="TINYINT"/>
+    	<result column="country" property="country" jdbcType="VARCHAR"/>
+    	<result column="play_count" property="playCount" jdbcType="NUMERIC"/>
+    	<result column="gender" property="gender" jdbcType="TINYINT"/>
+    	<result column="birthplace" property="birthplace" jdbcType="VARCHAR"/>
+    	<result column="occupation" property="occupation" jdbcType="VARCHAR"/>
+    	<result column="birthday" property="birthday" jdbcType="DATE"/>
+    	<result column="representative" property="representative" jdbcType="VARCHAR"/>
+    </resultMap>
 
-	<!-- select -->
+		<!--  insert   -->
+	<insert id="insert"
+			parameterType="com.musicweb.domain.Artist">
+		INSERT INTO 
+			artist(name,gender,birthplace,occupation,birthday,representative,region,initial,play_count,image,intro)
+		VALUES 
+			(#{name},#{gender},#{birthplace},#{occupation},#{birthday},#{representative},#{region},#{initial},#{playCount},#{image},#{intro})
+	</insert>
+	
+		<!--  delete   -->
+	<delete id="delete">
+		DELETE
+		FROM
+			artist
+		WHERE
+			id=#{id}
+	</delete>
+	
+		<!--  update   -->
+	<update id="update">
+		UPDATE
+			artist
+		SET
+			name=#{name},
+			gender=#{gender},
+			birthplace=#{birthplace},
+			occupation=#{occupation},
+			representative=#{representative},
+			play_count=#{playCount},
+			initial=#{initial},
+			intro=#{intro}
+		WHERE
+			id=#{id}
+	</update>
+	
+		<!--  updateImage   -->
+	<update id="updateImage">
+		UPDATE
+			artist
+		SET
+			image=#{image}
+		WHERE
+			id=#{id}
+	</update>
+
+		<!--  updatePlayCount   -->
+	<update id="updatePlayCount">
+		UPDATE
+			artist
+		SET
+			play_count=#{playCount}
+		WHERE
+			id=#{id}
+	</update>
+
+		<!-- select -->
 	<select id="select"
-	resultType="com.musicweb.domain.Artist">
-	select * from artist 
-	where id=#{id}
+			resultType="com.musicweb.domain.Artist">
+		select * from artist 
+		where id=#{id}
 	</select>
 
-	<!-- selectByCategory -->
-	<select id="selectByCategory"
-	resultType="java.util.List">
-	select * from Artist 
-	where initial=#{initial} and region=#{region} and gender=#{gender}
-	order by play_count 
-	desc limit #{offset}, #{count}
+		<!--  selectByName  -->
+	<select id="selectByName"
+			resultType="com.musicweb.domain.Artist">
+		SELECT
+			*
+		FROM
+			artist
+		WHERE
+			name
+		LIKE
+			"%"#{name}"%"
+		ORDER BY 
+			play_count 
+		DESC LIMIT 
+			#{offset}, #{count}
 	</select>
+	
+		<!--  selectCountByName  -->
+	<select id="selectCountByName"
+			resultType="INT">
+		SELECT
+			COUNT(*)
+		FROM
+			artist
+		WHERE
+			name
+		LIKE
+			"%"#{name}"%"
+	</select>
+
+		<!-- selectByCategory -->
+	<select id="selectByCategory"
+			resultType="com.musicweb.domain.Artist">
+		SELECT
+			*
+		FROM 
+			artist
+		<where>
+			<if test="region != null and region != 0">
+			AND
+				region=#{region}	
+			</if>
+			<if test="initial != null and initial != '@'.toString()">
+			AND
+				initial=#{initial}	
+			</if>
+			<if test="gender != null">
+			AND
+				initial=#{initial}	
+			</if>
+		</where>
+		ORDER BY 
+			play_count 
+		DESC LIMIT 
+			#{offset}, #{count}
+	</select>
+	
+		<!-- select Count By Category -->
+	<select id="selectCountByCategory"
+			resultType="INT">
+		SELECT
+			COUNT(*)
+		FROM 
+			artist
+		<where>
+			<if test="region != null and region != 0">
+			AND
+				region=#{region}	
+			</if>
+			<if test="initial != null and initial != '@'.toString()">
+			AND
+				initial=#{initial}	
+			</if>
+			<if test="gender != null">
+			AND
+				initial=#{initial}	
+			</if>
+		</where>
+	</select>
+	
+		<!-- selectAllSongs -->
+	<select id="selectAllSongs"
+			resultMap="SongMap">
+		SELECT
+			s.id,
+			s.name,
+			s.album_id,
+			alb.name album_name,
+			s.artist_id,
+			art.name artist_name,
+			s.play_count,
+			s.lyrics_path,
+			s.image,
+			s.release_date,
+			s.language,
+			s.style,
+			s.file_path
+		FROM (
+			SELECT
+				*
+			FROM
+				artist
+			WHERE
+				id=#{artistId}
+		) as art
+		LEFT JOIN
+			album as alb
+		ON
+			alb.artist_id=art.id
+		LEFT JOIN
+			song as s
+		ON
+			s.artist_id=art.id
+	</select>
+	
+		<!-- selectAllAlbums -->
+	<select id="selectAllAlbums"
+			resultMap="AlbumMap">
+		SELECT
+			alb.id,
+			alb.name,
+			alb.artist_id,
+			alb.region,
+			alb.style,
+			alb.intro,
+			alb.play_count,
+			alb.release_date,
+			alb.image,
+			art.name artist_name
+		FROM (
+			SELECT
+				*
+			FROM
+				artist
+			WHERE
+				id=#{artistId}
+		) as art
+		LEFT JOIN
+			album as alb
+		ON
+			alb.artist_id=art.id
+	</select>
+	
 </mapper>
