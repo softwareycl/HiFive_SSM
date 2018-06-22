@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.musicweb.dao.SongDao">
+
+    	<!--  resultMap SongMap  -->
+    <resultMap id="SongMap" type="com.musicweb.domain.Song">
+    	<id column="id" property="id" jdbcType="NUMERIC"/>
+    	<result column="name" property="name" jdbcType="VARCHAR"/>
+    	<result column="album_id" property="albumId" jdbcType="NUMERIC"/>
+    	<result column="album_name" property="albumName" jdbcType="VARCHAR"/>
+    	<result column="artist_id" property="artistId" jdbcType="NUMERIC"/>
+    	<result column="artist_name" property="artistName" jdbcType="VARCHAR"/>
+    	<result column="play_count" property="playCount" jdbcType="NUMERIC"/>
+    	<result column="lyrics_path" property="lyricsPath" jdbcType="VARCHAR"/>
+    	<result column="image" property="image" jdbcType="VARCHAR"/>
+    	<result column="release_date" property="releaseDate" jdbcType="DATE"/>
+    	<result column="language" property="language" jdbcType="VARCHAR"/>
+    	<result column="style" property="style" jdbcType="NUMERIC"/>
+    	<result column="file_path" property="filePath" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    		<!--  insert   -->
+	<insert id="insert"
+			parameterType="com.musicweb.domain.Song">
+		INSERT INTO 
+			song 
+				(name, artist_id, album_id, language, style, release_date, lyrics_path, image, play_count, file_path) 
+		VALUES 
+			(#{name},#{artistId},#{albumId},#{language},#{style},#{releaseDate},#{lyricsPath},#{image},#{playCount},#{filePath})
+	</insert>
+	
+			<!--  updateImage   -->
+	<update id="updateImage">
+		UPDATE
+			song
+		SET
+			image=#{image}
+		WHERE
+			id=#{id}
+	</update>
+	
+			<!--  updateLyricsPath   -->
+	<update id="updateLyricsPath">
+		UPDATE
+			song
+		SET
+			lyrics_path=#{lyricsPath}
+		WHERE
+			id=#{id}
+	</update>
+	
+			<!--  updateFilePath   -->
+	<update id="updateFilePath">
+		UPDATE
+			song
+		SET
+			file_path=#{filePath}
+		WHERE
+			id=#{id}
+	</update>
+	
+		<!--  updatePlayCount   -->
+	<update id="updatePlayCount">
+		UPDATE
+			song
+		SET
+			play_count=#{playCount}
+		WHERE
+			id=#{id}
+	</update>
+	
+			<!--  update   -->
+	<update id="update">
+		UPDATE
+			song
+		SET
+			name=#{name},
+			artist_id=#{artistId},
+			album_id=#{albumId},
+			language=#{language},
+			style=#{style},
+			release_date=#{releaseDate}
+		WHERE
+			id=#{id}
+	</update>
+	
+	
+		<!--  delete   -->
+	<delete id="delete">
+		DELETE
+		FROM
+			song
+		WHERE
+			id=#{id}
+	</delete>
+	
+		<!-- Select By Id -->
+	<select id="selectById"
+			resultMap="SongMap">
+		SELECT
+			s.id,
+			s.name,
+			s.album_id,
+			alb.name album_name,
+			s.artist_id,
+			art.name artist_name,
+			s.play_count,
+			s.lyrics_path,
+			s.image,
+			s.release_date,
+			s.language,
+			s.style,
+			s.file_path
+		FROM 
+			song as s
+		LEFT JOIN 
+			album as alb
+		ON
+			s.album_id=alb.id
+		LEFT JOIN 
+			artist as art
+		ON
+			alb.artist_id=art.id
+		WHERE
+			s.id=#{id}
+	</select>
+	
+		<!--  selectByName  -->
+	<select id="selectByName"
+			resultMap="SongMap">
+		SELECT
+			s.id,
+			s.name,
+			s.album_id,
+			alb.name album_name,
+			s.artist_id,
+			art.name artist_name,
+			s.play_count,
+			s.lyrics_path,
+			s.image,
+			s.release_date,
+			s.language,
+			s.style,
+			s.file_path
+		FROM (
+			SELECT
+				*
+			FROM
+				song
+			WHERE
+				name
+			LIKE
+				"%"#{name}"%"
+		)	as s
+		LEFT JOIN 
+			album as alb
+		ON
+			alb.id=s.album_id
+		LEFT JOIN 
+			artist as art
+		ON
+			art.id=s.artist_id
+		ORDER BY 
+			s.play_count 
+		DESC LIMIT 
+			#{offset}, #{count}
+	</select>
+	
+		<!--  selectCountByName  -->
+	<select id="selectCountByName"
+			resultType="INT">
+		SELECT
+			COUNT(*)
+		FROM
+			song
+		WHERE
+			name
+		LIKE
+			"%"#{name}"%"
+	</select>
+	
+		<!--  selectLatest  -->
+	<select id="selectLatest"
+			resultMap="SongMap">
+		SELECT
+			s.id,
+			s.name,
+			s.album_id,
+			alb.name album_name,
+			s.artist_id,
+			art.name artist_name,
+			s.play_count,
+			s.lyrics_path,
+			s.image,
+			s.release_date,
+			s.language,
+			s.style,
+			s.file_path
+		FROM (
+			SELECT
+				*
+			FROM
+				song
+			<where>
+				<if test="region !=null and region != 0">
+				AND
+					song.region=#{region}	
+				</if>
+			</where>
+			ORDER BY 
+				song.release_date
+			DESC 
+			LIMIT 
+				#{count}
+		)	as s
+		LEFT JOIN 
+			album as alb
+		ON
+			alb.id=s.album_id
+		LEFT JOIN 
+			artist as art
+		ON
+			alb.artist_id=art.id
+		ORDER BY 
+			s.play_count
+		DESC 
+	</select>
+	
+		<!--  selectHittest  -->
+	<select id="selectHittest"
+			resultMap="SongMap">
+		SELECT
+			s.id,
+			s.name,
+			s.album_id,
+			alb.name album_name,
+			s.artist_id,
+			art.name artist_name,
+			s.play_count,
+			s.lyrics_path,
+			s.image,
+			s.release_date,
+			s.language,
+			s.style,
+			s.file_path
+		FROM (
+			SELECT
+				*
+			FROM
+				song
+			ORDER BY 
+				song.play_count
+			DESC 
+			LIMIT 
+				#{count}
+		)	as s
+		LEFT JOIN 
+			album as alb
+		ON
+			alb.id=s.album_id
+		LEFT JOIN 
+			artist as art
+		ON
+			alb.artist_id=art.id
+	</select>
+	
+		<!--  selectRankByRegion  -->
+	<select id="selectRankByRegion"
+			resultMap="SongMap">
+		SELECT
+			s.id,
+			s.name,
+			s.album_id,
+			alb.name album_name,
+			s.artist_id,
+			art.name artist_name,
+			s.play_count,
+			s.lyrics_path,
+			s.image,
+			s.release_date,
+			s.language,
+			s.style,
+			s.file_path
+		FROM (
+			SELECT
+				*
+			FROM
+				song
+			<where>
+				<if test="region !=null and region != 0">
+				AND
+					song.region=#{region}	
+				</if>
+			</where>
+			ORDER BY 
+				song.play_count
+			DESC 
+			LIMIT 
+				#{count}
+		)	as s
+		LEFT JOIN 
+			album as alb
+		ON
+			alb.id=s.album_id
+		LEFT JOIN 
+			artist as art
+		ON
+			alb.artist_id=art.id
+	</select>
+	
+</mapper>
