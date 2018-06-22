@@ -58,9 +58,6 @@ public class AlbumServiceImpl implements AlbumService {
 	private String redisSongPlayCount = "song_play_count";
 	private String redisAlbumPlayCount = "album_play_count";
 	
-	private String classPath = this.getClass().getClassLoader().getResource("").getPath();
-	private String WebInfPath = classPath.substring(0, classPath.indexOf("/classes"));
-	
 	@Override
 	public List<Album> search(String name, int page) {
 		int offset = DisplayConstant.SEARCH_PAGE_ALBUM_SIZE * (page - 1);
@@ -86,6 +83,8 @@ public class AlbumServiceImpl implements AlbumService {
 			Album album = cacheService.getAndCacheAlbumByAlbumID(id);
 			List<Song> songList = albumDao.selectAllSongs(id);
 			if(songList != null) {
+				String classPath = this.getClass().getClassLoader().getResource("").getPath();
+				String WebInfPath = classPath.substring(0, classPath.indexOf("/classes"));
 				for(Song song: songList) {
 					if(song.getImage() == null) {
 						song.setImage(album.getImage());
@@ -156,6 +155,9 @@ public class AlbumServiceImpl implements AlbumService {
 	@Override
 	public boolean remove(int id) {
 		Album album = cacheService.getAndCacheAlbumByAlbumID(id);
+		
+		String classPath = this.getClass().getClassLoader().getResource("").getPath();
+		String WebInfPath = classPath.substring(0, classPath.indexOf("/classes"));
 		
 		//删除专辑图片
 		String albumImageFilePath = WebInfPath + album.getImage();
@@ -306,6 +308,8 @@ public class AlbumServiceImpl implements AlbumService {
 	@Override
 	public boolean setImage(int id, String image) {
 		Album album = cacheService.getAndCacheAlbumByAlbumID(id);
+		String classPath = this.getClass().getClassLoader().getResource("").getPath();
+		String WebInfPath = classPath.substring(0, classPath.indexOf("/classes"));
 		//删除旧图片
 		FileUtil.deleteFile(new File(WebInfPath + album.getImage()));
 		album.setImage(image);
