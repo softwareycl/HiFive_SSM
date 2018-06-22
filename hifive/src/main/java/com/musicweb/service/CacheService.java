@@ -15,5 +15,5 @@ public interface CacheService {
 
 	Playlist getAndCachePlaylistByPlaylistID(int playlistID);
 	
-	User getAndCacheUserByUserID(int userID);
+	User getAndCacheUserByUserID(String userID);
 }

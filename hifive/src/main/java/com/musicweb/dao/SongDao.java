@@ -37,7 +37,7 @@ public interface SongDao {
 	
 	public int selectCountByName(String name);
 	
-	public List<Song> selectLatest(int count);//先按发行时间排序选择count首歌曲再按播放量排序
+	public List<Song> selectLatest(int region, int count);//先按发行时间排序选择count首歌曲再按播放量排序
 	
 	public List<Song> selectHittest(int count);//按播放量排序
 	

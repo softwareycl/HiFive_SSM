@@ -143,6 +143,8 @@ public class PlaylistController {
 		for(Playlist playlist: playlistList) {
 			SimplePlaylistView view = new SimplePlaylistView();
 			BeanUtils.copyProperties(playlist, view);
+			int count = playlistService.getSongList(playlist.getId()).size();
+			view.setCount(count);
 			viewList.add(view);
 		}
 		return viewList;

@@ -29,6 +29,4 @@ public interface AlbumService {
 
 	int getSearchCount(String name);
 	
-	boolean refreshPlayCount(int id, int playCount);
-	
 }

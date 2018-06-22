@@ -1,5 +1,8 @@
 package com.musicweb.service.impl;
 
+import java.io.File;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -14,6 +17,7 @@ import com.musicweb.dao.UserDao;
 import com.musicweb.domain.Playlist;
 import com.musicweb.domain.Song;
 import com.musicweb.service.PlaylistService;
+import com.musicweb.util.FileUtil;
 import com.musicweb.util.RedisUtil;
 import com.musicweb.service.CacheService;
 
@@ -57,7 +61,19 @@ public class PlaylistServiceImpl implements PlaylistService {
 	@Override
 	public boolean setImage(int id, String image) {
 		image.trim();
+		String imageOld = cacheService.getAndCachePlaylistByPlaylistID(id).getImage();
+		//该数据库
 		playlistDao.updateImage(id, image);
+		//改缓存
+		redisUtil.hdel(PLAYLIST, String.valueOf(id));
+		cacheService.getAndCachePlaylistByPlaylistID(id);
+		redisUtil.del(USER_PLAYLISTS);
+		if(!image.equals(imageOld)) {
+			String classPath = this.getClass().getClassLoader().getResource("").getPath();
+			String WebInfoPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
+			String playlistImageFilePath = WebInfoPath + imageOld;
+			FileUtil.deleteFile(new File(playlistImageFilePath));
+		}
 		return true;
 	}
 
@@ -68,7 +84,6 @@ public class PlaylistServiceImpl implements PlaylistService {
 		playlist.setIntro(playlist.getIntro().trim());
 		
 		playlistDao.update(playlist);
-		redisUtil.hdel(PLAYLIST, String.valueOf(playlist.getId()));
 		redisUtil.hset(PLAYLIST, String.valueOf(playlist.getId()), playlist, TimeConstant.A_DAY);
 		redisUtil.del(USER_PLAYLISTS);
 		return true;
@@ -78,7 +93,6 @@ public class PlaylistServiceImpl implements PlaylistService {
 	public boolean addSong(int playlistId, int songId) {
 		playlistDao.insertSong(playlistId, songId);
 		List<Song> songList = playlistDao.selectAllSongs(playlistId);
-		redisUtil.hdel(PLAYLIST_SONGS, String.valueOf(playlistId));
 		redisUtil.hset(PLAYLIST_SONGS, String.valueOf(playlistId), songList, TimeConstant.A_DAY);
 		return true;
 	}
@@ -97,7 +111,6 @@ public class PlaylistServiceImpl implements PlaylistService {
 	public boolean addPlaylistToPlaylist(int fromId, int toId) {
 		playlistDao.insertPlaylistToPlaylist(fromId, toId);
 		List<Song> songList = playlistDao.selectAllSongs(toId);
-		redisUtil.hdel(PLAYLIST_SONGS, String.valueOf(toId));
 		redisUtil.hset(PLAYLIST_SONGS, String.valueOf(toId), songList, TimeConstant.A_DAY);
 		return true;
 	}
@@ -106,7 +119,6 @@ public class PlaylistServiceImpl implements PlaylistService {
 	public boolean addAlbumToPlaylist(int albumId, int playlistId) {
 		playlistDao.insertAlbumToPlaylist(albumId, playlistId);
 		List<Song> songList = playlistDao.selectAllSongs(playlistId);
-		redisUtil.hdel(PLAYLIST_SONGS, String.valueOf(playlistId));
 		redisUtil.hset(PLAYLIST_SONGS, String.valueOf(playlistId), songList, TimeConstant.A_DAY);
 		return true;
 	}
@@ -124,14 +136,27 @@ public class PlaylistServiceImpl implements PlaylistService {
 	@Override
 	public List<Song> getSongList(int playlistId) {
 		Object object = redisUtil.hget(PLAYLIST_SONGS, String.valueOf(playlistId));
+		List<Song> songList;
 		if(object == null) {
-			List<Song> songList = playlistDao.selectAllSongs(playlistId);
+			songList = playlistDao.selectAllSongs(playlistId);
+			for(Song song: songList) {
+				if(song.getImage() == null) {
+					String albumImage = cacheService.getAndCacheAlbumByAlbumID(songList.get(0).getAlbumId()).getImage();
+					song.setImage(albumImage);
+				}
+			}
 			if(songList != null) {
 				redisUtil.hset(PLAYLIST_SONGS, String.valueOf(playlistId), songList, TimeConstant.A_DAY);
 			}
-			return songList;
 		}
-		return (List<Song>) object;
+		else songList = (List<Song>) object;
+		Collections.sort(songList, new Comparator<Song>() {
+			@Override
+			public int compare(Song o1, Song o2) {
+				return o2.getPlayCount() - o1.getPlayCount();
+			}
+		});
+		return songList;
 	}
 	
 	@SuppressWarnings("unchecked")

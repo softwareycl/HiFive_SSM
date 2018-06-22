@@ -1,32 +1,36 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.musicweb.dao.UserDao">
-			<!--  resultMap SongMap  -->
-    <resultMap id="SongMap" type="com.musicweb.domain.Song">
-    	<id column="id" property="id" jdbcType="NUMERIC"/>
-    	<result column="name" property="name" jdbcType="VARCHAR"/>
-    	<result column="artist_id" property="artist_id" jdbcType="NUMERIC"/>
-    	<result column="album_id" property="album_id" jdbcType="NUMERIC"/>
-    	<result column="language" property="language" jdbcType="VARCHAR"/>
-    	<result column="style" property="style" jdbcType="TINYINT"/>
-    	<result column="release_date" property="release_date" jdbcType="DATE"/>
-    	<result column="lyrics_path" property="lyrics_path" jdbcType="VARCHAR"/>
-    	<result column="image" property="image" jdbcType="VARCHAR"/>
-    	<result column="play_count" property="play_count" jdbcType="NUMERIC"/>
-    	<result column="file_path" property="file_path" jdbcType="VARCHAR"/>
-    </resultMap>
-    
-    		<!--  resultMap AlbumMap  -->
+
+    	<!--  resultMap AlbumMap  -->
     <resultMap id="AlbumMap" type="com.musicweb.domain.Album">
     	<id column="id" property="id" jdbcType="NUMERIC"/>
     	<result column="name" property="name" jdbcType="VARCHAR"/>
-    	<result column="artist_id" property="artist_id" jdbcType="NUMERIC"/>
+    	<result column="artist_id" property="artistId" jdbcType="NUMERIC"/>
     	<result column="region" property="region" jdbcType="TINYINT"/>
     	<result column="style" property="style" jdbcType="TINYINT"/>
     	<result column="intro" property="intro" jdbcType="VARCHAR"/>
-    	<result column="play_count" property="play_count" jdbcType="NUMERIC"/>
-    	<result column="release_date" property="release_date" jdbcType="DATE"/>
+    	<result column="play_count" property="playCount" jdbcType="NUMERIC"/>
+    	<result column="release_date" property="releaseDate" jdbcType="DATE"/>
     	<result column="image" property="image" jdbcType="VARCHAR"/>
+    	<result column="artist_name" property="artistName" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    	<!--  resultMap SongMap  -->
+    <resultMap id="SongMap" type="com.musicweb.domain.Song">
+    	<id column="id" property="id" jdbcType="NUMERIC"/>
+    	<result column="name" property="name" jdbcType="VARCHAR"/>
+    	<result column="album_id" property="albumId" jdbcType="NUMERIC"/>
+    	<result column="album_name" property="albumName" jdbcType="VARCHAR"/>
+    	<result column="artist_id" property="artistId" jdbcType="NUMERIC"/>
+    	<result column="artist_name" property="artistName" jdbcType="VARCHAR"/>
+    	<result column="play_count" property="playCount" jdbcType="NUMERIC"/>
+    	<result column="lyrics_path" property="lyricsPath" jdbcType="VARCHAR"/>
+    	<result column="image" property="image" jdbcType="VARCHAR"/>
+    	<result column="release_date" property="releaseDate" jdbcType="DATE"/>
+    	<result column="language" property="language" jdbcType="VARCHAR"/>
+    	<result column="style" property="style" jdbcType="NUMERIC"/>
+    	<result column="file_path" property="filePath" jdbcType="VARCHAR"/>
     </resultMap>
     
     		<!--  resultMap PlaylistMap  -->
@@ -109,7 +113,40 @@
             <!--  select Like Songs  -->
     <select id="selectLikeSongs"
     		resultMap="SongMap">
-    		SELECT * FROM user_song WHERE user_id=#{userId}
+    		SELECT
+    			s.id id,
+    			s.name,
+    			s.album_id,
+    			alb.name album_name,
+    			art.id artist_id,
+    			art.name artist_name,
+    			s.play_count,
+    			s.lyrics_path,
+    			s.image,
+    			s.release_date,
+    			s.language,
+    			s.style,
+    			s.file_path
+    		FROM (
+    			SELECT
+    				*
+    			FROM
+    				user_song
+    			WHERE
+    				user_id=#{user_id}
+    		)	as us
+    		LEFT JOIN
+    			song as s
+    		ON
+    			us.song_id=s.id
+    		LEFT JOIN
+    			album as alb
+    		ON
+    			s.album_id=alb.id
+    		LEFT JOIN
+    			artist as art
+    		ON
+    			alb.artist_id=art.id
     </select>
     
             <!--  select security question  -->
@@ -127,7 +164,33 @@
             <!--  select Like Albums  -->
     <select id="selectLikeAlbums"
    			resultMap="AlbumMap">
-    		SELECT * FROM user_album WHERE user_id=#{userId}
+    		SELECT
+    			alb.id id,
+    			alb.name,
+    			alb.intro,
+    			art.id artist_id,
+    			art.name artist_name,
+    			alb.play_count,
+    			alb.image,
+    			alb.release_date,
+    			alb.region,
+    			alb.style
+    		FROM (
+    			SELECT
+    				*
+    			FROM
+    				user_album
+    			WHERE
+    				user_id=#{user_id}
+    		)	as ua
+    		LEFT JOIN
+    			album as alb
+    		ON
+    			ua.album_id=alb.id
+    		LEFT JOIN
+    			artist as art
+    		ON
+    			alb.artist_id=art.id
     </select>
     
             <!--  select Playlists  -->

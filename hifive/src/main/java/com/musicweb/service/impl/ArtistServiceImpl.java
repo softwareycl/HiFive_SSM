@@ -100,6 +100,9 @@ public class ArtistServiceImpl implements ArtistService {
 		artist.setRepresentative(artist.getRepresentative().trim());
 		artist.setOccupation(artist.getOccupation().trim());
 		
+		redisUtil.del("artist_filter");
+		redisUtil.del("artist_filter_count");
+		
 		int id = artistDao.insert(artist);
 		redisUtil.hset("artist", String.valueOf(id), artist, TimeConstant.A_DAY);
 		return id;
@@ -203,18 +206,18 @@ public class ArtistServiceImpl implements ArtistService {
 				album.setArtistName(artist.getName());
 				int albumId = album.getId();
 				redisUtil.hdel("album", String.valueOf(albumId));
-				redisUtil.hset("album", String.valueOf(albumId), album);
+				redisUtil.hset("album", String.valueOf(albumId), album, TimeConstant.A_DAY);
 				redisUtil.hdel("album_songs", String.valueOf(albumId));
 				List<Song> songsInAlbumList = albumDao.selectAllSongs(albumId);
 				for(Song song: songsInAlbumList){
 					song.setArtistName(artist.getName());
 					redisUtil.hdel("song", String.valueOf(song.getId()));
-					redisUtil.hset("song",String.valueOf(song.getId()),song);
+					redisUtil.hset("song",String.valueOf(song.getId()),song, TimeConstant.A_DAY);
 				}
-				redisUtil.hset("album_songs", String.valueOf(albumId), songsInAlbumList);
+				redisUtil.hset("album_songs", String.valueOf(albumId), songsInAlbumList, TimeConstant.A_DAY);
  			}
 			redisUtil.hdel("artist_albums", String.valueOf(artist.getId()));
-			redisUtil.hset("artist_albums", String.valueOf(artist.getId()), albumList);
+			redisUtil.hset("artist_albums", String.valueOf(artist.getId()), albumList, TimeConstant.A_DAY);
 		}
 		
 		artistDao.update(artist);
@@ -226,15 +229,18 @@ public class ArtistServiceImpl implements ArtistService {
 	@Override
 	public boolean setImage(int id, String image) {
 		image.trim();
+		String imageOld = cacheService.getAndCacheSingerBySingerID(id).getImage();
 		artistDao.updateImage(id, image);
 		redisUtil.hdel("artist", String.valueOf(id));
 		cacheService.getAndCacheSingerBySingerID(id);
 		redisUtil.del("artist_filter");
 		redisUtil.del("artist_filter_count");
-		String classPath = this.getClass().getClassLoader().getResource("").getPath();
-		String WebInfoPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
-		String artistImageFilePath = WebInfoPath + image;
-		FileUtil.deleteFile(new File(artistImageFilePath));
+		if(!image.equals(imageOld)) {
+			String classPath = this.getClass().getClassLoader().getResource("").getPath();
+			String WebInfoPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
+			String artistImageFilePath = WebInfoPath + imageOld;
+			FileUtil.deleteFile(new File(artistImageFilePath));
+		}
 		return true;
 	}
 
@@ -269,7 +275,7 @@ public class ArtistServiceImpl implements ArtistService {
 				if(song.getImage() == null) song.setImage(album.getImage());
 				songList.add(song);
 			}
-			redisUtil.hset("album_songs", String.valueOf(album.getId()), songsInAlbumList);
+			redisUtil.hset("album_songs", String.valueOf(album.getId()), songsInAlbumList, TimeConstant.A_DAY);
 		}
 		Collections.sort(songList, new Comparator<Song>() {
 			@Override
