@@ -27,7 +27,6 @@ import com.musicweb.util.RedisUtil;
 /**
  * 
  * @author brian
- * @date 2018-06-21
  */
 @Service("songService")
 public class SongServiceImpl implements SongService {
@@ -185,13 +184,10 @@ public class SongServiceImpl implements SongService {
 		FileUtil.deleteFolder(new File(imagePath));
 		//删除歌词文件
 		lyricsPath = song.getLyricsPath();
-		imagePath = song.getImage();
-		//删除歌曲文件，歌词文件，歌曲图片（如果有的话）
-		if(imagePath != null) {//不是专辑图片则需要删除歌曲图片文件。这样判断正确吗？在获取歌曲的时候不要填入专辑图片
-			DeleteFileUtil.delete(imagePath);
-		}
-		DeleteFileUtil.delete(songPath);
-		DeleteFileUtil.delete(lyricsPath);
+		FileUtil.deleteFile(new File(lyricsPath));
+		//删除歌曲音频文件
+		songPath = song.getFilePath();
+		FileUtil.deleteFile(new File(songPath));
 		//删除数据库中的歌曲记录
 		songDao.delete(id);
 		//删除相关缓存

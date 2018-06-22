@@ -24,7 +24,6 @@ import com.musicweb.view.SimpleSongView;
 /**
  * PlaylistContoller
  * @author likexin
- * @Date 2018.6.21
  * PlaylistContoller负责接收前端的有关歌单模块的请求，并调用Service层的服务，业务完成后返回结果给前端
  * 有关歌单的所有操作需要在用户登录状态下进行, 所有方法都要通过session获取用户ID以判断用户是否是出于登录状态
  */

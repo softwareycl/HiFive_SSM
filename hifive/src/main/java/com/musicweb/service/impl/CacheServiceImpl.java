@@ -75,7 +75,7 @@ public class CacheServiceImpl implements CacheService {
 			}
 			Object playCount = redisUtil.hget("song_play_count", String.valueOf(songID));
 			if(playCount == null) {
-				redisUtil.hset("song_play_count", String.valueOf(songID), ((Song) song).getPlayCount());
+				redisUtil.hset("song_play_count", String.valueOf(songID), (Song)song.getPlayCount());
 			}
 		}
 		return (Song)song;

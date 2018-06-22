@@ -35,8 +35,8 @@ import com.musicweb.view.PicAttr;
 
 /**
  * 负责文件上传，包括用户头像，歌曲图片，专辑封面，歌手图片，歌曲音频文件，歌词文件
+ * 
  * @author brian
- * @date 2018-06-22
  */
 @Controller
 @RequestMapping("/upload")
@@ -129,9 +129,9 @@ public class UploadController {
 
 	/**
 	 * 管理员上传歌词文件
-	 * @param request: 包含歌词文件的http request
-	 * @param id
-	 * @return: 布尔变量，表示成功或失败
+	 * @param request 包含歌词文件的http request
+	 * @param id 歌曲id
+	 * @return 布尔变量，表示成功或失败
 	 */
 	@RequestMapping(value = "/uploadLyrics", method = RequestMethod.GET)
 	@ResponseBody
@@ -166,9 +166,9 @@ public class UploadController {
 
 	/**
 	 * 管理员上传歌曲音频文件
-	 * @param request: 包含歌词文件的http request
+	 * @param request 包含歌词文件的http request
 	 * @param id
-	 * @return: 布尔变量，表示成功或失败
+	 * @return 布尔变量，表示成功或失败
 	 */
 	@RequestMapping(value = "/uploadSongFile", method = RequestMethod.GET)
 	@ResponseBody
@@ -239,7 +239,7 @@ public class UploadController {
 	
 	/**
 	 * 裁剪头像
-	 * @param imagePath: 
+	 * @param imagePath 
 	 * @throws IOException
 	 */
 	private void cut(String imagePath) throws IOException {
@@ -272,7 +272,7 @@ public class UploadController {
             /*
              *
              * <p>
-             * iis:读取源。true:只向前搜索
+             * iis读取源。true只向前搜索
              * </p>
              * .将它标记为 ‘只向前搜索’。
              *
