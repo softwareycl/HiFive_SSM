@@ -17,15 +17,16 @@ import com.musicweb.dao.UserDao;
 import com.musicweb.domain.Playlist;
 import com.musicweb.domain.Song;
 import com.musicweb.service.PlaylistService;
+import com.musicweb.util.DurationUtil;
 import com.musicweb.util.FileUtil;
 import com.musicweb.util.RedisUtil;
 import com.musicweb.service.CacheService;
 
 /**
- * PlaylistService
+ * PlaylistServiceImpl
  * @author likexin
  * @Date 2018.6.21
- * PlaylistService完成有关歌单模块的业务逻辑实现
+ * PlaylistServiceImpl完成有关歌单模块的业务逻辑实现
  * 接受PlaylistController的调用，通过对Dao层各类方法的调用，完成业务逻辑
  * 操作完成后，将操作结果返回给PlaylistController
  * Service层针对业务数据增加各类缓存操作
@@ -136,6 +137,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 	@Override
 	public boolean addSong(int playlistId, int songId) {
 		playlistDao.insertSong(playlistId, songId);
+		String classPath = this.getClass().getClassLoader().getResource("").getPath();
+		String WebInfoPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
+		
 		List<Song> songList;
 		//先判断缓存是否有目标数据
 		Object object = redisUtil.hget(PLAYLIST_SONGS, String.valueOf(playlistId));
@@ -145,15 +149,22 @@ public class PlaylistServiceImpl implements PlaylistService {
 			for(Song song: songList) {
 				if(song.getImage() == null)
 					song.setImage(cacheService.getAndCacheAlbumByAlbumID(song.getAlbumId()).getImage());
+				//设置歌曲时长
+				String musicFilePath = WebInfoPath + song.getFilePath();
+				song.setDuration(DurationUtil.computeDuration(musicFilePath));
 			}
 		}
 		//若有，根据新增歌曲ID取出歌曲信息，并添加到歌单的钢琴曲列表
 		else {
 			songList = (List<Song>) object;
 			Song song = cacheService.getAndCacheSongBySongID(songId);
-			if(song.getImage() == null)
+			if(song.getImage() == null) {
 				song.setImage(cacheService.getAndCacheAlbumByAlbumID(song.getAlbumId()).getImage());
-			songList.add(song);
+				//设置歌曲时长
+				String musicFilePath = WebInfoPath + song.getFilePath();
+				song.setDuration(DurationUtil.computeDuration(musicFilePath));
+			}
+				songList.add(song);
 		}
 		//修改歌单_歌曲列表缓存
 		redisUtil.hset(PLAYLIST_SONGS, String.valueOf(playlistId), songList, TimeConstant.A_DAY);
@@ -175,10 +186,16 @@ public class PlaylistServiceImpl implements PlaylistService {
 		Object object = redisUtil.hget(PLAYLIST_SONGS, String.valueOf(playlistId));
 		//若无，从数据库取出新增歌曲后的歌曲列表
 		if(object == null) {
+			String classPath = this.getClass().getClassLoader().getResource("").getPath();
+			String WebInfoPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
+			
 			songList = playlistDao.selectAllSongs(playlistId);
 			for(Song song: songList) {
 				if(song.getImage() == null)
 					song.setImage(cacheService.getAndCacheAlbumByAlbumID(song.getAlbumId()).getImage());
+				//设置歌曲时长
+				String musicFilePath = WebInfoPath + song.getFilePath();
+				song.setDuration(DurationUtil.computeDuration(musicFilePath));
 			}
 		}
 		//若有，根据新增歌曲ID取出歌曲信息，并添加到歌单的歌曲列表
@@ -210,6 +227,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 	@Override
 	public boolean addPlaylistToPlaylist(int fromId, int toId) {
 		playlistDao.insertPlaylistToPlaylist(fromId, toId);
+		String classPath = this.getClass().getClassLoader().getResource("").getPath();
+		String WebInfoPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
+		
 		List<Song> songListFrom;
 		//先判断缓存是否有被复制的歌单数据
 		Object objectFrom = redisUtil.hget(PLAYLIST_SONGS, String.valueOf(fromId));
@@ -219,6 +239,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 			for(Song song: songListFrom) {
 				if(song.getImage() == null)
 					song.setImage(cacheService.getAndCacheAlbumByAlbumID(song.getAlbumId()).getImage());
+				//设置歌曲时长
+				String musicFilePath = WebInfoPath + song.getFilePath();
+				song.setDuration(DurationUtil.computeDuration(musicFilePath));
 			}
 		}
 		//若有，从缓存取出
@@ -234,6 +257,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 			for(Song song: songListTo) {
 				if(song.getImage() == null)
 					song.setImage(cacheService.getAndCacheAlbumByAlbumID(song.getAlbumId()).getImage());
+				//设置歌曲时长
+				String musicFilePath = WebInfoPath + song.getFilePath();
+				song.setDuration(DurationUtil.computeDuration(musicFilePath));
 			}
 		}
 		//若有，从缓存取出
@@ -259,7 +285,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 	@Override
 	public boolean addAlbumToPlaylist(int albumId, int playlistId) {
 		playlistDao.insertAlbumToPlaylist(albumId, playlistId);
-		
+		String classPath = this.getClass().getClassLoader().getResource("").getPath();
+		String WebInfoPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
+
 		//先判断缓存是否有歌单的目标数据
 		List<Song> songList;
 		Object object = redisUtil.hget(PLAYLIST_SONGS, String.valueOf(playlistId));
@@ -269,6 +297,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 			for(Song song: songList) {
 				if(song.getImage() == null)
 					song.setImage(cacheService.getAndCacheAlbumByAlbumID(song.getAlbumId()).getImage());
+				//设置歌曲时长
+				String musicFilePath = WebInfoPath + song.getFilePath();
+				song.setDuration(DurationUtil.computeDuration(musicFilePath));
 			}
 		}
 		else songList = (List<Song>) object;
@@ -281,6 +312,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 			for(Song song: songInAlbum) {
 				if(song.getImage() == null)
 					song.setImage(cacheService.getAndCacheAlbumByAlbumID(song.getAlbumId()).getImage());
+				//设置歌曲时长
+				String musicFilePath = WebInfoPath + song.getFilePath();
+				song.setDuration(DurationUtil.computeDuration(musicFilePath));
 			}
 			//存入缓存
 			redisUtil.hset("album_songs", String.valueOf(albumId), songInAlbum);
@@ -322,12 +356,18 @@ public class PlaylistServiceImpl implements PlaylistService {
 		Object object = redisUtil.hget(PLAYLIST_SONGS, String.valueOf(playlistId));
 		List<Song> songList;
 		if(object == null) {
+			String classPath = this.getClass().getClassLoader().getResource("").getPath();
+			String WebInfoPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
+
 			songList = playlistDao.selectAllSongs(playlistId);
 			for(Song song: songList) {
 				if(song.getImage() == null) {
 					String albumImage = cacheService.getAndCacheAlbumByAlbumID(songList.get(0).getAlbumId()).getImage();
 					song.setImage(albumImage);
 				}
+				//设置歌曲时长
+				String musicFilePath = WebInfoPath + song.getFilePath();
+				song.setDuration(DurationUtil.computeDuration(musicFilePath));
 			}
 			if(songList != null) {
 				redisUtil.hset(PLAYLIST_SONGS, String.valueOf(playlistId), songList, TimeConstant.A_DAY);

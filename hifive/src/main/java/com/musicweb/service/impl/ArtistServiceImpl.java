@@ -20,13 +20,22 @@ import com.musicweb.domain.Artist;
 import com.musicweb.domain.Song;
 import com.musicweb.service.ArtistService;
 import com.musicweb.util.RedisUtil;
-
+import com.musicweb.util.DurationUtil;
 import com.musicweb.util.FileUtil;
 
 import com.musicweb.constant.DisplayConstant;
 import com.musicweb.constant.TimeConstant;
 import com.musicweb.service.impl.CacheServiceImpl;
 
+/**
+ * ArtistServiceImpl
+ * @author likexin
+ * @Date 2018.6.21
+ * ArtistServiceImpl完成有关歌手模块的业务逻辑实现
+ * 接受ArtistController的调用，通过对Dao层各类方法的调用，完成业务逻辑
+ * 操作完成后，将操作结果返回给ArtistController
+ * Service层针对业务数据增加各类缓存操作
+ */
 @Service("artistService")
 public class ArtistServiceImpl implements ArtistService {
 
@@ -45,11 +54,19 @@ public class ArtistServiceImpl implements ArtistService {
 	@Resource
 	private CacheServiceImpl cacheService;
 
+	/**
+	 * 以名字为关键字搜索歌手
+	 * @param name 歌手名字
+	 * @param page 目标页码
+	 * @return List<Artist> 歌手列表
+	 */
 	@Override
 	public List<Artist> search(String name, int page) {
 		name.trim();
 		int num = DisplayConstant.SEARCH_PAGE_SINGER_SIZE;
+		// (page - 1) * num 为起始位置， num 为偏移量
 		List<Artist> artistList = artistDao.selectByName(name, (page - 1) * num, num);
+		//得到的歌手列表根据歌手的playCount进行降序排序
 		Collections.sort(artistList, new Comparator<Artist>() {
 			@Override
 			public int compare(Artist o1, Artist o2) {
@@ -59,10 +76,19 @@ public class ArtistServiceImpl implements ArtistService {
 		return artistList;
 	}
 
+	/**
+	 * 根据首字母，地区，性别类别筛选歌手
+	 * @param initial 首字母
+	 * @param region 地区
+	 * @param gender 性别
+	 * @param page 目标页码
+	 * @return 歌手列表
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Artist> lookUpArtistsByCatagory(String initial, int region, int gender, int page) {
 		initial.trim();
+		//先查缓存
 		Object object = redisUtil.hget("artist_filter", initial + "_" + region + "_" + gender + "_" + page);
 		List<Artist> artistList;
 		if (object == null) {
@@ -74,6 +100,7 @@ public class ArtistServiceImpl implements ArtistService {
 			}
 		}
 		else artistList = (List<Artist>) object;
+		//得到的歌手列表根据歌手的playCount进行降序排序
 		Collections.sort(artistList, new Comparator<Artist>() {
 			@Override
 			public int compare(Artist o1, Artist o2) {
@@ -83,14 +110,25 @@ public class ArtistServiceImpl implements ArtistService {
 		return artistList;
 	}
 
+	/**
+	 * 显示歌手详情
+	 * @param id 歌手id
+	 * @return 歌手
+	 */
 	@Override
 	public Artist getInfo(int id) {
 		Artist artist = cacheService.getAndCacheSingerBySingerID(id);
 		return artist;
 	}
 
+	/**
+	 * 添加歌手
+	 * @param artist 歌手
+	 * @return 新增的歌手ID
+	 */
 	@Override
 	public int add(Artist artist) {
+		//对String值属性进行预处理
 		artist.setBirthplace(artist.getBirthplace().trim());
 		artist.setCountry(artist.getCountry().trim());
 		artist.setImage(artist.getImage().trim());
@@ -108,6 +146,11 @@ public class ArtistServiceImpl implements ArtistService {
 		return id;
 	}
 
+	/**
+	 * 删除歌手
+	 * @param id 歌手ID
+	 * @return 操作状态
+	 */
 	@Override
 	public boolean remove(int id) {
 		//删缓存
@@ -177,6 +220,11 @@ public class ArtistServiceImpl implements ArtistService {
 		return true;
 	}
 
+	/**
+	 * 修改歌手信息
+	 * @param artist 歌手
+	 * @return 操作状态
+	 */
 	@Override
 	public boolean modify(Artist artist) {
 		artist.setBirthplace(artist.getBirthplace().trim());
@@ -201,27 +249,32 @@ public class ArtistServiceImpl implements ArtistService {
 			redisUtil.del("user_albums");
 			redisUtil.del("playlist_songs");
 			
+			String classPath = this.getClass().getClassLoader().getResource("").getPath();
+			String WebInfoPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
+			
+			//更新缓存
 			List<Album> albumList = lookUpAlbumsByArtist(artist.getId());
 			for(Album album:albumList) {
 				album.setArtistName(artist.getName());
 				int albumId = album.getId();
-				redisUtil.hdel("album", String.valueOf(albumId));
 				redisUtil.hset("album", String.valueOf(albumId), album, TimeConstant.A_DAY);
-				redisUtil.hdel("album_songs", String.valueOf(albumId));
 				List<Song> songsInAlbumList = albumDao.selectAllSongs(albumId);
 				for(Song song: songsInAlbumList){
 					song.setArtistName(artist.getName());
-					redisUtil.hdel("song", String.valueOf(song.getId()));
+					//设置歌曲图片
+					if(song.getImage() == null)
+						song.setImage(cacheService.getAndCacheAlbumByAlbumID(albumId).getImage());
+					//设置歌曲时长
+					String musicFilePath = WebInfoPath + song.getFilePath();
+					song.setDuration(DurationUtil.computeDuration(musicFilePath));
 					redisUtil.hset("song",String.valueOf(song.getId()),song, TimeConstant.A_DAY);
 				}
 				redisUtil.hset("album_songs", String.valueOf(albumId), songsInAlbumList, TimeConstant.A_DAY);
  			}
-			redisUtil.hdel("artist_albums", String.valueOf(artist.getId()));
 			redisUtil.hset("artist_albums", String.valueOf(artist.getId()), albumList, TimeConstant.A_DAY);
 		}
 		
 		artistDao.update(artist);
-		redisUtil.hdel("artist", String.valueOf(artist.getId()));
 		redisUtil.hset("artist", String.valueOf(artist.getId()), artist, TimeConstant.A_DAY);
 		return true;
 	}
@@ -244,6 +297,11 @@ public class ArtistServiceImpl implements ArtistService {
 		return true;
 	}
 
+	/**
+	 * 查看歌手的歌曲列表
+	 * @param id
+	 * @return 歌曲列表
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Song> lookUpSongsByArtist(int id) {
@@ -261,6 +319,9 @@ public class ArtistServiceImpl implements ArtistService {
 		}
 		else albumList = (List<Album>) object;
 		
+		String classPath = this.getClass().getClassLoader().getResource("").getPath();
+		String WebInfoPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
+		
 		//对每张专辑先查缓存
 		ArrayList<Song> songList = new ArrayList<Song>();
 		for (Album album : albumList) {
@@ -273,10 +334,14 @@ public class ArtistServiceImpl implements ArtistService {
 	        //每张专辑的歌曲都加到要返回的歌曲列表里
 			for (Song song : songsInAlbumList) {
 				if(song.getImage() == null) song.setImage(album.getImage());
+				//设置歌曲时长
+				String musicFilePath = WebInfoPath + song.getFilePath();
+				song.setDuration(DurationUtil.computeDuration(musicFilePath));
 				songList.add(song);
 			}
 			redisUtil.hset("album_songs", String.valueOf(album.getId()), songsInAlbumList, TimeConstant.A_DAY);
 		}
+		//歌曲列表按播放量排序
 		Collections.sort(songList, new Comparator<Song>() {
 			@Override
 			public int compare(Song o1, Song o2) {
@@ -287,6 +352,11 @@ public class ArtistServiceImpl implements ArtistService {
 		return songList;
 	}
 
+	/**
+	 * 查看歌手的所有专辑
+	 * @param id 歌手id
+	 * @return 专辑列表
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Album> lookUpAlbumsByArtist(int id) {
@@ -299,6 +369,7 @@ public class ArtistServiceImpl implements ArtistService {
 			}
 		}
 		else albumList = (List<Album>) object;
+		//专辑列表按播放量排序
 		Collections.sort(albumList, new Comparator<Album>() {
 			@Override
 			public int compare(Album o1, Album o2) {
@@ -308,6 +379,11 @@ public class ArtistServiceImpl implements ArtistService {
 		return albumList;
 	}
 
+	/**
+	 * 获取搜索结果的记录条数
+	 * @param name 搜索关键字
+	 * @return 记录数
+	 */
 	@Override
 	public int getSearchCount(String name) {
 		name.trim();
