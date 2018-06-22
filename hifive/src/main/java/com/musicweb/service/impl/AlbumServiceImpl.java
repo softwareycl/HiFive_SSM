@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.musicweb.service.AlbumService;
 import com.musicweb.service.CacheService;
+import com.musicweb.util.DurationUtil;
 import com.musicweb.util.FileUtil;
 import com.musicweb.util.RedisUtil;
 import com.musicweb.constant.DisplayConstant;
@@ -46,7 +47,6 @@ public class AlbumServiceImpl implements AlbumService {
 	private String redisAlbumSongs = "album_songs";
 	private String redisSong = "song";
 	private String redisAlbum = "album";
-	private String redisPlaylist = "playlist";
 	private String redisArtistAlbums = "artist_albums";
 	private String redisUserAlbums = "user_albums";
 	private String redisUserSongs = "user_songs";
@@ -57,6 +57,9 @@ public class AlbumServiceImpl implements AlbumService {
 	private String redisNewAlbum = "new_album";
 	private String redisSongPlayCount = "song_play_count";
 	private String redisAlbumPlayCount = "album_play_count";
+	
+	private String classPath = this.getClass().getClassLoader().getResource("").getPath();
+	private String WebInfPath = classPath.substring(0, classPath.indexOf("/classes"));
 	
 	@Override
 	public List<Album> search(String name, int page) {
@@ -80,9 +83,15 @@ public class AlbumServiceImpl implements AlbumService {
 		String redisKey = String.valueOf(id);
 		Object object = redisUtil.hget(redisAlbumSongs, redisKey);
 		if(object == null) {
+			Album album = cacheService.getAndCacheAlbumByAlbumID(id);
 			List<Song> songList = albumDao.selectAllSongs(id);
 			if(songList != null) {
 				for(Song song: songList) {
+					if(song.getImage() == null) {
+						song.setImage(album.getImage());
+					}
+					String musicFilePath = WebInfPath + song.getFilePath();
+					song.setDuration(DurationUtil.computeDuration(musicFilePath));
 					redisUtil.hset(redisSong, String.valueOf(song.getId()), song, TimeConstant.A_DAY);
 				}
 			}
@@ -104,7 +113,10 @@ public class AlbumServiceImpl implements AlbumService {
 			int count = DisplayConstant.ALBUM_PAGE_ALBUM_SIZE;
 			List<Album> albumList = albumDao.selectByCategory(region, style, offset, count);
 			if(albumList == null) return null;
- 
+			for(Album album: albumList) {
+				redisUtil.hset(redisAlbum, String.valueOf(album.getId()), album);
+			}
+			
 			redisUtil.hset(redisAlbumFilter, redisKey, albumList, TimeConstant.A_DAY);
 			return albumList;
 		} else {
@@ -115,13 +127,14 @@ public class AlbumServiceImpl implements AlbumService {
 	}
 
 	@Override
-	public int add(Album album) {
-		int id = albumDao.insert(album);
+	public int add(Album album) {	
 		//补全album属性
-		album.setId(id);
 		album.setPlayCount(0);
 		Artist artist = cacheService.getAndCacheSingerBySingerID(album.getArtistId());
 		album.setArtistName(artist.getName());
+		//插入数据库
+		int id = albumDao.insert(album);
+		album.setId(id);
 		//放入缓存
 		redisUtil.hset(redisAlbum, String.valueOf(id), album, TimeConstant.A_DAY);
 		//更改相关缓存
@@ -144,8 +157,6 @@ public class AlbumServiceImpl implements AlbumService {
 	public boolean remove(int id) {
 		Album album = cacheService.getAndCacheAlbumByAlbumID(id);
 		
-		String classPath = this.getClass().getClassLoader().getResource("").getPath();
-		String WebInfPath = classPath.substring(0, classPath.indexOf(FileUtil.FILE_SEPARATOR + "classes"));
 		//删除专辑图片
 		String albumImageFilePath = WebInfPath + album.getImage();
 		FileUtil.deleteFile(new File(albumImageFilePath));
@@ -177,12 +188,9 @@ public class AlbumServiceImpl implements AlbumService {
 	
 				//删除数据库歌单中的歌
 				playlistDao.deleteSongInAll(songId);
-				//删除缓存歌单中的歌
-				redisUtil.del(redisPlaylistSongs);
+				
 				//删除数据库用户喜欢的歌
 				userDao.deleteLikeSongInAll(songId);
-				//删除数据库用户喜欢的歌
-				redisUtil.del(redisUserSongs);
 			}
 		}
 		
@@ -206,6 +214,11 @@ public class AlbumServiceImpl implements AlbumService {
 		userDao.deleteLikeAlbumInAll(id);
 		//删除缓存用户喜欢的专辑
 		redisUtil.del(redisUserAlbums);
+		//删除数据库用户喜欢的歌
+		redisUtil.del(redisUserSongs);
+		
+		//删除缓存歌单中的歌
+		redisUtil.del(redisPlaylistSongs);
 		
 		//删除专辑歌曲关系缓存
 		redisUtil.hdel(redisAlbumSongs, String.valueOf(id));
@@ -217,20 +230,127 @@ public class AlbumServiceImpl implements AlbumService {
 
 	@Override
 	public boolean modify(Album album) {
-		// TODO Auto-generated method stub
-		return false;
+		Album oldAlbum = cacheService.getAndCacheAlbumByAlbumID(album.getId());
+		
+		//删除新专辑
+		redisUtil.del(redisNewAlbum);
+		//删除缓存用户喜欢的专辑
+		redisUtil.del(redisUserAlbums);
+		
+		if(!oldAlbum.getName().equals(album.getName())) {
+			//删除筛选专辑缓存
+			redisUtil.del(redisAlbumFilter);
+			redisUtil.del(redisAlbumFilterCount);
+			
+			//删除排行榜、新歌
+			redisUtil.del(redisRank);
+			redisUtil.del(redisNewSong);
+			
+			//删除新专辑
+			redisUtil.del(redisNewAlbum);
+			//删除缓存用户喜欢的专辑
+			redisUtil.del(redisUserAlbums);
+			
+			//删除数据库用户喜欢的歌
+			redisUtil.del(redisUserSongs);
+			//删除缓存歌单中的歌
+			redisUtil.del(redisPlaylistSongs);
+			
+			//修改对应song和album_songs缓存
+			List<Song> songList = getSongList(album.getId());
+			for(Song song: songList) {
+				song.setAlbumName(album.getName());
+				redisUtil.hset(redisSong, String.valueOf(song.getId()), song, TimeConstant.A_DAY);
+			}
+			redisUtil.hset(redisAlbumSongs, String.valueOf(album.getId()), songList, TimeConstant.A_DAY);
+		}
+		
+		//补全album属性
+		album.setPlayCount(oldAlbum.getPlayCount());
+		album.setImage(oldAlbum.getImage());
+		Artist artist = cacheService.getAndCacheSingerBySingerID(album.getArtistId());
+		album.setArtistName(artist.getName());
+		//插入数据库
+		int id = albumDao.update(album);
+		//放入缓存
+		redisUtil.hset(redisAlbum, String.valueOf(id), album, TimeConstant.A_DAY);
+		
+		//删除筛选专辑缓存
+		redisUtil.del(redisAlbumFilter);
+		redisUtil.del(redisAlbumFilterCount);
+		
+		//删除排行榜、新歌
+		redisUtil.del(redisRank);
+		redisUtil.del(redisNewSong);
+		
+		//删除新专辑
+		redisUtil.del(redisNewAlbum);
+		//删除缓存用户喜欢的专辑
+		redisUtil.del(redisUserAlbums);
+		
+		//删除数据库用户喜欢的歌
+		redisUtil.del(redisUserSongs);
+		//删除缓存歌单中的歌
+		redisUtil.del(redisPlaylistSongs);
+		
+		//修改对应song和album_songs缓存
+		List<Song> songList = getSongList(album.getId());
+		for(Song song: songList) {
+			redisUtil.hdel(redisSong, String.valueOf(song.getId()));
+		}
+		redisUtil.hdel(redisAlbumSongs, String.valueOf(album.getId()));
+		
+		return true;
 	}
 
 	@Override
 	public boolean setImage(int id, String image) {
-		// TODO Auto-generated method stub
+		Album album = cacheService.getAndCacheAlbumByAlbumID(id);
+		//删除旧图片
+		FileUtil.deleteFile(new File(WebInfPath + album.getImage()));
+		album.setImage(image);
+		//更新数据库
+		albumDao.updateImage(id, image);
+		redisUtil.hset(redisAlbum, String.valueOf(id), album);
+		//删除对应artist_albums缓存
+		redisUtil.hdel(redisArtistAlbums, String.valueOf(album.getArtistId()));
+		
+		//删除筛选专辑缓存
+		redisUtil.del(redisAlbumFilter);
+		redisUtil.del(redisAlbumFilterCount);
+		
+		//删除排行榜、新歌
+		redisUtil.del(redisRank);
+		redisUtil.del(redisNewSong);
+		
+		//删除数据库用户喜欢的歌
+		redisUtil.del(redisUserSongs);
+		//删除缓存歌单中的歌
+		redisUtil.del(redisPlaylistSongs);
+		
+		//修改对应song和album_songs缓存
+		List<Song> songList = getSongList(album.getId());
+		for(Song song: songList) {
+			song.setAlbumName(album.getName());
+			redisUtil.hset(redisSong, String.valueOf(song.getId()), song, TimeConstant.A_DAY);
+		}
+		redisUtil.hset(redisAlbumSongs, String.valueOf(album.getId()), songList, TimeConstant.A_DAY);
+				
+		
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Album> lookUpNewAlbums(int region) {
-		// TODO Auto-generated method stub
-		return null;
+		Object object = redisUtil.hget(redisNewAlbum, String.valueOf(region));
+		if(object == null) {
+			List<Album> albumList = albumDao.selectLatest(DisplayConstant.HOME_PAGE_NEW_ALBUM_SIZE);
+			redisUtil.hset(redisNewAlbum, String.valueOf(region), albumList);
+			return albumList;
+		} else {
+			return (List<Album>)object;
+		}
 	}
 
 	@Override

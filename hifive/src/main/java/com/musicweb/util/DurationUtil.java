@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.musicweb.util;
 
 import java.io.File;
@@ -9,10 +6,9 @@ import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.mp3.MP3AudioHeader;
 import org.jaudiotagger.audio.mp3.MP3File;
 
-import com.musicweb.service.impl.SongServiceImpl;
-
 /**
  * 获得歌曲音频文件时长工具类
+ * 
  * @author brian
  *
  */
@@ -20,8 +16,9 @@ public class DurationUtil {
 	
 	/**
 	 * 获取指定音频文件的时长
-	 * @param filePath：音频文件的绝对路径
-	 * @return：表示时长的字符串，失败则返回null
+	 * 
+	 * @param filePath 音频文件的绝对路径
+	 * @return 表示时长的字符串，失败则返回null
 	 */
 	public static String computeDuration(String filePath) {
 		File file = new File(filePath);
