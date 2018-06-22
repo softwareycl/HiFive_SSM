@@ -390,6 +390,13 @@ public class ArtistServiceImpl implements ArtistService {
 		return artistDao.selectCountByName(name);
 	}
 
+	/**
+	 * 获取筛选后的歌手数目
+	 * @param initial 首字母
+	 * @param region 地区
+	 * @param gender 性别
+	 * @return 歌手数目
+	 */
 	@Override
 	public int getFilterCount(String initial, int region, int gender) {
 		initial.trim();
