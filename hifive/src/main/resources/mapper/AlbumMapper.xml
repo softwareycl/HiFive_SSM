@@ -210,11 +210,11 @@
 		ON
 			alb.artist_id=art.id
 		<where>
-			<if test="region !=null">
+			<if test="region !=null and region != 0">
 			AND
 				alb.region=#{region}	
 			</if>
-			<if test="style !=null">
+			<if test="style !=null and style != 0">
 			AND
 				alb.style=#{style}	
 			</if>
@@ -233,11 +233,11 @@
 		FROM 
 			album as alb
 		<where>
-			<if test="region !=null">
+			<if test="region !=null and region != 0">
 			AND
 				alb.region=#{region}	
 			</if>
-			<if test="style !=null">
+			<if test="style !=null and style != 0">
 			AND
 				alb.style=#{style}	
 			</if>
@@ -284,7 +284,6 @@
 		WHERE
 			album_id=#{id}
 	</select>
-
 	
 		<!--  selectImage  -->
 	<select id="selectImage"
