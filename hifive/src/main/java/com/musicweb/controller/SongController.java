@@ -18,7 +18,9 @@ import com.musicweb.view.SongView;
 
 /**
  * 歌曲模块控制器类
+ * 
  * @author brian
+ * 
  */
 @Controller
 @RequestMapping("/song")
@@ -54,6 +56,7 @@ public class SongController {
 	
 	/**
 	 * 用户或管理员得到歌曲搜索结果的数目
+	 * 
 	 * @param name 输入的歌曲名称，或歌曲名称的一部分
 	 * @return 歌曲搜索结果的数目
 	 */
@@ -66,6 +69,7 @@ public class SongController {
 	
 	/**
 	 * 用户查看歌曲排行榜
+	 * 
 	 * @param type 排行榜类型
 	 * @param isAll 排行榜的位置
 	 * @return 歌曲列表
@@ -88,6 +92,7 @@ public class SongController {
 	
 	/**
 	 * 用户或管理员查看歌曲详情
+	 * 
 	 * @param id 歌曲id
 	 * @return 歌曲详情
 	 */
@@ -105,6 +110,7 @@ public class SongController {
 	
 	/**
 	 * 用户播放歌曲，后台增加该歌曲播放量
+	 * 
 	 * @param id 歌曲id
 	 */
 	@RequestMapping(value = "/play", method = RequestMethod.GET)
@@ -115,6 +121,7 @@ public class SongController {
 	
 	/**
 	 * 管理员添加歌曲
+	 * 
 	 * @param songView 将被添加的歌曲
 	 * @return 新添加的歌曲id
 	 */
@@ -129,6 +136,7 @@ public class SongController {
 	
 	/**
 	 * 管理员删除歌曲
+	 * 
 	 * @param songId 将被删除的歌曲id
 	 * @return 布尔值，表示成功或失败
 	 */
@@ -141,6 +149,7 @@ public class SongController {
 	
 	/**
 	 * 管理员编辑歌曲
+	 * 
 	 * @param songView 所修改的歌曲内容
 	 * @return 布尔值，表示成功或失败
 	 */
@@ -155,6 +164,7 @@ public class SongController {
 	
 	/**
 	 * 用户查看新歌首发
+	 * 
 	 * @param region 地区
 	 * @return 歌曲列表
 	 */

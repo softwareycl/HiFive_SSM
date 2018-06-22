@@ -23,6 +23,7 @@ import com.musicweb.domain.Song;
 import com.musicweb.service.SongService;
 
 /**
+ * 歌曲下载模块控制器类
  * 
  * @author brian
  *
@@ -36,10 +37,11 @@ public class DownloadController {
 	
 	/**
 	 * 下载歌曲音频文件
-	 * @param request: http request，用于获取浏览器类型
-	 * @param response: http response，用户返回文件输出流
-	 * @param id: 所要下载的歌曲id
-	 * @return: 布尔值，表示成功或失败
+	 * 
+	 * @param request http request，用于获取浏览器类型
+	 * @param response http response，用户返回文件输出流
+	 * @param id 所要下载的歌曲id
+	 * @return 布尔值，表示成功或失败
 	 */
 	@RequestMapping(value = "/downloadSong", method = RequestMethod.GET)
 	@ResponseBody

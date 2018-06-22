@@ -25,8 +25,10 @@ import com.musicweb.util.FileUtil;
 import com.musicweb.util.RedisUtil;
 
 /**
+ * 歌曲模块业务逻辑实现类
  * 
  * @author brian
+ * 
  */
 @Service("songService")
 public class SongServiceImpl implements SongService {

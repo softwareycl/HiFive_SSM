@@ -4,6 +4,12 @@ import java.util.List;
 
 import com.musicweb.domain.Song;
 
+/**
+ * 歌曲模块业务逻辑接口
+ * 
+ * @author brian
+ *
+ */
 public interface SongService {
 	/**
 	 * 搜索歌曲

@@ -129,6 +129,7 @@ public class UploadController {
 
 	/**
 	 * 管理员上传歌词文件
+	 * 
 	 * @param request 包含歌词文件的http request
 	 * @param id 歌曲id
 	 * @return 布尔变量，表示成功或失败
@@ -166,6 +167,7 @@ public class UploadController {
 
 	/**
 	 * 管理员上传歌曲音频文件
+	 * 
 	 * @param request 包含歌词文件的http request
 	 * @param id
 	 * @return 布尔变量，表示成功或失败
@@ -239,6 +241,7 @@ public class UploadController {
 	
 	/**
 	 * 裁剪头像
+	 * 
 	 * @param imagePath 
 	 * @throws IOException
 	 */
