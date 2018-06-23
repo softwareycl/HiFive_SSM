@@ -279,6 +279,12 @@ public class ArtistServiceImpl implements ArtistService {
 		return true;
 	}
 
+	/**
+	 * 设置歌手图片
+	 * @param id 歌手id
+	 * @param image 图片路径
+	 * @return 操作状态
+	 */
 	@Override
 	public boolean setImage(int id, String image) {
 		image.trim();

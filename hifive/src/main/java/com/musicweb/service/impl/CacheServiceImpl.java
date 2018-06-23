@@ -120,6 +120,4 @@ public class CacheServiceImpl implements CacheService {
 		}
 		return (User)object;
 	}
-
-
 }
