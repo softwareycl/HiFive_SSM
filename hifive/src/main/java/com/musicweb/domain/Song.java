@@ -199,4 +199,12 @@ public class Song {
 		this.region=region;
 	}
 	
+	@Override
+	public String toString() {
+		return "Song [id=" + id + ", name=" + name + ", albumId=" + albumId + ", albumName=" + albumName + ", artistId="
+				+ artistId + ", artistName=" + artistName + ", playCount=" + playCount + ", lyricsPath=" + lyricsPath
+				+ ", image=" + image + ", language=" + language + ", style=" + style + ", releaseDate=" + releaseDate
+				+ ", filePath=" + filePath + ", duration=" + duration + ", region=" + region + "]";
+	}
+	
 }

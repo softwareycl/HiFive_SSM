@@ -2,7 +2,9 @@ package com.musicweb.util;
 
 import java.io.File;
 
+import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.audio.mp3.MP3AudioHeader;
 import org.jaudiotagger.audio.mp3.MP3File;
 
@@ -23,8 +25,10 @@ public class DurationUtil {
 	public static String computeDuration(String filePath) {
 		File file = new File(filePath);
 		try {
-			MP3File f = (MP3File)AudioFileIO.read(file);
-			MP3AudioHeader audioHeader = (MP3AudioHeader)f.getAudioHeader();
+			AudioFile f = AudioFileIO.read(file);
+			AudioHeader audioHeader = f.getAudioHeader();
+//			MP3File f = (MP3File)AudioFileIO.read(file);
+//			MP3AudioHeader audioHeader = (MP3AudioHeader)f.getAudioHeader();
 			System.out.println(audioHeader.getTrackLength());
 			int len = audioHeader.getTrackLength();//以秒为单位
 			//时长格式为03: 23
@@ -42,7 +46,7 @@ public class DurationUtil {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println(DurationUtil.computeDuration("/home/brian/eclipse/eclipse-workspace/MusicWeb/src/main/webapp/WEB-INF/music/Alan Walker/Faded/Faded.mp3"));
+		System.out.println(DurationUtil.computeDuration("/home/brian/下载/音乐数据库/music/Taylor Swift/1989/Welcome To New York.m4a"));
 	}
 
 }

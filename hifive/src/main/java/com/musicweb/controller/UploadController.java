@@ -100,6 +100,25 @@ public class UploadController {
 		return true;
 	}
 
+	@RequestMapping(value = "/uploadPlaylistImage", method = RequestMethod.GET)
+	@ResponseBody
+	public Boolean uploadPlaylistImage(HttpSession session, CommonsMultipartFile file, int id) {
+		String fileName = file.getOriginalFilename();
+		String userId = (String)session.getAttribute(UserConstant.USER_ID);
+		String prefix = WebInfoPath + "/image/user/" + userService.getInfo(userId).getName() + "/";//获取歌单图片路径
+		String filePath = prefix + fileName;
+		avatar_file = new File(filePath);
+		try {
+			file.transferTo(avatar_file);
+		} catch (IllegalStateException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		playlistService.setImage(id, filePath);
+		return true;
+	}
+
 	@RequestMapping(value = "/uploadAlbumImage", method = RequestMethod.GET)
 	@ResponseBody
 	public Boolean uploadAlbumImage(CommonsMultipartFile file, int id) {
@@ -133,6 +152,25 @@ public class UploadController {
 			return false;
 		}
 		artistService.setImage(id, filePath);
+		return true;
+	}
+
+	@RequestMapping(value = "/uploadSongImage", method = RequestMethod.GET)
+	@ResponseBody
+	public Boolean uploadSongImage(CommonsMultipartFile file, int id) {
+		String fileName = file.getOriginalFilename();
+		Song song = songService.getInfo(id);
+		String prefix = WebInfoPath + "/image/song/" + song.getArtistName() + "/" + song.getAlbumName() + "/";;//获取歌曲图片路径
+		String filePath = prefix + fileName;
+		avatar_file = new File(filePath);
+		try {
+			file.transferTo(avatar_file);
+		} catch (IllegalStateException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		songService.setImage(id, filePath);
 		return true;
 	}
 
@@ -211,44 +249,6 @@ public class UploadController {
             	}
             }
 		}
-		return true;
-	}
-	
-	@RequestMapping(value = "/uploadSongImage", method = RequestMethod.GET)
-	@ResponseBody
-	public Boolean uploadSongImage(CommonsMultipartFile file, int id) {
-		String fileName = file.getOriginalFilename();
-		Song song = songService.getInfo(id);
-		String prefix = WebInfoPath + "/image/song/" + song.getArtistName() + "/" + song.getAlbumName() + "/";;//获取歌曲图片路径
-		String filePath = prefix + fileName;
-		avatar_file = new File(filePath);
-		try {
-			file.transferTo(avatar_file);
-		} catch (IllegalStateException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
-		songService.setImage(id, filePath);
-		return true;
-	}
-
-	@RequestMapping(value = "/uploadPlaylistImage", method = RequestMethod.GET)
-	@ResponseBody
-	public Boolean uploadPlaylistImage(HttpSession session, CommonsMultipartFile file, int id) {
-		String fileName = file.getOriginalFilename();
-		String userId = (String)session.getAttribute(UserConstant.USER_ID);
-		String prefix = WebInfoPath + "/image/user/" + userService.getInfo(userId).getName() + "/" + playlistService.getInfo(id).getName() + "/";//获取歌单图片路径
-		String filePath = prefix + fileName;
-		avatar_file = new File(filePath);
-		try {
-			file.transferTo(avatar_file);
-		} catch (IllegalStateException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
-		playlistService.setImage(id, filePath);
 		return true;
 	}
 	
