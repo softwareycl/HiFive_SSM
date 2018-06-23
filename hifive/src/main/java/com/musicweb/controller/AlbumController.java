@@ -18,18 +18,35 @@ import com.musicweb.view.AlbumView;
 import com.musicweb.view.SimpleAlbumView;
 import com.musicweb.view.SimpleSongView;
 
+/**
+ * AlbumController
+ * @author zhanghuakui
+ * @Date 2018/6/23
+ * AlbumController负责接收前端的有关歌手模块的请求，并调用Service层的服务，业务完成后返回结果给前端
+ */
 @Controller
 @RequestMapping("/album")
 public class AlbumController {
 	@Resource
 	private AlbumService albumService;
 
+	/**
+	 * 获取搜索结果的记录条数
+	 * @param name 搜索关键字
+	 * @return 记录数
+	 */
 	@RequestMapping(value = "/searchAlbumCount", method = RequestMethod.GET)
 	@ResponseBody
 	public Integer searchCount(String name) {//get
 		return albumService.getSearchCount(name);
 	}
 	
+	/**
+	 * 以名字为关键字搜索专辑
+	 * @param name 专辑名字
+	 * @param page 目标页码
+	 * @return List<SimpleAlbumView> 专辑视图
+	 */
 	@RequestMapping(value = "/searchAlbum", method = RequestMethod.GET)
 	@ResponseBody
 	public List<SimpleAlbumView> search(String name, int page) {//get
@@ -44,6 +61,11 @@ public class AlbumController {
 		return simpleAlbumList;
 	}
 	
+	/**
+	 * 显示专辑详情
+	 * @param id 专辑ID
+	 * @return 专辑视图，包括专辑包括的歌曲列表
+	 */
 	@RequestMapping(value = "/getInfo", method = RequestMethod.GET)
 	@ResponseBody
 	public AlbumView showAlbum(int id, HttpSession session) {//get
@@ -69,6 +91,12 @@ public class AlbumController {
 		return albumView;
 	}
 
+	/**
+	 * 修改专辑信息
+	 * @param albumView 专辑视图
+	 * @param session 获取管理员id，检测用户合法性
+	 * @return 操作状态
+	 */
 	@RequestMapping(value = "/modifyAlbum", method = RequestMethod.POST)
 	@ResponseBody
 	public Boolean modifyAnAlbum(AlbumView album, HttpSession session) {//post
@@ -80,6 +108,12 @@ public class AlbumController {
 		return albumService.modify(al);
 	}
 	
+	/**
+	 * 获取筛选后的专辑数目
+	 * @param region 地区
+	 * @param style 风格
+	 * @return 专辑数目
+	 */
 	@RequestMapping(value = "/filterAlbum", method = RequestMethod.GET)
 	@ResponseBody
 	public List<SimpleAlbumView> filterAlbumByCategory(int region, int style, int page) {//get
@@ -94,12 +128,25 @@ public class AlbumController {
 		return simpleAlbumList;
 	}
 	
+	/**
+	 * 根据地区，风格类别筛选歌手
+	 * @param region 地区
+	 * @param style 风格
+	 * @param page 目标页码
+	 * @return 专辑视图的列表
+	 */
 	@RequestMapping(value = "/filterAlbumCount", method = RequestMethod.GET)
 	@ResponseBody
 	public int filterCount(int region, int style) {//get
 		return albumService.getFilterCount(region, style);
 	}
 	
+	/**
+	 * 添加专辑
+	 * @param albumView 专辑视图
+	 * @param session 用于获取管理员ID，检测用户合法性
+	 * @return 新增的专辑ID
+	 */
 	@RequestMapping(value = "/addAlbum", method = RequestMethod.POST)
 	@ResponseBody
 	public Integer addAnAlbum(AlbumView album, HttpSession session) {//post
@@ -111,6 +158,12 @@ public class AlbumController {
 		return id;
 	}
 	
+	/**
+	 * 删除专辑
+	 * @param id 专辑ID
+	 * @param session 获取管理员id，检验用户合法性
+	 * @return 操作状态
+	 */
 	@RequestMapping(value = "/removeAlbum", method = RequestMethod.GET)
 	@ResponseBody
 	public Boolean removeAnAlbum(int id, HttpSession session) {//get
@@ -120,6 +173,11 @@ public class AlbumController {
 		return albumService.remove(id);
 	}
 	
+	/**
+	 * 获取最新专辑
+	 * @param region 地区
+	 * @return 专辑列表
+	 */
 	@RequestMapping(value = "/getNewAlbums", method = RequestMethod.GET)
 	@ResponseBody
 	public List<SimpleAlbumView> showNewAlbums(int region) {//get
@@ -134,6 +192,11 @@ public class AlbumController {
 		return simpleAlbumList;
 	}
 	
+	/**
+	 * 获取专辑所属歌曲列表
+	 * @param id 专辑id
+	 * @return 歌曲列表
+	 */
 	@RequestMapping(value = "/getSongsFromAlbum", method = RequestMethod.GET)
 	@ResponseBody
 	public List<SimpleSongView> getSongList(int id) {
