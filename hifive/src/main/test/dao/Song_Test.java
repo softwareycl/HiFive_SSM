@@ -1,6 +1,9 @@
 package dao;
 
 import java.util.List;
+
+import javax.annotation.Resource;
+
 import org.junit.Test;
 
 
@@ -13,9 +16,12 @@ import com.musicweb.dao.SongDao;
 import com.musicweb.domain.Album;
 import com.musicweb.domain.Artist;
 import com.musicweb.domain.Song;
+import com.musicweb.util.RedisUtil;
 public class Song_Test extends BaseTest{
 	@Autowired
 	SongDao songmapper;
+	@Resource
+	private RedisUtil redisUtil;
 //	@Test
 	public void test_insert() {
 		try {

@@ -21,7 +21,7 @@
     
     		<!--  insert   -->
 	<insert id="insert"
-			parameterType="com.musicweb.domain.Song">
+			parameterType="com.musicweb.domain.Song" keyProperty="id">
 		INSERT INTO 
 			song 
 				(name, artist_id, album_id, language, style, release_date, lyrics_path, image, play_count, file_path) 
