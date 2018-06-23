@@ -10,6 +10,7 @@ import com.musicweb.domain.Playlist;
 import com.musicweb.domain.Song;
 import com.musicweb.domain.User;
 import com.musicweb.service.CacheService;
+import com.musicweb.service.SongService;
 import com.musicweb.util.DurationUtil;
 import com.musicweb.util.FileUtil;
 import com.musicweb.util.RedisUtil;
@@ -20,6 +21,12 @@ import com.musicweb.dao.PlaylistDao;
 import com.musicweb.dao.SongDao;
 import com.musicweb.dao.UserDao;
 
+/**
+ * 歌曲模块业务逻辑实现类
+ * 
+ * @author zhanghuakui, likexin, brian
+ * 
+ */
 @Service("cacheService")
 public class CacheServiceImpl implements CacheService {
 
@@ -36,6 +43,9 @@ public class CacheServiceImpl implements CacheService {
 	@Resource
 	private UserDao userDao;
 	
+	/**
+	 * @see CacheService#getAndCacheSingerBySingerID(int)
+	 */
 	@Override
 	public Artist getAndCacheSingerBySingerID(int singerID) {
 		Object object = redisUtil.hget("artist", String.valueOf(singerID));
@@ -53,6 +63,9 @@ public class CacheServiceImpl implements CacheService {
 		return (Artist)object;
 	}
 
+	/**
+	 * @see CacheService#getAndCacheAlbumByAlbumID(int)
+	 */
 	@Override
 	public Album getAndCacheAlbumByAlbumID(int albumID) {
 		Object object = redisUtil.hget("album", String.valueOf(albumID));
@@ -70,6 +83,9 @@ public class CacheServiceImpl implements CacheService {
 		return (Album)object;
 	}
 
+	/**
+	 * @see CacheService#getAndCacheSongBySongID(int)
+	 */
 	@Override
 	public Song getAndCacheSongBySongID(int songID) {
 		//redisUtil.hdel("song", String.valueOf(songID));
@@ -96,6 +112,9 @@ public class CacheServiceImpl implements CacheService {
 		return (Song)object;
 	}
 
+	/**
+	 * @see CacheService#getAndCachePlaylistByPlaylistID(int)
+	 */
 	@Override
 	public Playlist getAndCachePlaylistByPlaylistID(int playlistID) {
 		Object object = redisUtil.hget("playlist", String.valueOf(playlistID));
@@ -109,6 +128,9 @@ public class CacheServiceImpl implements CacheService {
 		return (Playlist)object;
 	}
 
+	/**
+	 * @see CacheService#getAndCacheUserByUserID(int)
+	 */
 	@Override
 	public User getAndCacheUserByUserID(String userID) {
 		Object object = redisUtil.hget("singer", String.valueOf(userID));
@@ -121,6 +143,4 @@ public class CacheServiceImpl implements CacheService {
 		}
 		return (User)object;
 	}
-
-
 }

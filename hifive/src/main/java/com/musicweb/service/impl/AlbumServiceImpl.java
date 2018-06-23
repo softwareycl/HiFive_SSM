@@ -24,6 +24,15 @@ import com.musicweb.domain.Album;
 import com.musicweb.domain.Artist;
 import com.musicweb.domain.Song;
 
+/**
+ * ArtistServiceImpl
+ * @author zhanghuakui
+ * @Date 2018.6.23
+ * AlbumServiceImpl完成有关歌手模块的业务逻辑实现
+ * 接受AlbumController的调用，通过对Dao层各类方法的调用，完成业务逻辑
+ * 操作完成后，将操作结果返回给AlbumController
+ * Service层针对业务数据增加各类缓存操作
+ */
 @Service("albumService")
 public class AlbumServiceImpl implements AlbumService {
 	
@@ -42,6 +51,7 @@ public class AlbumServiceImpl implements AlbumService {
 	@Resource
 	private RedisUtil redisUtil;
 	
+	//redis中的key
 	private String redisAlbumFilter = "album_filter";
 	private String redisAlbumFilterCount = "album_filter_count";
 	private String redisAlbumSongs = "album_songs";
@@ -58,6 +68,12 @@ public class AlbumServiceImpl implements AlbumService {
 	private String redisSongPlayCount = "song_play_count";
 	private String redisAlbumPlayCount = "album_play_count";
 	
+	/**
+	 * 以名字为关键字搜索歌手
+	 * @param name 歌手名字
+	 * @param page 目标页码
+	 * @return List<Album> 歌手列表
+	 */
 	@Override
 	public List<Album> search(String name, int page) {
 		int offset = DisplayConstant.SEARCH_PAGE_ALBUM_SIZE * (page - 1);
@@ -70,11 +86,21 @@ public class AlbumServiceImpl implements AlbumService {
 		return albumList;
 	}
 
+	/**
+	 * 显示歌手详情
+	 * @param id 专辑id
+	 * @return 专辑 Album
+	 */
 	@Override
 	public Album getInfo(int id) {
 		return cacheService.getAndCacheAlbumByAlbumID(id);
 	}
 
+	/**
+	 * 查看专辑的歌曲列表
+	 * @param id 专辑id
+	 * @return 歌曲列表
+	 */
 	@Override
 	public List<Song> getSongList(int id) {
 		String redisKey = String.valueOf(id);
@@ -103,6 +129,13 @@ public class AlbumServiceImpl implements AlbumService {
 		}
 	}
 
+	/**
+	 * 根据地区，更风格类别筛选歌手
+	 * @param region 地区
+	 * @param style 风格
+	 * @param page 目标页码
+	 * @return 专辑列表
+	 */
 	@Override
 	public List<Album> lookUpAlbumsByCatagory(int region, int style, int page) {
 		String redisKey = region + "_" + style + "_" + page;
@@ -125,6 +158,11 @@ public class AlbumServiceImpl implements AlbumService {
 		}
 	}
 
+	/**
+	 * 添加专辑
+	 * @param album 专辑
+	 * @return 新增的专辑ID
+	 */
 	@Override
 	public int add(Album album) {	
 		//补全album属性
@@ -152,6 +190,11 @@ public class AlbumServiceImpl implements AlbumService {
 		return id;
 	}
 
+	/**
+	 * 删除专辑
+	 * @param id 专辑ID
+	 * @return 操作状态
+	 */
 	@Override
 	public boolean remove(int id) {
 		Album album = cacheService.getAndCacheAlbumByAlbumID(id);
@@ -230,6 +273,11 @@ public class AlbumServiceImpl implements AlbumService {
 		return true;
 	}
 
+	/**
+	 * 修改专辑信息
+	 * @param album 专辑
+	 * @return 操作状态
+	 */
 	@Override
 	public boolean modify(Album album) {
 		Album oldAlbum = cacheService.getAndCacheAlbumByAlbumID(album.getId());
@@ -305,6 +353,12 @@ public class AlbumServiceImpl implements AlbumService {
 		return true;
 	}
 
+	/**
+	 * 设置专辑图片
+	 * @param id 首专辑id
+	 * @param image 专辑图片路径
+	 * @return 是否操作成功
+	 */
 	@Override
 	public boolean setImage(int id, String image) {
 		Album album = cacheService.getAndCacheAlbumByAlbumID(id);
@@ -344,6 +398,11 @@ public class AlbumServiceImpl implements AlbumService {
 		return false;
 	}
 
+	/**
+	 * 获取最新发布的专辑
+	 * @param region 地区
+	 * @return 专辑列表
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Album> lookUpNewAlbums(int region) {
@@ -357,11 +416,22 @@ public class AlbumServiceImpl implements AlbumService {
 		}
 	}
 
+	/**
+	 * 获取搜索结果的记录条数
+	 * @param name 搜索关键字
+	 * @return 记录数
+	 */
 	@Override
 	public int getSearchCount(String name) {
 		return albumDao.selectCountByName(name);
 	}
 
+	/**
+	 * 获取筛选后的歌手数目
+	 * @param region 地区
+	 * @param style 风格
+	 * @return 专辑数目
+	 */
 	@Override
 	public int getFilterCount(int region, int style) {
 		String redisKey = region + "_" + style;
