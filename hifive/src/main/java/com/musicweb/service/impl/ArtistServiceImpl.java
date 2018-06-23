@@ -92,7 +92,7 @@ public class ArtistServiceImpl implements ArtistService {
 		Object object = redisUtil.hget("artist_filter", initial + "_" + region + "_" + gender + "_" + page);
 		List<Artist> artistList;
 		if (object == null) {
-			int num = DisplayConstant.SEARCH_PAGE_SINGER_SIZE;
+			int num = DisplayConstant.SIGNER_PAGE_SINGER_SIZE;
 			artistList = artistDao.selectByCategory(initial, region, gender, (page - 1) * num, num);
 			if (artistList != null) {
 				redisUtil.hset("artist_filter", initial + "_" + region + "_" + gender + "_" + page, artistList,

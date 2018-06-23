@@ -374,6 +374,4 @@ public class AlbumServiceImpl implements AlbumService {
 			return (int)object;
 		}
 	}
-
-
 }
