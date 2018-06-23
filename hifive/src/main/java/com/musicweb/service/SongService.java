@@ -31,7 +31,7 @@ public interface SongService {
 	/**
 	 * 获取歌曲排行榜
 	 * 
-	 * @param type 排行榜类型
+	 * @param type 排行榜类型，从1到6分别代表：新歌榜，热歌榜，内地榜，港台榜，日韩榜，欧美榜
 	 * @param isAll 排行榜的位置？？？
 	 * @return 歌曲列表
 	 */

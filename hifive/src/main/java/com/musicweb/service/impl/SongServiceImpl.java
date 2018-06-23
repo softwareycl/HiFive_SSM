@@ -51,6 +51,12 @@ public class SongServiceImpl implements SongService {
 	public List<Song> search(String name, int page) {
 		int count = DisplayConstant.SEARCH_PAGE_SONG_SIZE;//每页显示多少条搜索结果
 		List<Song>songs = songDao.selectByName(name, (page-1)*count, count);
+		for(Song song: songs) {
+			String classPath = this.getClass().getClassLoader().getResource("").getPath();
+			String WebInfoPath = "/home/brian/下载/音乐数据库";//classPath.substring(0, classPath.indexOf("/classes"));
+			String filePath = WebInfoPath + song.getFilePath();
+			song.setDuration(DurationUtil.computeDuration(filePath));
+		}
 		return songs;
 	}
 
@@ -60,7 +66,7 @@ public class SongServiceImpl implements SongService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Song> lookUpRank(int type, boolean isAll) {
-		Object songs = redisUtil.hget("rank", String.valueOf(type));//先查找缓存中有没有对应的排行榜
+		Object songs = redisUtil.hget("rank", String.valueOf(type));//先查找缓存中有没有对应的排行榜，还要看isAll
 		if(songs == null) {
 			int count = isAll?20:4;//显示排行榜的页面展示多少首歌曲
 			switch(type) {// 根据type选择不同的dao方法
@@ -86,6 +92,12 @@ public class SongServiceImpl implements SongService {
 				break;
 			}
 			if(songs != null) {
+				for(Song song: (List<Song>)songs) {
+					String classPath = this.getClass().getClassLoader().getResource("").getPath();
+					String WebInfoPath = "/home/brian/下载/音乐数据库";//classPath.substring(0, classPath.indexOf("/classes"));
+					String filePath = WebInfoPath + song.getFilePath();
+					song.setDuration(DurationUtil.computeDuration(filePath));
+				}
 				redisUtil.hset("rank", String.valueOf(type), songs, TimeConstant.A_DAY);//将排行榜放进缓存
 			}
 		}
@@ -244,6 +256,12 @@ public class SongServiceImpl implements SongService {
 	public List<Song> lookUpNewSongs(int region) {//有问题，新歌还有分地区
 		List<Song> songs = null;
 		songs = songDao.selectLatest(region, 20);//待改
+		for(Song song: songs) {
+			String classPath = this.getClass().getClassLoader().getResource("").getPath();
+			String WebInfoPath = "/home/brian/下载/音乐数据库";//classPath.substring(0, classPath.indexOf("/classes"));
+			String filePath = WebInfoPath + song.getFilePath();
+			song.setDuration(DurationUtil.computeDuration(filePath));
+		}
 		return songs;
 	}
 
@@ -262,7 +280,9 @@ public class SongServiceImpl implements SongService {
 	@Override
 	public String getDuration(int id) {
 		Song song = songDao.selectById(id);
-		String filePath = song.getFilePath();
+		String classPath = this.getClass().getClassLoader().getResource("").getPath();
+		String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));//"/home/brian/下载/音乐数据库";//;
+		String filePath = WebInfoPath + song.getFilePath();
 		String duration = DurationUtil.computeDuration(filePath);
 		return duration;
 	}
