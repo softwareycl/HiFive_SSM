@@ -152,13 +152,13 @@
 			AND
 				region=#{region}	
 			</if>
-			<if test="initial != null and initial != '@'.toString()">
+			<if test="initial != null and !initial.equals('@'.toString())">
 			AND
 				initial=#{initial}	
 			</if>
-			<if test="gender != null">
+			<if test="gender != null and gender != 0">
 			AND
-				initial=#{initial}	
+				gender=#{gender}	
 			</if>
 		</where>
 		ORDER BY 
@@ -179,11 +179,11 @@
 			AND
 				region=#{region}	
 			</if>
-			<if test="initial != null and initial != '@'.toString()">
+			<if test="initial != null and !initial.equals('@'.toString())">
 			AND
 				initial=#{initial}	
 			</if>
-			<if test="gender != null">
+			<if test="gender != null and gender != 0">
 			AND
 				initial=#{initial}	
 			</if>
