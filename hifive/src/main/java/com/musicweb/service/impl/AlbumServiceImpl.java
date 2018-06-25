@@ -408,7 +408,7 @@ public class AlbumServiceImpl implements AlbumService {
 	public List<Album> lookUpNewAlbums(int region) {
 		Object object = redisUtil.hget(redisNewAlbum, String.valueOf(region));
 		if(object == null) {
-			List<Album> albumList = albumDao.selectLatest(DisplayConstant.HOME_PAGE_NEW_ALBUM_SIZE);
+			List<Album> albumList = albumDao.selectLatest(region, DisplayConstant.HOME_PAGE_NEW_ALBUM_SIZE);
 			redisUtil.hset(redisNewAlbum, String.valueOf(region), albumList);
 			return albumList;
 		} else {
