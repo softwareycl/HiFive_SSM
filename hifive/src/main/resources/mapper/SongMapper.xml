@@ -17,6 +17,7 @@
     	<result column="language" property="language" jdbcType="VARCHAR"/>
     	<result column="style" property="style" jdbcType="NUMERIC"/>
     	<result column="file_path" property="filePath" jdbcType="VARCHAR"/>
+    	<result column="region" property="region" jdbcType="NUMERIC"/>
     </resultMap>
     
     		<!--  insert   -->
@@ -24,9 +25,9 @@
 			parameterType="com.musicweb.domain.Song" keyProperty="id">
 		INSERT INTO 
 			song 
-				(name, artist_id, album_id, language, style, release_date, lyrics_path, image, play_count, file_path) 
+				(name, artist_id, album_id, language, style, release_date, lyrics_path, image, play_count, file_path,region) 
 		VALUES 
-			(#{name},#{artistId},#{albumId},#{language},#{style},#{releaseDate},#{lyricsPath},#{image},#{playCount},#{filePath})
+			(#{name},#{artistId},#{albumId},#{language},#{style},#{releaseDate},#{lyricsPath},#{image},#{playCount},#{filePath},#{region})
 	</insert>
 	
 			<!--  updateImage   -->
@@ -79,7 +80,8 @@
 			album_id=#{albumId},
 			language=#{language},
 			style=#{style},
-			release_date=#{releaseDate}
+			release_date=#{releaseDate},
+			region=#{region}
 		WHERE
 			id=#{id}
 	</update>
@@ -110,7 +112,8 @@
 			s.release_date,
 			s.language,
 			s.style,
-			s.file_path
+			s.file_path,
+			s.region
 		FROM 
 			song as s
 		LEFT JOIN 
@@ -141,7 +144,8 @@
 			s.release_date,
 			s.language,
 			s.style,
-			s.file_path
+			s.file_path,
+			s.region
 		FROM (
 			SELECT
 				*
@@ -242,7 +246,8 @@
 			s.release_date,
 			s.language,
 			s.style,
-			s.file_path
+			s.file_path,
+			s.region
 		FROM (
 			SELECT
 				*
@@ -280,7 +285,8 @@
 			s.release_date,
 			s.language,
 			s.style,
-			s.file_path
+			s.file_path,
+			s.region
 		FROM (
 			SELECT
 				*

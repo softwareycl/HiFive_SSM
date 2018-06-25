@@ -25,7 +25,7 @@ public class Song_Test extends BaseTest{
 //	@Test
 	public void test_insert() {
 		try {
-			Song song=new Song("安静",111,6,0,"/lyrics/周杰伦/范特西/安静.txt","/image/album/周杰伦/范特西.jpg","普通话",5,null,"/music/周杰伦/范特西/安静.mp3",1);
+			Song song=new Song("安静",111,6,0,"/lyrics/周杰伦/范特西/安静.txt","/image/album/周杰伦/范特西.jpg","普通话",5,null,"/music/周杰伦/范特西/安静.mp3",2);
 			songmapper.insert(song);
 			System.out.println("test_insert succeed");
 		} catch (Exception e) {
@@ -76,7 +76,7 @@ public class Song_Test extends BaseTest{
 //	@Test
 	public void test_update() {
 		try {
-			Song song=new Song(150,"安静_new",111,6,0,"/lyrics/周杰伦/范特西/安静.txt","/image/album/周杰伦/范特西.jpg","普通话",5,null,"/music/周杰伦/范特西/安静.mp3",1);
+			Song song=new Song(150,"安静_new",111,6,0,"/lyrics/周杰伦/范特西/安静.txt","/image/album/周杰伦/范特西.jpg","普通话",5,null,"/music/周杰伦/范特西/安静.mp3",3);
 			songmapper.update(song);
 			System.out.println("test_update succeed");
 		} catch (Exception e) {
@@ -94,13 +94,14 @@ public class Song_Test extends BaseTest{
 		}
 	}
 	
-//	@Test
+	@Test
 	public void test_selectById() {
 		try {
 			Song song=songmapper.selectById(1);
 			System.out.println("test_select succeed");
 			System.out.println(song.getName());
-			System.out.println(song.getArtistName());
+			System.out.println(song.getArtistName());	
+			System.out.println(song.getRegion());
 				
 		} catch (Exception e) {
 			e.printStackTrace();
