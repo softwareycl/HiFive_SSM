@@ -130,7 +130,7 @@ public class Playlist_Test extends BaseTest{
 		}
 	}
 	
-	@Test
+//	@Test
 	public void test_selectAllSongs() {
 		try {
 			List<Song> songs =playlistmapper.selectAllSongs(3);
