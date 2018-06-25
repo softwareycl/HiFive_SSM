@@ -121,7 +121,7 @@ public class SongServiceImpl implements SongService {
 		//缓存中没有歌曲播放量的话就去数据库拿歌曲对象，增加播放量，再把歌曲和歌曲播放量都放进缓存中
 		//缓存中有歌曲播放量的话就把缓存中的播放量加一
 		Object object = redisUtil.hget("song_play_count", String.valueOf(id));
-		System.out.println("歌曲" + id + "在缓存中的播放量为：" + object);
+		//System.out.println("歌曲" + id + "在缓存中的播放量为：" + object);
 		int albumId = 0;//该歌曲所属专辑的id
 		int artistId = 0;//该歌曲所属歌手的id
 		//缓存中没有歌曲播放量
@@ -130,12 +130,12 @@ public class SongServiceImpl implements SongService {
 			song.setPlayCount(song.getPlayCount()+1);
 			//System.out.println("歌曲的播放量为：" + song.getPlayCount());
 			redisUtil.hset("song", String.valueOf(id), song, TimeConstant.A_DAY);//把歌曲放进缓存中
-			redisUtil.hset("song_play_count", String.valueOf(id), "vfvhfvfgv");//把歌曲播放量放进缓存中
-			System.out.println(redisUtil.hget("song_play_count", String.valueOf(id)));
+			redisUtil.hset("song_play_count", String.valueOf(id), song.getPlayCount());//把歌曲播放量放进缓存中
+			//System.out.println(redisUtil.hget("song_play_count", String.valueOf(id)));
 			albumId = song.getAlbumId();
-			System.out.println("专辑id：" + albumId);
+			//System.out.println("专辑id：" + albumId);
 			artistId = song.getArtistId();
-			System.out.println("歌手id：" + artistId);
+			//System.out.println("歌手id：" + artistId);
 		}
 		else
 			redisUtil.hincr("song_play_count", String.valueOf(id), 1);//缓存中有歌曲播放量
@@ -148,7 +148,7 @@ public class SongServiceImpl implements SongService {
 			//System.out.println("专辑的播放量为：" + album.getPlayCount());
 			redisUtil.hset("album", String.valueOf(albumId), album, TimeConstant.A_DAY);//把该歌曲所属专辑放进缓存中
 			redisUtil.hset("album_play_count", String.valueOf(albumId), album.getPlayCount());//把该歌曲所属专辑的播放量放进缓存中
-			System.out.println(redisUtil.hget("album_play_count", String.valueOf(albumId)));
+			//System.out.println(redisUtil.hget("album_play_count", String.valueOf(albumId)));
 		}
 		else
 			redisUtil.hincr("album_play_count", String.valueOf(albumId), 1);//缓存中有该歌曲所属专辑的播放量
@@ -161,7 +161,7 @@ public class SongServiceImpl implements SongService {
 			//System.out.println("歌手的播放量为：" + artist.getPlayCount());
 			redisUtil.hset("artist", String.valueOf(artistId), artist, TimeConstant.A_DAY);//把该歌曲所属歌手放进缓存中
 			redisUtil.hset("artist_play_count", String.valueOf(artistId), artist.getPlayCount());//把该歌曲所属歌手的播放量放进缓存中
-			System.out.println(redisUtil.hget("artist_play_count", String.valueOf(artistId)));
+			//System.out.println(redisUtil.hget("artist_play_count", String.valueOf(artistId)));
 		}
 		else
 			redisUtil.hincr("album_play_count", String.valueOf(artistId), 1);//缓存中有该歌曲所属歌手的播放量

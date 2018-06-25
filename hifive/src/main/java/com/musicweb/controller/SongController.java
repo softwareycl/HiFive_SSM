@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.musicweb.domain.Song;
 import com.musicweb.service.SongService;
+import com.musicweb.util.DurationUtil;
 import com.musicweb.view.SimpleSongView;
 import com.musicweb.view.SongView;
 
@@ -171,6 +172,17 @@ public class SongController {
 	@RequestMapping(value = "/getNewSongs", method = RequestMethod.GET)
 	@ResponseBody
 	public List<SimpleSongView> showNewSongs(int region) {//service未搞定，先不写
+		List<Song> songs = songService.lookUpNewSongs(region);
+		List<SimpleSongView> songViews = new ArrayList<>();
+		if(songs != null) {
+			for(Song song: songs) {
+				SimpleSongView songView = new SimpleSongView();
+				BeanUtils.copyProperties(song, songView);
+				songView.setDuration(DurationUtil.computeDuration(song.getFilePath()));
+				songViews.add(songView);
+			}
+			return songViews;
+		}
 		return null;
 	}
 
