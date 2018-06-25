@@ -139,7 +139,7 @@ public class Album_Test extends BaseTest{
 	}
 	
 	
-	@Test
+//	@Test
 	public void test_selectLatest() {
 		try {
 			List<Album> albums =albummapper.selectLatest(1,5);

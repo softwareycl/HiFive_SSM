@@ -94,7 +94,7 @@ public class Song_Test extends BaseTest{
 		}
 	}
 	
-	@Test
+//	@Test
 	public void test_selectById() {
 		try {
 			Song song=songmapper.selectById(1);

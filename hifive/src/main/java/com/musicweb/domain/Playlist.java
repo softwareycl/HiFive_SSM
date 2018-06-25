@@ -6,6 +6,25 @@ public class Playlist {
 	private String intro;
 	private String image;
 
+	public Playlist(int id, String name, String intro, String image) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.intro = intro;
+		this.image = image;
+	}
+
+	public Playlist() {
+		super();
+	}
+
+	public Playlist(String name, String intro, String image) {
+		super();
+		this.name = name;
+		this.intro = intro;
+		this.image = image;
+	}
+
 	public int getId() {
 		return id;
 	}

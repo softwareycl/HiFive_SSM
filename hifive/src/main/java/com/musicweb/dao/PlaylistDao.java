@@ -2,23 +2,25 @@ package com.musicweb.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.musicweb.domain.Playlist;
 import com.musicweb.domain.Song;
 
 public interface PlaylistDao {
 	//增
-	public int insert(String userId, Playlist playlist);// 返回id
+	public int insert(@Param("userId")String userId, @Param("playlist")Playlist playlist);// 返回id
 	
-	public int insertSong(int playlistId, int songId);
+	public int insertSong(@Param("playlistId")int playlistId, @Param("songId")int songId);
 	
-	public boolean insertPlaylistToPlaylist(int fromId, int toId);
+	public boolean insertPlaylistToPlaylist(@Param("fromId")int fromId,@Param("toId") int toId);
 
-	public boolean insertAlbumToPlaylist(int albumId, int playlistId);//暂时保留，需不需要迁移到service完成
+	public boolean insertAlbumToPlaylist(@Param("albumId")int albumId, @Param("playlistId")int playlistId);//暂时保留，需不需要迁移到service完成
 	
 	//删
 	public int delete(int id);
 	
-	public int deleteSong(int playlistId, int songId);
+	public int deleteSong(@Param("playlistId")int playlistId, @Param("songId")int songId);
 	
 	public int deleteSongBySongId(int songId);
 	
@@ -28,10 +30,10 @@ public interface PlaylistDao {
 	//改
 	public int update(Playlist playlist);
 
-	public int updateImage(int id, String image);
+	public int updateImage(@Param("id")int id, @Param("image")String image);
 	
 	//查
-	public Playlist select(int id);
+	public Playlist select(@Param("id")int id);
 	
 	public int selectSongCount(int playlistId);
 	
