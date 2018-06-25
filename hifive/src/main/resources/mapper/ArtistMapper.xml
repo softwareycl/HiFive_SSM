@@ -30,6 +30,7 @@
     	<result column="language" property="language" jdbcType="VARCHAR"/>
     	<result column="style" property="style" jdbcType="NUMERIC"/>
     	<result column="file_path" property="filePath" jdbcType="VARCHAR"/>
+    	<result column="region" property="region" jdbcType="NUMERIC"/>
     </resultMap>
     
         	<!--  resultMap ArtistMap  -->
@@ -206,7 +207,8 @@
 			s.release_date,
 			s.language,
 			s.style,
-			s.file_path
+			s.file_path,
+			s.region
 		FROM (
 			SELECT
 				*

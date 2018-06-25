@@ -67,7 +67,7 @@ public class Album_Test extends BaseTest{
 		}
 	}
 	
-//	@Test
+	@Test
 	public void test_insert() {
 		try {
 			Album album=new Album("范特西",null,2,1,"rien","/image/album/周杰伦/范特西.jpg",0,6);
