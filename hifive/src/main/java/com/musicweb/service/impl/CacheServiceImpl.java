@@ -97,7 +97,7 @@ public class CacheServiceImpl implements CacheService {
 			}
 			//拼接出歌曲音频文件的绝对路径
 			String classPath = this.getClass().getClassLoader().getResource("").getPath();
-			String WebInfoPath = "/home/brian/下载/音乐数据库";//classPath.substring(0, classPath.indexOf("/classes"));
+			String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 			String filePath = WebInfoPath + song.getFilePath();
 			song.setDuration(DurationUtil.computeDuration(filePath));
 			if(song != null) {

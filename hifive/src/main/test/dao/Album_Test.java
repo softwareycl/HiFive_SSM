@@ -139,10 +139,10 @@ public class Album_Test extends BaseTest{
 	}
 	
 	
-//	@Test
+	@Test
 	public void test_selectLatest() {
 		try {
-			List<Album> albums =albummapper.selectLatest(5);
+			List<Album> albums =albummapper.selectLatest(1,5);
 			System.out.println("test_selectLatest succeed");
 			for(Album s : albums) {
 				System.out.println(s.getName());

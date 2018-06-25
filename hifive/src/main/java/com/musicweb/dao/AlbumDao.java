@@ -36,7 +36,7 @@ public interface AlbumDao {
 	
 	public int selectCountByCategory(@Param("region")int region,  @Param("style")int style);
 
-	public List<Album> selectLatest(int count);//先按发行时间排序选择count张专辑再按播放量排序
+	public List<Album> selectLatest(@Param("region")int region, @Param("count")int count);//先按发行时间排序选择count张专辑再按播放量排序
 	
 	public List<Song> selectAllSongs(int albumId);
 	
