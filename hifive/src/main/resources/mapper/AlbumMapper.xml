@@ -265,6 +265,12 @@
 				*
 			FROM
 				album
+			<where>
+				<if test="region !=null and region != 0">
+				AND
+					album.region=#{region}	
+				</if>
+			</where>
 			ORDER BY 
 				release_date
 			DESC LIMIT 
