@@ -53,7 +53,7 @@ public class SongServiceImpl implements SongService {
 		List<Song>songs = songDao.selectByName(name, (page-1)*count, count);
 		for(Song song: songs) {
 			String classPath = this.getClass().getClassLoader().getResource("").getPath();
-			String WebInfoPath = "/home/brian/下载/音乐数据库";//classPath.substring(0, classPath.indexOf("/classes"));
+			String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 			String filePath = WebInfoPath + song.getFilePath();
 			song.setDuration(DurationUtil.computeDuration(filePath));
 		}
@@ -94,7 +94,7 @@ public class SongServiceImpl implements SongService {
 			if(songs != null) {
 				for(Song song: (List<Song>)songs) {
 					String classPath = this.getClass().getClassLoader().getResource("").getPath();
-					String WebInfoPath = "/home/brian/下载/音乐数据库";//classPath.substring(0, classPath.indexOf("/classes"));
+					String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 					String filePath = WebInfoPath + song.getFilePath();
 					song.setDuration(DurationUtil.computeDuration(filePath));
 				}
@@ -204,7 +204,7 @@ public class SongServiceImpl implements SongService {
 			return false;
 		//拼接出歌曲文件夹路径，删除整个文件夹
 		String classPath = this.getClass().getClassLoader().getResource("").getPath();
-		String WebInfoPath = "/home/brian/下载/音乐数据库";//classPath.substring(0, classPath.indexOf("/classes"));
+		String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 		//删除歌曲图片
 		imagePath = WebInfoPath + song.getImage();
 		System.out.println(imagePath);
@@ -268,10 +268,10 @@ public class SongServiceImpl implements SongService {
 	@Override
 	public List<Song> lookUpNewSongs(int region) {//有问题，新歌还有分地区
 		List<Song> songs = null;
-		songs = songDao.selectLatest(region, 20);//待改
+		songs = songDao.selectLatest(region, DisplayConstant.HOME_PAGE_NEW_SONG_SIZE);//待改
 		for(Song song: songs) {
 			String classPath = this.getClass().getClassLoader().getResource("").getPath();
-			String WebInfoPath = "/home/brian/下载/音乐数据库";//classPath.substring(0, classPath.indexOf("/classes"));
+			String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 			String filePath = WebInfoPath + song.getFilePath();
 			song.setDuration(DurationUtil.computeDuration(filePath));
 		}
@@ -294,7 +294,7 @@ public class SongServiceImpl implements SongService {
 	public String getDuration(int id) {
 		Song song = songDao.selectById(id);
 		String classPath = this.getClass().getClassLoader().getResource("").getPath();
-		String WebInfoPath = "/home/brian/下载/音乐数据库";//classPath.substring(0, classPath.indexOf("/classes"));////;
+		String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));////;
 		String filePath = WebInfoPath + song.getFilePath();
 		String duration = DurationUtil.computeDuration(filePath);
 		return duration;
