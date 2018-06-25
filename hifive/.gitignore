@@ -1,3 +1,6 @@
 /target/
 /sequence/
 *~
+/src/main/java/*.png
+/src/main/java/*.mgc
+/src/main/java/com/musicweb/util/DeleteFileUtil.java
