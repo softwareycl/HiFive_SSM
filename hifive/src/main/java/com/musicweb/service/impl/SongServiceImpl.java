@@ -5,9 +5,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.audio.mp3.MP3AudioHeader;
-import org.jaudiotagger.audio.mp3.MP3File;
 import org.springframework.stereotype.Service;
 
 import com.musicweb.constant.DisplayConstant;
@@ -67,7 +64,7 @@ public class SongServiceImpl implements SongService {
 	public List<Song> lookUpRank(int type, boolean isAll) {
 		Object songs = redisUtil.hget("rank", String.valueOf(type));//先查找缓存中有没有对应的排行榜，还要看isAll
 		if(songs == null) {
-			int count = isAll?20:4;//显示排行榜的页面展示多少首歌曲
+			int count = isAll?DisplayConstant.RANK_PAGE_RANK_SIZE:DisplayConstant.HOME_PAGE_RANK_SIZE;//显示排行榜的页面展示多少首歌曲
 			switch(type) {// 根据type选择不同的dao方法
 			case 1:
 				songs = songDao.selectLatest(0, count);

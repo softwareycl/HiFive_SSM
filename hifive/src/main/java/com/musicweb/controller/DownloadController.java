@@ -16,6 +16,7 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.musicweb.constant.UserConstant;
@@ -47,11 +48,10 @@ public class DownloadController {
 	 * @param request http request，用于获取浏览器类型
 	 * @param response http response，用户返回文件输出流
 	 * @param id 所要下载的歌曲id
-	 * @return 布尔值，表示成功或失败
+	 * @return 不需要返回值
 	 */
 	@RequestMapping(value = "/downloadSong", method = RequestMethod.GET)
-	@ResponseBody
-	public Boolean download(HttpServletRequest request, HttpServletResponse response, int id) {
+	public void download(HttpServletRequest request, HttpServletResponse response, int id) {
 		HttpSession session = request.getSession();
 		String userId = (String) session.getAttribute(UserConstant.USER_ID);
 		if(userId != null) {
@@ -72,14 +72,12 @@ public class DownloadController {
 		                        + new String(fileName.getBytes("utf-8"), "ISO8859-1")); // 指定下载的文件名
 		                os.write(FileUtils.readFileToByteArray(file));
 		                os.flush();
-		                return true;
 		            } catch (IOException e) {
 		                e.printStackTrace();
 		            }
 				}
 			}
 		}
-		return false;
-	}
+	}//测试成功，返回boolean的话后台会报错，但浏览器能正常获取文件只是无法获取布尔值
 	
 }
