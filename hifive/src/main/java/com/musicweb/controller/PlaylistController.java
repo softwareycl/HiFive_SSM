@@ -33,6 +33,7 @@ public class PlaylistController {
 	
 	@Resource
 	private PlaylistService playlistService;
+	
 	@Resource
 	private UserService userService;
 
