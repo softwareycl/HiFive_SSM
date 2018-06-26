@@ -31,8 +31,8 @@ import com.musicweb.util.RedisUtil;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath:spring/applicationContext-dao.xml",
 "classpath:spring/applicationContext-service.xml", "classpath:spring/applicationContext-redis.xml"})
-@Rollback(false)
-@Transactional(transactionManager = "transactionManager")
+//@Rollback(false)
+//@Transactional(transactionManager = "transactionManager")
 public class SongServiceTest {
 	
 	@Resource
