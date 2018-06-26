@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
@@ -11,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.musicweb.constant.UserConstant;
 import com.musicweb.domain.Song;
 import com.musicweb.service.SongService;
+import com.musicweb.util.DurationUtil;
 import com.musicweb.view.SimpleSongView;
 import com.musicweb.view.SongView;
 
@@ -98,13 +101,16 @@ public class SongController {
 	 */
 	@RequestMapping(value = "/getInfo", method = RequestMethod.GET)
 	@ResponseBody
-	public SongView showInfo(int id) {//get
+	public SongView showInfo(HttpSession session, int id) {//get
 		Song song = songService.getInfo(id);
-		if(song == null)
-			return null;
 		SongView songView = new SongView();
-		BeanUtils.copyProperties(song, songView);
-		songView.setDuration(songService.getDuration(song.getId()));
+		if (session.getAttribute(UserConstant.USER_ID) == null) {
+			songView.setOnline(false);
+		}
+		if(song != null) {
+			BeanUtils.copyProperties(song, songView);
+			songView.setDuration(songService.getDuration(song.getId()));
+		}
 		return songView;
 	}
 	
@@ -171,6 +177,17 @@ public class SongController {
 	@RequestMapping(value = "/getNewSongs", method = RequestMethod.GET)
 	@ResponseBody
 	public List<SimpleSongView> showNewSongs(int region) {//service未搞定，先不写
+		List<Song> songs = songService.lookUpNewSongs(region);
+		List<SimpleSongView> songViews = new ArrayList<>();
+		if(songs != null) {
+			for(Song song: songs) {
+				SimpleSongView songView = new SimpleSongView();
+				BeanUtils.copyProperties(song, songView);
+				songView.setDuration(DurationUtil.computeDuration(song.getFilePath()));
+				songViews.add(songView);
+			}
+			return songViews;
+		}
 		return null;
 	}
 

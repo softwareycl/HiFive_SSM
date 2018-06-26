@@ -15,6 +15,7 @@ import com.musicweb.domain.User;
 public interface CacheService {
 	/**
 	 * 从缓存中获取歌手信息，若缓存中不存在，则从数据库获取并放入缓存
+	 * 
 	 * @param id 歌手id
 	 * @return 歌手信息
 	 */
@@ -22,6 +23,7 @@ public interface CacheService {
 
 	/**
 	 * 从缓存中获取专辑信息，若缓存中不存在，则从数据库获取并放入缓存
+	 * 
 	 * @param id 专辑id
 	 * @return 专辑信息
 	 */
@@ -36,6 +38,7 @@ public interface CacheService {
 
 	/**
 	 * 从缓存中获取歌单信息，若缓存中不存在，则从数据库获取并放入缓存
+	 * 
 	 * @param id 歌单id
 	 * @return 歌单信息
 	 */
@@ -43,6 +46,7 @@ public interface CacheService {
 	
 	/**
 	 * 从缓存中获取用户信息，若缓存中不存在，则从数据库获取并放入缓存
+	 * 
 	 * @param id 用户id
 	 * @return 用户信息
 	 */

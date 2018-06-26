@@ -5,9 +5,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.audio.mp3.MP3AudioHeader;
-import org.jaudiotagger.audio.mp3.MP3File;
 import org.springframework.stereotype.Service;
 
 import com.musicweb.constant.DisplayConstant;
@@ -52,7 +49,7 @@ public class SongServiceImpl implements SongService {
 		List<Song>songs = songDao.selectByName(name, (page-1)*count, count);
 		for(Song song: songs) {
 			String classPath = this.getClass().getClassLoader().getResource("").getPath();
-			String WebInfoPath = "/home/brian/下载/音乐数据库";//classPath.substring(0, classPath.indexOf("/classes"));
+			String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 			String filePath = WebInfoPath + song.getFilePath();
 			song.setDuration(DurationUtil.computeDuration(filePath));
 		}
@@ -67,7 +64,7 @@ public class SongServiceImpl implements SongService {
 	public List<Song> lookUpRank(int type, boolean isAll) {
 		Object songs = redisUtil.hget("rank", String.valueOf(type));//先查找缓存中有没有对应的排行榜，还要看isAll
 		if(songs == null) {
-			int count = isAll?20:4;//显示排行榜的页面展示多少首歌曲
+			int count = isAll?DisplayConstant.RANK_PAGE_RANK_SIZE:DisplayConstant.HOME_PAGE_RANK_SIZE;//显示排行榜的页面展示多少首歌曲
 			switch(type) {// 根据type选择不同的dao方法
 			case 1:
 				songs = songDao.selectLatest(0, count);
@@ -93,7 +90,7 @@ public class SongServiceImpl implements SongService {
 			if(songs != null) {
 				for(Song song: (List<Song>)songs) {
 					String classPath = this.getClass().getClassLoader().getResource("").getPath();
-					String WebInfoPath = "/home/brian/下载/音乐数据库";//classPath.substring(0, classPath.indexOf("/classes"));
+					String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 					String filePath = WebInfoPath + song.getFilePath();
 					song.setDuration(DurationUtil.computeDuration(filePath));
 				}
@@ -120,7 +117,7 @@ public class SongServiceImpl implements SongService {
 		//缓存中没有歌曲播放量的话就去数据库拿歌曲对象，增加播放量，再把歌曲和歌曲播放量都放进缓存中
 		//缓存中有歌曲播放量的话就把缓存中的播放量加一
 		Object object = redisUtil.hget("song_play_count", String.valueOf(id));
-		System.out.println("歌曲" + id + "在缓存中的播放量为：" + object);
+		//System.out.println("歌曲" + id + "在缓存中的播放量为：" + object);
 		int albumId = 0;//该歌曲所属专辑的id
 		int artistId = 0;//该歌曲所属歌手的id
 		//缓存中没有歌曲播放量
@@ -129,12 +126,12 @@ public class SongServiceImpl implements SongService {
 			song.setPlayCount(song.getPlayCount()+1);
 			//System.out.println("歌曲的播放量为：" + song.getPlayCount());
 			redisUtil.hset("song", String.valueOf(id), song, TimeConstant.A_DAY);//把歌曲放进缓存中
-			redisUtil.hset("song_play_count", String.valueOf(id), "vfvhfvfgv");//把歌曲播放量放进缓存中
-			System.out.println(redisUtil.hget("song_play_count", String.valueOf(id)));
+			redisUtil.hset("song_play_count", String.valueOf(id), song.getPlayCount());//把歌曲播放量放进缓存中
+			//System.out.println(redisUtil.hget("song_play_count", String.valueOf(id)));
 			albumId = song.getAlbumId();
-			System.out.println("专辑id：" + albumId);
+			//System.out.println("专辑id：" + albumId);
 			artistId = song.getArtistId();
-			System.out.println("歌手id：" + artistId);
+			//System.out.println("歌手id：" + artistId);
 		}
 		else
 			redisUtil.hincr("song_play_count", String.valueOf(id), 1);//缓存中有歌曲播放量
@@ -147,7 +144,7 @@ public class SongServiceImpl implements SongService {
 			//System.out.println("专辑的播放量为：" + album.getPlayCount());
 			redisUtil.hset("album", String.valueOf(albumId), album, TimeConstant.A_DAY);//把该歌曲所属专辑放进缓存中
 			redisUtil.hset("album_play_count", String.valueOf(albumId), album.getPlayCount());//把该歌曲所属专辑的播放量放进缓存中
-			System.out.println(redisUtil.hget("album_play_count", String.valueOf(albumId)));
+			//System.out.println(redisUtil.hget("album_play_count", String.valueOf(albumId)));
 		}
 		else
 			redisUtil.hincr("album_play_count", String.valueOf(albumId), 1);//缓存中有该歌曲所属专辑的播放量
@@ -160,7 +157,7 @@ public class SongServiceImpl implements SongService {
 			//System.out.println("歌手的播放量为：" + artist.getPlayCount());
 			redisUtil.hset("artist", String.valueOf(artistId), artist, TimeConstant.A_DAY);//把该歌曲所属歌手放进缓存中
 			redisUtil.hset("artist_play_count", String.valueOf(artistId), artist.getPlayCount());//把该歌曲所属歌手的播放量放进缓存中
-			System.out.println(redisUtil.hget("artist_play_count", String.valueOf(artistId)));
+			//System.out.println(redisUtil.hget("artist_play_count", String.valueOf(artistId)));
 		}
 		else
 			redisUtil.hincr("album_play_count", String.valueOf(artistId), 1);//缓存中有该歌曲所属歌手的播放量
@@ -203,7 +200,7 @@ public class SongServiceImpl implements SongService {
 			return false;
 		//拼接出歌曲文件夹路径，删除整个文件夹
 		String classPath = this.getClass().getClassLoader().getResource("").getPath();
-		String WebInfoPath = "/home/brian/下载/音乐数据库";//classPath.substring(0, classPath.indexOf("/classes"));
+		String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 		//删除歌曲图片
 		imagePath = WebInfoPath + song.getImage();
 		System.out.println(imagePath);
@@ -267,10 +264,10 @@ public class SongServiceImpl implements SongService {
 	@Override
 	public List<Song> lookUpNewSongs(int region) {//有问题，新歌还有分地区
 		List<Song> songs = null;
-		songs = songDao.selectLatest(region, 20);//待改
+		songs = songDao.selectLatest(region, DisplayConstant.HOME_PAGE_NEW_SONG_SIZE);//待改
 		for(Song song: songs) {
 			String classPath = this.getClass().getClassLoader().getResource("").getPath();
-			String WebInfoPath = "/home/brian/下载/音乐数据库";//classPath.substring(0, classPath.indexOf("/classes"));
+			String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 			String filePath = WebInfoPath + song.getFilePath();
 			song.setDuration(DurationUtil.computeDuration(filePath));
 		}
@@ -293,7 +290,7 @@ public class SongServiceImpl implements SongService {
 	public String getDuration(int id) {
 		Song song = songDao.selectById(id);
 		String classPath = this.getClass().getClassLoader().getResource("").getPath();
-		String WebInfoPath = "/home/brian/下载/音乐数据库";//classPath.substring(0, classPath.indexOf("/classes"));////;
+		String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));////;
 		String filePath = WebInfoPath + song.getFilePath();
 		String duration = DurationUtil.computeDuration(filePath);
 		return duration;

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans  
-	xmlns="http://www.springframework.org/schema/beans"
+<beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
@@ -9,20 +8,19 @@
 	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
 	<!-- 开启注解映射的支持 -->
-	<mvc:annotation-driven/>
-	<!-- 允许对静态资源文件的访问 --> 
-	<mvc:default-servlet-handler/>
-	<mvc:interceptors>		
+	<mvc:annotation-driven />
+	<!-- 允许对静态资源文件的访问 -->
+	<mvc:default-servlet-handler />
+	<mvc:interceptors>
 		<mvc:interceptor>
-			<mvc:mapping path="/**"/>
-			<mvc:exclude-mapping path="/index.html"/>
-			<mvc:exclude-mapping path="/static/**"/>
-			<mvc:exclude-mapping path="/image/**"/>
-			<mvc:exclude-mapping path="/lyrics/**"/>
-			<mvc:exclude-mapping path="/music/**"/>
+			<mvc:mapping path="/**" />
+			<mvc:exclude-mapping path="/index.html" />
+			<mvc:exclude-mapping path="/static/**" />
+			<mvc:exclude-mapping path="/image/**" />
+			<mvc:exclude-mapping path="/lyrics/**" />
+			<mvc:exclude-mapping path="/music/**" />
 			<bean class="com.musicweb.service.interceptor.CORSInterceptor"></bean>
 		</mvc:interceptor>
-		
 	</mvc:interceptors>
 
 	<!-- 自动扫描的包名 -->

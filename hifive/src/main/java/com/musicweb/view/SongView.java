@@ -13,7 +13,7 @@ public class SongView {
 	private String duration;
 	private String image;
 	private String language;
-	private String style;
+	private int style;
 	private Date releaseDate;
 	private String filePath;
 	
@@ -75,14 +75,6 @@ public class SongView {
 		this.filePath = filePath;
 	}
 
-	public String getStyle() {
-		return style;
-	}
-
-	public void setStyle(String style) {
-		this.style = style;
-	}
-
 	public Date getReleaseDate() {
 		return releaseDate;
 	}
@@ -129,6 +121,14 @@ public class SongView {
 
 	public void setOnline(boolean isOnline) {
 		this.isOnline = isOnline;
+	}
+
+	public int getStyle() {
+		return style;
+	}
+
+	public void setStyle(int style) {
+		this.style = style;
 	}
 
 }

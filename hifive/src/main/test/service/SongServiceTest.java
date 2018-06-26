@@ -114,10 +114,10 @@ public class SongServiceTest {
 		System.out.println(duration);
 	}
 	
-	//因redis失败
+	//测试成功。如果redis与事务同时使用导致set的结果不能马上被get到，因为事务还没提交，set不生效
 	@Test
 	public void testPlay() {
-		int songId = 104;
+		int songId = 122;
 		System.out.println("播放前，缓存中的歌曲播放量为：" + redisUtil.hget("song_play_count", String.valueOf(songId)));
 		Song song = songDao.selectById(songId);
 		System.out.println("播放前，缓存中的歌曲所属专辑播放量为：" + redisUtil.hget("album_play_count", String.valueOf(song.getAlbumId())));
