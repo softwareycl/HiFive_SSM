@@ -101,7 +101,7 @@
     
             <!--  select user  -->
     <select id="select"
-    		resultType="java.util.List">
+    		resultType="com.music.domain.User">
     		SELECT * FROM user WHERE id=#{id}
     </select>
     
