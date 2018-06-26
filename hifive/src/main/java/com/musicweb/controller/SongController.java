@@ -183,7 +183,6 @@ public class SongController {
 			for(Song song: songs) {
 				SimpleSongView songView = new SimpleSongView();
 				BeanUtils.copyProperties(song, songView);
-				songView.setDuration(DurationUtil.computeDuration(song.getFilePath()));
 				songViews.add(songView);
 			}
 			return songViews;
