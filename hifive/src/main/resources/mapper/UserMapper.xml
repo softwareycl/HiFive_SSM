@@ -101,7 +101,7 @@
     
             <!--  select user  -->
     <select id="select"
-    		resultType="com.music.domain.User">
+    		resultType="com.musicweb.domain.User">
     		SELECT * FROM user WHERE id=#{id}
     </select>
     
