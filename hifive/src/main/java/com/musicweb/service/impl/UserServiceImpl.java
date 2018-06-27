@@ -54,6 +54,8 @@ public class UserServiceImpl implements UserService {
 	public boolean register(User user) {
 		if(checkUserExisted(user.getId().trim())) return false;
 		user.setPwd(MD5Util.getMD5(user.getPwd()));
+		user.setSecurityAnswer(MD5Util.getMD5(user.getSecurityAnswer()));
+		user.setType(1);
 		userDao.insert(user);
 		redisUtil.hset(USER, user.getId().trim(), user);
 		return true;
@@ -72,7 +74,13 @@ public class UserServiceImpl implements UserService {
 		if(!checkUserExisted(id)) return 2;
 		//账号密码匹配错误
 		if(!MD5Util.getMD5(user.getPwd()).equals(userDB.getPwd())) return 3;
-		return 1;
+		if(userDB.getType() == 0)
+			//管理员
+			return 0;
+		else if(userDB.getType() == 1)
+			//普通用户
+			return 1;
+		return -1;
 	}
 
 	/**
@@ -110,7 +118,7 @@ public class UserServiceImpl implements UserService {
 		answer.trim();
 		id.trim();
 		User user = cacheService.getAndCacheUserByUserID(id);
-		return user.getSecurityAnswer().equals(answer);
+		return user.getSecurityAnswer().equals(MD5Util.getMD5(answer));
 	}
 
 	/**
@@ -175,8 +183,8 @@ public class UserServiceImpl implements UserService {
 		user.setId(user.getId().trim());
 		user.setImage(user.getImage().trim());
 		user.setName(user.getName().trim());
-		user.setPwd(user.getPwd().trim());
-		user.setSecurityAnswer(user.getSecurityAnswer().trim());
+		user.setPwd(MD5Util.getMD5(user.getPwd().trim()));
+		user.setSecurityAnswer(MD5Util.getMD5(user.getSecurityAnswer().trim()));
 		userDao.update(user);
 		redisUtil.hset(USER, user.getId(), user, TimeConstant.A_DAY);
 		return true;
