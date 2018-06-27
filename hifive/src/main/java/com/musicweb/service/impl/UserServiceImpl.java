@@ -52,7 +52,8 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public boolean register(User user) {
-		if(!checkUserExisted(user.getId().trim())) return false;
+		if(checkUserExisted(user.getId().trim())) return false;
+		user.setPwd(MD5Util.getMD5(user.getPwd()));
 		userDao.insert(user);
 		redisUtil.hset(USER, user.getId().trim(), user);
 		return true;
@@ -125,7 +126,7 @@ public class UserServiceImpl implements UserService {
 		User user = cacheService.getAndCacheUserByUserID(id);
 		String pwdEncoded = MD5Util.getMD5(pwd);
 		user.setPwd(pwdEncoded);
-		userDao.updatePassword(id, pwd);
+		userDao.updatePassword(id, pwdEncoded);
 		redisUtil.hset(USER, id, user, TimeConstant.A_DAY);
 		return true;
 	}

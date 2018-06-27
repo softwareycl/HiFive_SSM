@@ -14,10 +14,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.musicweb.constant.UserConstant;
+import com.musicweb.domain.Album;
 import com.musicweb.domain.Playlist;
+import com.musicweb.domain.Song;
 import com.musicweb.domain.User;
 import com.musicweb.service.PlaylistService;
 import com.musicweb.service.UserService;
+import com.musicweb.service.AlbumService;
 import com.musicweb.view.LoginUserView;
 import com.musicweb.view.UserView;
 import com.musicweb.view.MyMusicView;
@@ -40,6 +43,8 @@ public class UserController {
 	private UserService userService;
 	@Resource
 	private PlaylistService playlistService;
+	@Resource
+	private AlbumService albumService;
 
 	/**
 	 * 用户注册
@@ -154,22 +159,35 @@ public class UserController {
 		
 		//getMyPlaylists
 		ArrayList<SimplePlaylistView> simplePlaylistListViewList = new ArrayList<SimplePlaylistView>();
-		BeanUtils.copyProperties(userService.getMyPlaylists(id), simplePlaylistListViewList);
-		for(SimplePlaylistView view : simplePlaylistListViewList) {
+		List<Playlist> playlistList = userService.getMyPlaylists(id);
+		for(Playlist playlist: playlistList) {
+			SimplePlaylistView view = new SimplePlaylistView();
+			BeanUtils.copyProperties(playlist, view);
 			view.setCount(playlistService.getSongList(view.getId()).size());
+			simplePlaylistListViewList.add(view);
 		}
 		myMusicView.setPlaylistList(simplePlaylistListViewList);
 		myMusicView.setPlaylistCount(simplePlaylistListViewList.size());
 		
 		//getLikedSongs
 		ArrayList<SimpleSongView> simpleSongViewList = new ArrayList<SimpleSongView>();
-		BeanUtils.copyProperties(userService.getLikedSongs(id), simpleSongViewList);
+		List<Song> songList = userService.getLikedSongs(id);
+		for(Song song : songList) {
+			SimpleSongView view = new SimpleSongView();
+			BeanUtils.copyProperties(song, view);
+			simpleSongViewList.add(view);
+		}
 		myMusicView.setLikeSongList(simpleSongViewList);
 		myMusicView.setLikeSongCount(simpleSongViewList.size());
 		
 		//getLikeAlbums
 		ArrayList<SimpleAlbumView> simpleAlbumViewList = new ArrayList<SimpleAlbumView>();
-		BeanUtils.copyProperties(userService.getLikeAlbums(id), simpleAlbumViewList);
+		List<Album> albumList = userService.getLikeAlbums(id);
+		for(Album album : albumList) {
+			SimpleAlbumView view = new SimpleAlbumView();
+			BeanUtils.copyProperties(album, view);
+			view.setCount(albumService.getSongList(album.getId()).size());
+		}
 		myMusicView.setLikeAlbumList(simpleAlbumViewList);
 		myMusicView.setLikeAlbumCount(simpleAlbumViewList.size());
 		
