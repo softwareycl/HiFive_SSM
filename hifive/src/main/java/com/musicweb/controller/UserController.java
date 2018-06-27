@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -53,13 +54,16 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean register(RegisterUserView registerUserView) {
+	public Boolean register(@RequestBody RegisterUserView registerUserView) {
 		User user = new User();
 		BeanUtils.copyProperties(registerUserView, user);
 		//注册的类型为用户
 		user.setType(1);
 		//注册时用户头像为默认头像
-		user.setImage("/image/user/default.png");
+		if(user.getGender() == 1)
+			user.setImage("/image/user/default1.png");
+		else
+			user.setImage("/image/user/default2.png");
 		return userService.register(user);
 	}
 
@@ -71,7 +75,7 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ResponseBody
-	public Integer login(LoginUserView loginUserView, HttpSession session) {
+	public Integer login(@RequestBody LoginUserView loginUserView, HttpSession session) {
 		User user = new User();
 		BeanUtils.copyProperties(loginUserView, user);
 		int status = userService.login(user);
@@ -118,7 +122,7 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/modify", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean modifyInfo(UserView userView, HttpSession session) {//post
+	public Boolean modifyInfo(@RequestBody UserView userView, HttpSession session) {//post
 		String id = (String)session.getAttribute(UserConstant.USER_ID);
 		//id为空说明用户已离线，返回失败
 		if(id == null) return false;
