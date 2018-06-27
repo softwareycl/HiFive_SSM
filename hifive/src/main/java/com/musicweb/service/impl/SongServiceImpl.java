@@ -1,9 +1,11 @@
 package com.musicweb.service.impl;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.swing.ListModel;
 
 import org.springframework.stereotype.Service;
 
@@ -64,7 +66,7 @@ public class SongServiceImpl implements SongService {
 	public List<Song> lookUpRank(int type, boolean isAll) {
 		Object songs = redisUtil.hget("rank", String.valueOf(type));//先查找缓存中有没有对应的排行榜，还要看isAll
 		if(songs == null) {
-			int count = isAll?DisplayConstant.RANK_PAGE_RANK_SIZE:DisplayConstant.HOME_PAGE_RANK_SIZE;//显示排行榜的页面展示多少首歌曲
+			int count = DisplayConstant.RANK_PAGE_RANK_SIZE;//显示排行榜的页面展示多少首歌曲
 			switch(type) {// 根据type选择不同的dao方法
 			case 1:
 				songs = songDao.selectLatest(0, count);
@@ -97,7 +99,14 @@ public class SongServiceImpl implements SongService {
 				redisUtil.hset("rank", String.valueOf(type), songs, TimeConstant.A_DAY);//将排行榜放进缓存
 			}
 		}
-		return (List<Song>)songs;//
+		if (!isAll) {
+			List<Song> songsForRank = (List<Song>)songs;
+			List<Song> songsForHome = new ArrayList<>();
+			for(int i = 0; i < DisplayConstant.HOME_PAGE_RANK_SIZE && i < songsForRank.size(); i++)
+				songsForHome.add(songsForRank.get(i));
+			return songsForHome;
+		}
+		return (List<Song>)songs;
 	}
 
 	/**
