@@ -122,4 +122,11 @@ public class Album {
 		this.releaseDate = releaseDate;
 	}
 
+	@Override
+	public String toString() {
+		return "Album [id=" + id + ", name=" + name + ", intro=" + intro + ", artistId=" + artistId + ", artistName="
+				+ artistName + ", playCount=" + playCount + ", region=" + region + ", style=" + style + ", image="
+				+ image + ", releaseDate=" + releaseDate + "]";
+	}
+
 }
