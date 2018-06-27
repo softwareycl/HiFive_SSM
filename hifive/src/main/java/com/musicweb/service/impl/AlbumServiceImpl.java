@@ -110,7 +110,7 @@ public class AlbumServiceImpl implements AlbumService {
 			List<Song> songList = albumDao.selectAllSongs(id);
 			if(songList != null) {
 				String classPath = this.getClass().getClassLoader().getResource("").getPath();
-				String WebInfPath = classPath.substring(0, classPath.indexOf("/classes"));
+				String WebInfPath = "/home/brian/apache-tomcat-9.0.8/webapps/hifive/WEB-INF";//classPath.substring(0, classPath.indexOf("/classes"));
 				for(Song song: songList) {
 					if(song.getImage() == null) {
 						song.setImage(album.getImage());
@@ -170,10 +170,12 @@ public class AlbumServiceImpl implements AlbumService {
 		Artist artist = cacheService.getAndCacheSingerBySingerID(album.getArtistId());
 		album.setArtistName(artist.getName());
 		//插入数据库
-		int id = albumDao.insert(album);
-		album.setId(id);
+		albumDao.insert(album);
+		if (album.getId() == 0) {
+			return 0;
+		}
 		//放入缓存
-		redisUtil.hset(redisAlbum, String.valueOf(id), album, TimeConstant.A_DAY);
+		redisUtil.hset(redisAlbum, String.valueOf(album.getId()), album, TimeConstant.A_DAY);
 		//更改相关缓存
 		Object object = redisUtil.hget(redisArtistAlbums, String.valueOf(album.getArtistId()));
 		if(object != null) {
@@ -184,10 +186,10 @@ public class AlbumServiceImpl implements AlbumService {
 		}
 		redisUtil.del(redisAlbumFilter);
 		redisUtil.del(redisAlbumFilterCount);
-		//playCount缓存
-		redisUtil.hset(redisArtistAlbums, String.valueOf(album.getArtistId()), 0);
+		//playCount缓存（不是redisArtistAlbums）
+		redisUtil.hset(redisAlbumPlayCount, String.valueOf(album.getArtistId()), 0);
 		
-		return id;
+		return album.getId();
 	}
 
 	/**

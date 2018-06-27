@@ -51,7 +51,7 @@
 
 		<!--  insert   -->
 	<insert id="insert"
-			parameterType="com.musicweb.domain.Artist">
+			parameterType="com.musicweb.domain.Artist" keyProperty="id">
 		INSERT INTO 
 			artist(name,gender,birthplace,occupation,birthday,representative,region,initial,play_count,image,intro)
 		VALUES 

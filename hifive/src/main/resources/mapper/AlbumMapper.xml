@@ -36,7 +36,7 @@
 
 		<!--  insert   -->
 	<insert id="insert"
-			parameterType="com.musicweb.domain.Album">
+			parameterType="com.musicweb.domain.Album" keyProperty="id">
 		INSERT INTO 
 			album(name,release_date,region,style,intro,image,play_count,artist_id)
 		VALUES 
