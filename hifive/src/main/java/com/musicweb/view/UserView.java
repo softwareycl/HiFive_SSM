@@ -4,7 +4,7 @@ public class UserView {
 	private String id;
 	private String name;
 	private String image;
-	private String gender;
+	private int gender;
 
 	public String getId() {
 		return id;
@@ -30,11 +30,11 @@ public class UserView {
 		this.image = image;
 	}
 
-	public String getGender() {
+	public int getGender() {
 		return gender;
 	}
 
-	public void setGender(String gender) {
+	public void setGender(int gender) {
 		this.gender = gender;
 	}
 
