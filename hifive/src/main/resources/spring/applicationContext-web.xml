@@ -17,7 +17,7 @@
 			<mvc:exclude-mapping path="/index.html" />
 			<mvc:exclude-mapping path="/static/**" />
 			<mvc:exclude-mapping path="/image/**" />
-			<mvc:exclude-mapping path="/lyrics/**" />
+			<!-- <mvc:exclude-mapping path="/lyrics/**" /> -->
 			<mvc:exclude-mapping path="/music/**" />
 			<bean class="com.musicweb.service.interceptor.CORSInterceptor"></bean>
 		</mvc:interceptor>
