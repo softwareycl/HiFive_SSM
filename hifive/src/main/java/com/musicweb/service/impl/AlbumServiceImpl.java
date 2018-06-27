@@ -187,7 +187,7 @@ public class AlbumServiceImpl implements AlbumService {
 		redisUtil.del(redisAlbumFilter);
 		redisUtil.del(redisAlbumFilterCount);
 		//playCount缓存（不是redisArtistAlbums）
-		redisUtil.hset(redisAlbumPlayCount, String.valueOf(album.getArtistId()), 0);
+		redisUtil.hset(redisAlbumPlayCount, String.valueOf(album.getId()), 0);
 		
 		return album.getId();
 	}

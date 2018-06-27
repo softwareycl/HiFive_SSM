@@ -181,4 +181,12 @@ public class Artist {
 		this.representative = representative;
 	}
 
+	@Override
+	public String toString() {
+		return "Artist [id=" + id + ", name=" + name + ", initial=" + initial + ", image=" + image + ", region="
+				+ region + ", country=" + country + ", intro=" + intro + ", playCount=" + playCount + ", gender="
+				+ gender + ", birthplace=" + birthplace + ", occupation=" + occupation + ", birthday=" + birthday
+				+ ", representative=" + representative + "]";
+	}
+
 }

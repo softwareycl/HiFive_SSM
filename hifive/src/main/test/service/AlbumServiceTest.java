@@ -130,6 +130,7 @@ public class AlbumServiceTest {
 			System.out.println("null");
 	}
 	
+	//测试成功
 	@Test
 	public void testAdd() {
 		Album album = new Album();
@@ -141,10 +142,26 @@ public class AlbumServiceTest {
 		album.setReleaseDate(new Date());
 		album.setStyle(1);
 		
+		System.out.println("调用前：");
+		System.out.println("缓存中的歌手为：");
+		System.out.println(redisUtil.hget("artist", String.valueOf(1)));
+		System.out.println("缓存中的歌手专辑为：");
+		System.out.println(redisUtil.hget("artist_albums", String.valueOf(1)));
+		
 		int id = albumService.add(album);
 		
 		if (id != 0) {
+			System.out.println("调用后：");
+			System.out.println("缓存中的歌手为：");
+			System.out.println(redisUtil.hget("artist", String.valueOf(1)));
+			System.out.println("缓存中的歌手专辑为：");
+			System.out.println(redisUtil.hget("artist_albums", String.valueOf(1)));
+			System.out.println("缓存中的专辑为：");
+			System.out.println(redisUtil.hget("album", String.valueOf(id)));
+			System.out.println("缓存中的专辑播放量为：");
+			System.out.println(redisUtil.hget("album_play_count", String.valueOf(id)));
 			Album album2 = albumDao.select(id);
+			System.out.println("数据库中的专辑为：");
 			System.out.println(album2);
 		}
 		else
