@@ -53,10 +53,10 @@ public class CacheServiceImpl implements CacheService {
 			Artist artist = artistDao.select(singerID);
 			if(artist != null) {
 				redisUtil.hset("artist", String.valueOf(singerID), artist, TimeConstant.A_DAY);
-			}
-			Object playCount = redisUtil.hget("artist_play_count", String.valueOf(singerID));
-			if(playCount == null){
-				redisUtil.hset("artist_play_count", String.valueOf(singerID), artist.getPlayCount());
+				Object playCount = redisUtil.hget("artist_play_count", String.valueOf(singerID));
+				if(playCount == null){
+					redisUtil.hset("artist_play_count", String.valueOf(singerID), artist.getPlayCount());
+				}
 			}
 			return artist;
 		}
@@ -73,10 +73,10 @@ public class CacheServiceImpl implements CacheService {
 			Album album = albumDao.select(albumID);
 			if(album != null) {
 				redisUtil.hset("album", String.valueOf(albumID), album, TimeConstant.A_DAY);
-			}
-			Object playCount = redisUtil.hget("album_play_count", String.valueOf(albumID));
-			if(playCount == null){
-				redisUtil.hset("album_play_count", String.valueOf(albumID), album.getPlayCount());
+				Object playCount = redisUtil.hget("album_play_count", String.valueOf(albumID));
+				if(playCount == null){
+					redisUtil.hset("album_play_count", String.valueOf(albumID), album.getPlayCount());
+				}
 			}
 			return album;
 		}
@@ -92,20 +92,22 @@ public class CacheServiceImpl implements CacheService {
 		Object object = redisUtil.hget("song", String.valueOf(songID));
 		if(object == null) {
 			Song song = songDao.selectById(songID);
-			if(song.getImage() == null) {
-				song.setImage(albumDao.selectImage(song.getAlbumId()));
-			}
-			//拼接出歌曲音频文件的绝对路径
-			String classPath = this.getClass().getClassLoader().getResource("").getPath();
-			String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
-			String filePath = WebInfoPath + song.getFilePath();
-			song.setDuration(DurationUtil.computeDuration(filePath));
 			if(song != null) {
+				if(song.getImage() == null) {
+					song.setImage(albumDao.selectImage(song.getAlbumId()));
+				}
+				//拼接出歌曲音频文件的绝对路径
+				String classPath = this.getClass().getClassLoader().getResource("").getPath();
+				String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
+				String filePath = WebInfoPath + song.getFilePath();
+				song.setDuration(DurationUtil.computeDuration(filePath));
+				
 				redisUtil.hset("song", String.valueOf(songID), song, TimeConstant.A_DAY);
-			}
-			Object playCount = redisUtil.hget("song_play_count", String.valueOf(songID));
-			if(playCount == null) {
-				redisUtil.hset("song_play_count", String.valueOf(songID), song.getPlayCount());
+				
+				Object playCount = redisUtil.hget("song_play_count", String.valueOf(songID));
+				if(playCount == null) {
+					redisUtil.hset("song_play_count", String.valueOf(songID), song.getPlayCount());
+				}
 			}
 			return song;
 		}

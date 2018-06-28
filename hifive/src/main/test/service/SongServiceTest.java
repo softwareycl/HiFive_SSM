@@ -139,12 +139,12 @@ public class SongServiceTest {
 	@Rollback(false)
 	public void testAdd() {
 		Song song = new Song();
-		song.setAlbumId(1);
+		song.setAlbumId(117);
 		song.setArtistId(1);
-		song.setFilePath("/filepath");
-		song.setImage("/image");
+		song.setFilePath("/music/Taylor Swift/你/你.mp3");
+		song.setImage(null);
 		song.setLanguage("英语");
-		song.setLyricsPath("/lyricspath");
+		song.setLyricsPath("/lyrics/Taylor Swift/你/你.txt");
 		song.setName("我");
 		song.setPlayCount(0);
 		song.setRegion(1);

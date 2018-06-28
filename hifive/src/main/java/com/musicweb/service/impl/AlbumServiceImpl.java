@@ -202,7 +202,7 @@ public class AlbumServiceImpl implements AlbumService {
 		Album album = cacheService.getAndCacheAlbumByAlbumID(id);
 		
 		String classPath = this.getClass().getClassLoader().getResource("").getPath();
-		String WebInfPath = classPath.substring(0, classPath.indexOf("/classes"));
+		String WebInfPath = classPath.substring(0, classPath.indexOf("/classes"));//"/home/brian/apache-tomcat-9.0.8/webapps/hifive/WEB-INF";//;
 		
 		//删除专辑图片
 		String albumImageFilePath = WebInfPath + album.getImage();
@@ -210,7 +210,7 @@ public class AlbumServiceImpl implements AlbumService {
 		
 		//获取歌曲列表
 		List<Song> songList = getSongList(id);
-		if (songList != null) {
+		if (songList != null && songList.size()!=0) {
 			//删除歌曲图片
 			Song firstSong = songList.get(0);
 			String songImageFolderPath = WebInfPath + "/image/song/" + firstSong.getArtistName() + "/" + firstSong.getAlbumName();
@@ -231,7 +231,7 @@ public class AlbumServiceImpl implements AlbumService {
 				//删除歌曲数据库
 				songDao.delete(songId);
 				//删除歌曲playcount
-				redisUtil.hdel(redisSongPlayCount, songId);
+				redisUtil.hdel(redisSongPlayCount, String.valueOf(songId));
 	
 				//删除数据库歌单中的歌
 				playlistDao.deleteSongInAll(songId);
@@ -289,25 +289,8 @@ public class AlbumServiceImpl implements AlbumService {
 		//删除缓存用户喜欢的专辑
 		redisUtil.del(redisUserAlbums);
 		
+		//如果专辑名称被修改了，那么缓存中这张专辑的所有歌曲都需要修改，因为歌曲里有属性表示专辑名称
 		if(!oldAlbum.getName().equals(album.getName())) {
-			//删除筛选专辑缓存
-			redisUtil.del(redisAlbumFilter);
-			redisUtil.del(redisAlbumFilterCount);
-			
-			//删除排行榜、新歌
-			redisUtil.del(redisRank);
-			redisUtil.del(redisNewSong);
-			
-			//删除新专辑
-			redisUtil.del(redisNewAlbum);
-			//删除缓存用户喜欢的专辑
-			redisUtil.del(redisUserAlbums);
-			
-			//删除数据库用户喜欢的歌
-			redisUtil.del(redisUserSongs);
-			//删除缓存歌单中的歌
-			redisUtil.del(redisPlaylistSongs);
-			
 			//修改对应song和album_songs缓存
 			List<Song> songList = getSongList(album.getId());
 			for(Song song: songList) {
@@ -322,10 +305,12 @@ public class AlbumServiceImpl implements AlbumService {
 		album.setImage(oldAlbum.getImage());
 		Artist artist = cacheService.getAndCacheSingerBySingerID(album.getArtistId());
 		album.setArtistName(artist.getName());
-		//插入数据库
-		int id = albumDao.update(album);
-		//放入缓存
-		redisUtil.hset(redisAlbum, String.valueOf(id), album, TimeConstant.A_DAY);
+		
+		//修改数据库
+		//int id = albumDao.update(album);
+		albumDao.update(album);
+		//放入缓存，其实是更新了缓存
+		redisUtil.hset(redisAlbum, String.valueOf(album.getId()), album, TimeConstant.A_DAY);
 		
 		//删除筛选专辑缓存
 		redisUtil.del(redisAlbumFilter);
@@ -345,19 +330,13 @@ public class AlbumServiceImpl implements AlbumService {
 		//删除缓存歌单中的歌
 		redisUtil.del(redisPlaylistSongs);
 		
-		//修改对应song和album_songs缓存
-		List<Song> songList = getSongList(album.getId());
-		for(Song song: songList) {
-			redisUtil.hdel(redisSong, String.valueOf(song.getId()));
-		}
-		redisUtil.hdel(redisAlbumSongs, String.valueOf(album.getId()));
-		
 		return true;
 	}
 
 	/**
-	 * 设置专辑图片
-	 * @param id 首专辑id
+	 * 设置专辑图片。如果数据库中歌曲没有图片，那么缓存中歌曲图片需要根据专辑图片的修改而修改；<br/>如果数据库中歌曲有图片，那么缓存中歌曲图片 不 需要根据专辑图片的修改而修改。
+	 * 
+	 * @param id 专辑id
 	 * @param image 专辑图片路径
 	 * @return 是否操作成功
 	 */
@@ -365,7 +344,7 @@ public class AlbumServiceImpl implements AlbumService {
 	public boolean setImage(int id, String image) {
 		Album album = cacheService.getAndCacheAlbumByAlbumID(id);
 		String classPath = this.getClass().getClassLoader().getResource("").getPath();
-		String WebInfPath = classPath.substring(0, classPath.indexOf("/classes"));
+		String WebInfPath = classPath.substring(0, classPath.indexOf("/classes"));//"/home/brian/apache-tomcat-9.0.8/webapps/hifive/WEB-INF";//classPath.substring(0, classPath.indexOf("/classes"));
 		//删除旧图片
 		FileUtil.deleteFile(new File(WebInfPath + album.getImage()));
 		album.setImage(image);
@@ -393,10 +372,13 @@ public class AlbumServiceImpl implements AlbumService {
 		for(Song song: songList) {
 			song.setAlbumName(album.getName());
 			redisUtil.hset(redisSong, String.valueOf(song.getId()), song, TimeConstant.A_DAY);
+			if (songDao.selectById(song.getId()).getImage() == null) {//如果数据库中歌曲没有图片的话，那缓存中歌曲的图片也需要改
+				song.setImage(image);
+				redisUtil.hset(redisSong, String.valueOf(song.getId()), song, TimeConstant.A_DAY);
+			}
 		}
 		redisUtil.hset(redisAlbumSongs, String.valueOf(album.getId()), songList, TimeConstant.A_DAY);
 				
-		
 		return false;
 	}
 
