@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -36,6 +37,9 @@ public class PlaylistController {
 	
 	@Resource
 	private UserService userService;
+	
+	private String testUserId = "public@qq.com";
+	private String testAdminId = "public2@qq.com";
 
 	/**
 	 * 创建歌单
@@ -45,8 +49,13 @@ public class PlaylistController {
 	 */
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
 	@ResponseBody
-	public Integer create(HttpSession session, SimplePlaylistView simplePlaylistView) {
+	public Integer create(HttpSession session, @RequestBody SimplePlaylistView simplePlaylistView) {
 		String userId = (String)session.getAttribute(UserConstant.USER_ID);
+		
+		//test
+		userId = testUserId;
+		
+		System.out.println(userId);
 		Playlist playlist = new Playlist();
 		BeanUtils.copyProperties(simplePlaylistView, playlist);
 		return playlistService.create(userId, playlist);
@@ -64,6 +73,15 @@ public class PlaylistController {
 		//用户离线返回空
 		Object object = session.getAttribute(UserConstant.USER_ID);
 		if(object == null) return null;
+		String userId = (String)object;
+		
+		//test
+		userId = testUserId;
+		
+		//验证用户是否拥有此歌单
+		if(!playlistService.checkPossession(userId, id))
+			return new PlaylistView();
+
 		Playlist playlist = playlistService.getInfo(id);
 		PlaylistView playlistView = new PlaylistView();
 		BeanUtils.copyProperties(playlist, playlistView);
@@ -87,9 +105,18 @@ public class PlaylistController {
 	 */
 	@RequestMapping(value = "/modifyInfo", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean modifyInfo(HttpSession session, SimplePlaylistView simplePlaylistView) {
+	public Boolean modifyInfo(HttpSession session, @RequestBody SimplePlaylistView simplePlaylistView) {
 		Object object = session.getAttribute(UserConstant.USER_ID);
 		if(object == null) return false;
+		String userId = (String)object;
+		
+		//test
+		userId = testUserId;
+		
+		//验证用户是否拥有此歌单
+		if(!playlistService.checkPossession(userId, simplePlaylistView.getId()))
+			return false;
+		
 		Playlist playlist = new Playlist();
 		BeanUtils.copyProperties(simplePlaylistView, playlist);
 		return playlistService.modifyInfo(playlist);
@@ -107,6 +134,15 @@ public class PlaylistController {
 	public Boolean setImage(HttpSession session, int playlistId, String image) {
 		Object object = session.getAttribute(UserConstant.USER_ID);
 		if(object == null) return false;
+		String userId = (String)object;
+		
+		//test
+		userId = testUserId;
+		
+		//验证用户是否拥有此歌单
+		if(!playlistService.checkPossession(userId, playlistId))
+			return false;
+		
 		return playlistService.setImage(playlistId, image);
 	}
 
@@ -121,6 +157,15 @@ public class PlaylistController {
 	public List<SimpleSongView> getSongList(HttpSession session, int id) {
 		Object object = session.getAttribute(UserConstant.USER_ID);
 		if(object == null) return null;
+		String userId = (String)object;
+		
+		//test
+		userId = testUserId;
+		
+		//验证用户是否拥有此歌单
+		if(!playlistService.checkPossession(userId, id))
+			return new ArrayList<>();
+		
 		List<Song> songList = playlistService.getSongList(id);
 		//将歌曲列表装配为歌曲视图列表
 		List<SimpleSongView> viewList = new ArrayList<SimpleSongView>();
@@ -143,6 +188,14 @@ public class PlaylistController {
 	public Boolean remove(HttpSession session, int id) {
 		Object object = session.getAttribute(UserConstant.USER_ID);
 		if(object == null) return false;
+		String userId = (String)object;
+		
+		//test
+		userId = testUserId;
+		
+		//验证用户是否拥有此歌单
+		if(!playlistService.checkPossession(userId, id))
+			return false;
 		return playlistService.remove(id);
 	}
 
@@ -158,6 +211,14 @@ public class PlaylistController {
 	public Boolean addASong(HttpSession session, int songId, int playlistId) {
 		Object object = session.getAttribute(UserConstant.USER_ID);
 		if(object == null) return false;
+		String userId = (String)object;
+		
+		//test
+		userId = testUserId;
+		
+		//验证用户是否拥有此歌单
+		if(!playlistService.checkPossession(userId, playlistId))
+			return false;
 		return playlistService.addSong(playlistId, songId);
 	}
 
@@ -173,6 +234,15 @@ public class PlaylistController {
 	public Boolean removeASong(HttpSession session, int playlistId, int songId) {
 		Object object = session.getAttribute(UserConstant.USER_ID);
 		if(object == null) return false;
+		String userId = (String)object;
+		
+		//test
+		userId = testUserId;
+		
+		//验证用户是否拥有此歌单
+		if(!playlistService.checkPossession(userId, playlistId))
+			return false;
+		
 		return  playlistService.removeSong(playlistId, songId);
 	}
 
@@ -188,6 +258,17 @@ public class PlaylistController {
 	public Boolean addPlaylistToPlaylist(HttpSession session, int fromId, int toId) {
 		Object object = session.getAttribute(UserConstant.USER_ID);
 		if(object == null) return false;
+		String userId = (String)object;
+		
+		//test
+		userId = testUserId;
+		
+		//验证用户是否拥有此歌单
+		if(!playlistService.checkPossession(userId, fromId))
+			return false;
+		if(!playlistService.checkPossession(userId, toId))
+			return false;
+		
 		return playlistService.addPlaylistToPlaylist(fromId, toId);
 		
 	}
@@ -204,6 +285,14 @@ public class PlaylistController {
 	public Boolean addAlbumToPlaylist(HttpSession session, int albumId, int playlistId) {
 		Object object = session.getAttribute(UserConstant.USER_ID);
 		if(object == null) return false;
+		String userId = (String)object;
+		
+		//test
+		userId = testUserId;
+		
+		//验证用户是否拥有此歌单
+		if(!playlistService.checkPossession(userId, playlistId))
+			return false;
 		return playlistService.addAlbumToPlaylist(albumId, playlistId);
 	}
 	
@@ -218,6 +307,10 @@ public class PlaylistController {
 		Object object = session.getAttribute(UserConstant.USER_ID);
 		if(object == null) return null;
 		String userId = (String)object;
+		
+		//test
+		userId = testUserId;
+		
 		List<Playlist> playlistList = playlistService.getPlaylistList(userId);
 		ArrayList<SimplePlaylistView> viewList = new ArrayList<SimplePlaylistView>();
 		for(Playlist playlist: playlistList) {

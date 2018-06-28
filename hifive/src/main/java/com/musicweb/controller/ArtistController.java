@@ -37,6 +37,9 @@ public class ArtistController {
 	@Resource
 	private CacheService cacheService;
 	
+	private String testUserId = "public@qq.com";
+	private String testAdminId = "public2@qq.com";
+	
 	/**
 	 * 以名字为关键字搜索歌手
 	 * @param name 歌手名字
@@ -141,6 +144,10 @@ public class ArtistController {
 	public Integer addAnArtist(ArtistView artistView, HttpSession session) {//post
 		//从session中取出管理员id， 若为空则返回-1拒绝请求
 		Object object = session.getAttribute(UserConstant.ADMIN_ID);
+		
+		//test
+		object = testAdminId;
+		
 		if(object == null) {
 			return -1;
 		}
@@ -160,6 +167,10 @@ public class ArtistController {
 	@ResponseBody
 	public Boolean removeAnArtist(int id, HttpSession session) {//get
 		Object object = session.getAttribute(UserConstant.ADMIN_ID);
+		
+		//test
+		object = testUserId;
+		
 		if(object == null) {
 			return false;
 		}
@@ -176,6 +187,10 @@ public class ArtistController {
 	@ResponseBody
 	public Boolean modifyAnArtist(ArtistView artistView, HttpSession session) {//post
 		Object object = session.getAttribute(UserConstant.ADMIN_ID);
+		
+		//test
+		object = testUserId;
+		
 		if(object == null) {
 			return false;
 		}
@@ -198,6 +213,10 @@ public class ArtistController {
 	@ResponseBody
 	public Boolean setImage(int id, String image, HttpSession session) {
 		Object object = session.getAttribute(UserConstant.ADMIN_ID);
+		
+		//test
+		object = testUserId;
+		
 		if(object == null) {
 			return false;
 		}

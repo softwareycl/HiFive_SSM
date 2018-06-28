@@ -54,6 +54,11 @@ public class DownloadController {
 	public void download(HttpServletRequest request, HttpServletResponse response, int id) {
 		HttpSession session = request.getSession();
 		String userId = (String) session.getAttribute(UserConstant.USER_ID);
+		
+		//test
+		String testUserId = "public@qq.com";
+		userId = testUserId;
+		
 		if(userId != null) {
 			Song song = songService.getInfo(id);
 			if(song != null) {

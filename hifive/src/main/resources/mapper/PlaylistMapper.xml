@@ -21,7 +21,7 @@
     </resultMap>
     
 		<!--  insert   -->
-	<insert id="insert">
+	<insert id="insert" keyProperty="playlist.id">
 		INSERT INTO 
 			playlist (user_id, name, intro, image)
 		VALUES 

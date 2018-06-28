@@ -1,6 +1,7 @@
 package com.musicweb.service.impl;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -73,15 +74,26 @@ public class PlaylistServiceImpl implements PlaylistService {
 	public int create(String userId, Playlist playlist) {
 		//对字符串类型的属性进行预处理
 		playlist.setName(playlist.getName().trim());
-		playlist.setImage(playlist.getImage().trim());
 		playlist.setIntro(playlist.getIntro().trim());
-		userId.trim();
 		
-		int id = playlistDao.insert(userId,playlist);
+		playlistDao.insert(userId,playlist);
 		//新增歌单存入歌单缓存，用户_歌单缓存
 		redisUtil.hset(PLAYLIST, String.valueOf(playlist.getId()), playlist, TimeConstant.A_DAY);
-		redisUtil.hset(USER_PLAYLISTS, userId, playlist, TimeConstant.A_DAY);
-		return id;
+//		redisUtil.hset(USER_PLAYLISTS, userId, playlist, TimeConstant.A_DAY);
+		
+		Object object = redisUtil.hget(USER_PLAYLISTS, userId);
+		if(object == null) {
+			List<Playlist> playlistList = getPlaylistList(userId);
+			playlistList.add(playlist);
+			redisUtil.hset(PLAYLIST, String.valueOf(playlist.getId()), playlist, TimeConstant.A_DAY);
+		} else {
+			@SuppressWarnings("unchecked")
+			List<Playlist> playlistList = (List<Playlist>)object;
+			playlistList.add(playlist);
+			redisUtil.hset(PLAYLIST, String.valueOf(playlist.getId()), playlist, TimeConstant.A_DAY);
+		}
+		
+		return playlist.getId();
 	}
 
 	/**
@@ -395,6 +407,23 @@ public class PlaylistServiceImpl implements PlaylistService {
 			return playlistList;
 		}
 		return (List<Playlist>) object;
+	}
+
+	/**
+	 * 验证用户是否拥有对应歌单
+	 * @param userId 用户ID
+	 * @param playlistId 歌单ID
+	 * @return 是否拥有的状态
+	 */
+	@Override
+	public Boolean checkPossession(String userId, int playlistId) {
+		List<Playlist> playlistList = getPlaylistList(userId);
+		for(Playlist p: playlistList) {
+			if(p.getId() == playlistId) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

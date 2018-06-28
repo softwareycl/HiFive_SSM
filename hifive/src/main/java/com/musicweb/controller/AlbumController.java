@@ -29,6 +29,9 @@ import com.musicweb.view.SimpleSongView;
 public class AlbumController {
 	@Resource
 	private AlbumService albumService;
+	
+	private String testUserId = "public@qq.com";
+	private String testAdminId = "public2@qq.com";
 
 	/**
 	 * 获取搜索结果的记录条数
@@ -73,6 +76,10 @@ public class AlbumController {
 		AlbumView albumView = new AlbumView();
 		//判断用户是否在线
 		boolean isOnline = (session.getAttribute(UserConstant.USER_ID) == null && session.getAttribute(UserConstant.ADMIN_ID) == null) ? false : true;
+		
+		//test
+		isOnline = true;
+		
 		albumView.setOnline(isOnline);
 		if (album == null) return albumView;
 		BeanUtils.copyProperties(album, albumView);
@@ -101,6 +108,10 @@ public class AlbumController {
 	@ResponseBody
 	public Boolean modifyAnAlbum(AlbumView album, HttpSession session) {//post
 		boolean isOnline = session.getAttribute(UserConstant.ADMIN_ID) == null ? false : true;
+		
+		//test
+		isOnline = true;
+		
 		if(isOnline == false)
 			return false;
 		Album al = new Album();
@@ -150,8 +161,11 @@ public class AlbumController {
 	@RequestMapping(value = "/addAlbum", method = RequestMethod.POST)
 	@ResponseBody
 	public Integer addAnAlbum(AlbumView album, HttpSession session) {//post
-		if(session.getAttribute(UserConstant.ADMIN_ID) == null)
-			return -1;
+		
+		//test，部署时将下列语句取消注释
+//		if(session.getAttribute(UserConstant.ADMIN_ID) == null)
+//			return -1;
+		
 		Album al = new Album();
 		BeanUtils.copyProperties(album, al);
 		int id = albumService.add(al);
@@ -167,8 +181,9 @@ public class AlbumController {
 	@RequestMapping(value = "/removeAlbum", method = RequestMethod.GET)
 	@ResponseBody
 	public Boolean removeAnAlbum(int id, HttpSession session) {//get
-		if(session.getAttribute(UserConstant.ADMIN_ID) == null)
-			return false;
+		//test，部署时将下列语句取消注释
+//		if(session.getAttribute(UserConstant.ADMIN_ID) == null)
+//			return false;
 		
 		return albumService.remove(id);
 	}

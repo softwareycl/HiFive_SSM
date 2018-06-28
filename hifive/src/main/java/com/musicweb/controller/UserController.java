@@ -46,6 +46,9 @@ public class UserController {
 	private PlaylistService playlistService;
 	@Resource
 	private AlbumService albumService;
+	
+	private String testUserId = "public@qq.com";
+	private String testAdminId = "public2@qq.com";
 
 	/**
 	 * 用户注册
@@ -82,6 +85,8 @@ public class UserController {
 		//用户登录成功则在session中存入用户id
 		if(status == 1)
 			session.setAttribute(UserConstant.USER_ID, user.getId());
+		else if(status == 0)
+			session.setAttribute(UserConstant.ADMIN_ID, user.getId());
 		return status;
 	}
 	
@@ -94,6 +99,7 @@ public class UserController {
 	@ResponseBody
 	public Boolean logout(HttpSession session) {//get
 		session.removeAttribute(UserConstant.USER_ID);
+		session.removeAttribute(UserConstant.ADMIN_ID);
 		return true;
 	}
 	
@@ -106,6 +112,10 @@ public class UserController {
 	@ResponseBody
 	public UserView showInfo(HttpSession session) {//get
 		String id = (String)session.getAttribute(UserConstant.USER_ID);
+		
+		//test
+		id = testUserId;
+		
 		//id为空说明用户已离线，返回空
 		if(id == null) return null;
 		UserView userView = new UserView();
@@ -124,6 +134,10 @@ public class UserController {
 	@ResponseBody
 	public Boolean modifyInfo(@RequestBody UserView userView, HttpSession session) {//post
 		String id = (String)session.getAttribute(UserConstant.USER_ID);
+		
+		//test
+		id = testUserId;
+		
 		//id为空说明用户已离线，返回失败
 		if(id == null) return false;
 		User user = new User();
@@ -142,6 +156,10 @@ public class UserController {
 	@ResponseBody
 	public Boolean modifyPassword(String oldPwd, String newPwd, HttpSession session) {//post
 		String id = (String)session.getAttribute(UserConstant.USER_ID);
+		
+		//test
+		id = testUserId;
+	
 		if(id == null ) return false;
 		return userService.modifyPassword(id, oldPwd, newPwd);
 	}
@@ -155,6 +173,10 @@ public class UserController {
 	@ResponseBody
 	public MyMusicView showMyMusic(HttpSession session) {//get
 		String id = (String)session.getAttribute(UserConstant.USER_ID);
+		
+		//test
+		id = testUserId;
+		
 		if(id == null ) return null;
 		MyMusicView myMusicView = new MyMusicView();
 		
@@ -247,6 +269,10 @@ public class UserController {
 	@ResponseBody
 	public Boolean resetPassword(String newPwd, HttpSession session) {//post
 		String id = (String)session.getAttribute(UserConstant.USER_ID);
+		
+		//test
+		id = testUserId;
+		
 		if(id == null ) return null;
 		return userService.resetPassword(id, newPwd);
 	}
@@ -261,6 +287,10 @@ public class UserController {
 	@ResponseBody
 	public Boolean likeASong(int songId, HttpSession session) {//get
 		String id = (String)session.getAttribute(UserConstant.USER_ID);
+		
+		//test
+		id = testUserId;
+		
 		if(id == null ) return false;
 		return userService.addLikeSong(id, songId);
 	}
@@ -275,6 +305,10 @@ public class UserController {
 	@ResponseBody
 	public Boolean unlikeASong(int songId, HttpSession session) {//get
 		String id = (String)session.getAttribute(UserConstant.USER_ID);
+		
+		//test
+		id = testUserId;
+		
 		if(id == null ) return false;
 		return userService.removeLikeSong(id, songId);
 	}
@@ -289,6 +323,10 @@ public class UserController {
 	@ResponseBody
 	public Boolean likeAnAlbum(int albumId, HttpSession session) {//get
 		String id = (String)session.getAttribute(UserConstant.USER_ID);
+		
+		//test
+		id = testUserId;
+		
 		if(id == null ) return false;
 		return userService.addLikeAlbum(id, albumId);
 	}
@@ -303,6 +341,10 @@ public class UserController {
 	@ResponseBody
 	public Boolean unlikeAnAlbum(int albumId, HttpSession session) {//get
 		String id = (String)session.getAttribute(UserConstant.USER_ID);
+		
+		//test
+		id = testUserId;
+		
 		if(id == null ) return false;
 		return userService.removeLikeAlbum(id, albumId);
 	}

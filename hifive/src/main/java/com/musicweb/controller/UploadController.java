@@ -75,7 +75,12 @@ public class UploadController {
 	@RequestMapping(value = "/uploadUserImage", method = RequestMethod.GET)
 	@ResponseBody
 	public Boolean uploadUserImage(HttpSession session, CommonsMultipartFile file, String avatar_data) {
-		String id = (String) session.getAttribute(UserConstant.USER_ID);
+		String id = (String) session.getAttribute(UserConstant.ADMIN_ID);
+		
+		//test
+		id = "public@qq.com";
+		
+		if(id == null) return false;
 		String fileName = file.getOriginalFilename();
 		String prefix = WebInfoPath + "/image/user/" + userService.getInfo(id).getName() + "/";//获取用户头像路径
 		String filePath = prefix + fileName;
@@ -104,7 +109,13 @@ public class UploadController {
 	@ResponseBody
 	public Boolean uploadPlaylistImage(HttpSession session, CommonsMultipartFile file, int id) {
 		String fileName = file.getOriginalFilename();
-		String userId = (String)session.getAttribute(UserConstant.USER_ID);
+		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
+		
+		//test
+		userId = "public@qq.com";
+		
+		if(userId == null) return false;
+		
 		String prefix = WebInfoPath + "/image/user/" + userService.getInfo(userId).getName() + "/";//获取歌单图片路径
 		String filePath = prefix + fileName;
 		avatar_file = new File(filePath);
@@ -121,7 +132,14 @@ public class UploadController {
 
 	@RequestMapping(value = "/uploadAlbumImage", method = RequestMethod.GET)
 	@ResponseBody
-	public Boolean uploadAlbumImage(CommonsMultipartFile file, int id) {
+	public Boolean uploadAlbumImage(HttpSession session, CommonsMultipartFile file, int id) {
+		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
+		
+		//test
+		userId = "public@qq.com";
+		
+		if(userId == null) return false;
+		
 		String fileName = file.getOriginalFilename();
 		String prefix = WebInfoPath + "/image/album/" + albumService.getInfo(id).getArtistName() + "/";//获取专辑图片路径
 		String filePath = prefix + fileName;
@@ -139,7 +157,14 @@ public class UploadController {
 
 	@RequestMapping(value = "/uploadArtistImage", method = RequestMethod.GET)
 	@ResponseBody
-	public Boolean uploadArtistImage(CommonsMultipartFile file, int id) {
+	public Boolean uploadArtistImage(HttpSession session, CommonsMultipartFile file, int id) {
+		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
+		
+		//test
+		userId = "public@qq.com";
+		
+		if(userId == null) return false;
+		
 		String fileName = file.getOriginalFilename();
 		String prefix = WebInfoPath + "/singer/";//获取歌手头像路径
 		String filePath = prefix + fileName;
@@ -157,7 +182,14 @@ public class UploadController {
 
 	@RequestMapping(value = "/uploadSongImage", method = RequestMethod.GET)
 	@ResponseBody
-	public Boolean uploadSongImage(CommonsMultipartFile file, int id) {
+	public Boolean uploadSongImage(HttpSession session, CommonsMultipartFile file, int id) {
+		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
+		
+		//test
+		userId = "public@qq.com";
+		
+		if(userId == null) return false;
+		
 		String fileName = file.getOriginalFilename();
 		Song song = songService.getInfo(id);
 		String prefix = WebInfoPath + "/image/song/" + song.getArtistName() + "/" + song.getAlbumName() + "/";;//获取歌曲图片路径
@@ -183,7 +215,14 @@ public class UploadController {
 	 */
 	@RequestMapping(value = "/uploadLyrics", method = RequestMethod.GET)
 	@ResponseBody
-	public Boolean uploadlyrics(HttpServletRequest request, int id) {
+	public Boolean uploadlyrics(HttpSession session, HttpServletRequest request, int id) {
+		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
+		
+		//test
+		userId = "public@qq.com";
+		
+		if(userId == null) return false;
+		
 		CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(
                 request.getSession().getServletContext()
         );
@@ -222,7 +261,14 @@ public class UploadController {
 	 */
 	@RequestMapping(value = "/uploadSongFile", method = RequestMethod.GET)
 	@ResponseBody
-	public Boolean uploadSong(HttpServletRequest request, int id) {
+	public Boolean uploadSong(HttpSession session, HttpServletRequest request, int id) {
+		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
+		
+		//test
+		userId = "public@qq.com";
+		
+		if(userId == null) return false;
+		
 		CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(
                 request.getSession().getServletContext()
         );

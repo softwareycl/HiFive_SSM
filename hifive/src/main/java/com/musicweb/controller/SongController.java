@@ -34,6 +34,9 @@ public class SongController {
 	@Resource
 	private SongService songService;
 	
+	private String testUserId = "public@qq.com";
+	private String testAdminId = "public2@qq.com";
+	
 	/**
 	 * 用户或管理员搜索歌曲
 	 * 
@@ -102,6 +105,9 @@ public class SongController {
 	@RequestMapping(value = "/getInfo", method = RequestMethod.GET)
 	@ResponseBody
 	public SongView showInfo(HttpSession session, int id) {//get
+		//test
+		session.setAttribute(UserConstant.USER_ID, testUserId);
+		
 		Song song = songService.getInfo(id);
 		SongView songView = new SongView();
 		if (session.getAttribute(UserConstant.USER_ID) == null) {

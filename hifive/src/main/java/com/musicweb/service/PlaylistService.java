@@ -99,4 +99,12 @@ public interface PlaylistService {
 	 */
 	List<Playlist> getPlaylistList(String userId);
 	
+	/**
+	 * 验证用户是否拥有对应歌单
+	 * @param userId 用户ID
+	 * @param playlistId 歌单ID
+	 * @return 是否拥有的状态
+	 */
+	Boolean checkPossession(String userId, int playlistId);
+	
 }
