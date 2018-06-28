@@ -70,7 +70,17 @@
     		delete from user_song where user_id=#{user_id} and song_id=#{song_id}
     </delete>
     
-            <!--  delete Like Albums  -->
+            <!--  deleteLikeSongInAll  -->
+    <delete id="deleteLikeSongInAll">
+    		delete from user_song where song_id=#{id}
+    </delete>
+    
+            <!--  deleteLikeAlbumInAll  -->
+    <delete id="deleteLikeAlbumInAll">
+    		delete from user_album where album_id=#{id}
+    </delete>
+    
+                <!--  delete Like Albums  -->
     <delete id="deleteLikeAlbum">
     		delete from user_album where user_id=#{user_id} and album_id=#{album_id}
     </delete>

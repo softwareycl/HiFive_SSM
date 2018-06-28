@@ -65,6 +65,25 @@ public class User_Test extends BaseTest {
 			e.printStackTrace();
 		}
 	}
+	
+//	 @Test
+	public void test_deleteLikeSongInAll() {
+		try {
+			usermapper.deleteLikeSongInAll(1);
+			System.out.println("test_deleteLikeSongInAll succeed");
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+//	 @Test
+	public void test_deleteLikeAlbumInAll() {
+		try {
+			usermapper.deleteLikeAlbumInAll(1);
+			System.out.println("test_deleteLikeAlbumInAll succeed");
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 //	 @Test
 	public void test_update() {
@@ -100,7 +119,7 @@ public class User_Test extends BaseTest {
 //	 @Test
 	public void test_select() {
 		try {
-			User u = usermapper.select("guoyunzhe@gmail.com");
+			User u = usermapper.select("guoyun111zhe@gmail.com");
 			System.out.println(u == null);
 			System.out.println("test_select succeed");
 		}catch (Exception e) {
@@ -132,7 +151,7 @@ public class User_Test extends BaseTest {
 		}
 	}
 
-	 @Test
+//	 @Test
 	public void test_selectLikeAlbums() {
 		try {
 			List<Album> A= usermapper.selectLikeAlbums("guozyunzhe.se@gmail.com");
