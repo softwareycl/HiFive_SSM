@@ -29,6 +29,7 @@ import com.musicweb.view.RegisterUserView;
 import com.musicweb.view.SimpleAlbumView;
 import com.musicweb.view.SimplePlaylistView;
 import com.musicweb.view.SimpleSongView;
+import com.musicweb.view.UserAnswerView;
 
 /**
  * UserController
@@ -64,9 +65,9 @@ public class UserController {
 		user.setType(1);
 		//注册时用户头像为默认头像
 		if(user.getGender() == 1)
-			user.setImage("/image/user/default1.png");
+			user.setImage("/image/user/default1.jpg");
 		else
-			user.setImage("/image/user/default2.png");
+			user.setImage("/image/user/default2.jpg");
 		return userService.register(user);
 	}
 
@@ -154,14 +155,18 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/modifyPassword", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean modifyPassword(String oldPwd, String newPwd, HttpSession session) {//post
+	public Boolean modifyPassword(@RequestBody UserAnswerView userAnswer, HttpSession session) {//post
 		String id = (String)session.getAttribute(UserConstant.USER_ID);
 		
 		//test
 		id = testUserId;
 	
 		if(id == null ) return false;
-		return userService.modifyPassword(id, oldPwd, newPwd);
+		
+		System.out.println(userAnswer.getOldPwd());
+		System.out.println(userAnswer.getNewPwd());
+		
+		return userService.modifyPassword(id, userAnswer.getOldPwd(), userAnswer.getNewPwd());
 	}
 	
 	/**
@@ -213,6 +218,7 @@ public class UserController {
 			SimpleAlbumView view = new SimpleAlbumView();
 			BeanUtils.copyProperties(album, view);
 			view.setCount(albumService.getSongList(album.getId()).size());
+			simpleAlbumViewList.add(view);
 		}
 		myMusicView.setLikeAlbumList(simpleAlbumViewList);
 		myMusicView.setLikeAlbumCount(simpleAlbumViewList.size());
@@ -251,11 +257,13 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/checkAnswer", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean checkSecurityAnswer(String id, String securityAnswer, HttpSession session) {//post
-		boolean status = userService.checkSecurityAnswer(id, securityAnswer);
+	public Boolean checkSecurityAnswer(@RequestBody UserAnswerView userAnswer, HttpSession session) {//post
+		System.out.println(userAnswer.getId());
+		System.out.println(userAnswer.getSecurityAnswer());
+		boolean status = userService.checkSecurityAnswer(userAnswer.getId(), userAnswer.getSecurityAnswer());
 		//回答正确将用户id存入session
 		if(status) 
-			session.setAttribute(UserConstant.USER_ID, id);
+			session.setAttribute(UserConstant.USER_ID, userAnswer.getId());
 		return status;
 	}
 	
@@ -267,14 +275,15 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/resetPassword", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean resetPassword(String newPwd, HttpSession session) {//post
+	public Boolean resetPassword(@RequestBody UserAnswerView userAnswer, HttpSession session) {//post
 		String id = (String)session.getAttribute(UserConstant.USER_ID);
+		System.out.println(userAnswer.getNewPwd());
 		
 		//test
 		id = testUserId;
 		
 		if(id == null ) return null;
-		return userService.resetPassword(id, newPwd);
+		return userService.resetPassword(id, userAnswer.getNewPwd());
 	}
 	
 	/**

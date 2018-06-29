@@ -5,6 +5,7 @@ public class Playlist {
 	private String name;
 	private String intro;
 	private String image;
+	private String userId;
 
 	public Playlist(int id, String name, String intro, String image) {
 		super();
@@ -55,6 +56,14 @@ public class Playlist {
 
 	public void setImage(String image) {
 		this.image = image;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 }

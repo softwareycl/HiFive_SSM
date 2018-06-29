@@ -55,7 +55,8 @@ public class PlaylistController {
 		//test
 		userId = testUserId;
 		
-		System.out.println(userId);
+		
+		if(userId == null) return -1;
 		Playlist playlist = new Playlist();
 		BeanUtils.copyProperties(simplePlaylistView, playlist);
 		return playlistService.create(userId, playlist);
@@ -72,11 +73,12 @@ public class PlaylistController {
 	public PlaylistView showInfo(int id, HttpSession session) {
 		//用户离线返回空
 		Object object = session.getAttribute(UserConstant.USER_ID);
-		if(object == null) return null;
 		String userId = (String)object;
 		
 		//test
 		userId = testUserId;
+		
+		if(userId == null) return null;
 		
 		//验证用户是否拥有此歌单
 		if(!playlistService.checkPossession(userId, id))
@@ -107,11 +109,12 @@ public class PlaylistController {
 	@ResponseBody
 	public Boolean modifyInfo(HttpSession session, @RequestBody SimplePlaylistView simplePlaylistView) {
 		Object object = session.getAttribute(UserConstant.USER_ID);
-		if(object == null) return false;
 		String userId = (String)object;
 		
 		//test
 		userId = testUserId;
+		
+		if(userId == null) return false;
 		
 		//验证用户是否拥有此歌单
 		if(!playlistService.checkPossession(userId, simplePlaylistView.getId()))
@@ -133,11 +136,12 @@ public class PlaylistController {
 	@ResponseBody
 	public Boolean setImage(HttpSession session, int playlistId, String image) {
 		Object object = session.getAttribute(UserConstant.USER_ID);
-		if(object == null) return false;
 		String userId = (String)object;
 		
 		//test
 		userId = testUserId;
+		
+		if(userId == null) return false;
 		
 		//验证用户是否拥有此歌单
 		if(!playlistService.checkPossession(userId, playlistId))
@@ -156,11 +160,12 @@ public class PlaylistController {
 	@ResponseBody
 	public List<SimpleSongView> getSongList(HttpSession session, int id) {
 		Object object = session.getAttribute(UserConstant.USER_ID);
-		if(object == null) return null;
 		String userId = (String)object;
 		
 		//test
 		userId = testUserId;
+		
+		if(userId == null) return null;
 		
 		//验证用户是否拥有此歌单
 		if(!playlistService.checkPossession(userId, id))
@@ -187,11 +192,12 @@ public class PlaylistController {
 	@ResponseBody
 	public Boolean remove(HttpSession session, int id) {
 		Object object = session.getAttribute(UserConstant.USER_ID);
-		if(object == null) return false;
 		String userId = (String)object;
 		
 		//test
 		userId = testUserId;
+		
+		if(userId == null) return false;
 		
 		//验证用户是否拥有此歌单
 		if(!playlistService.checkPossession(userId, id))
@@ -210,11 +216,12 @@ public class PlaylistController {
 	@ResponseBody
 	public Boolean addASong(HttpSession session, int songId, int playlistId) {
 		Object object = session.getAttribute(UserConstant.USER_ID);
-		if(object == null) return false;
 		String userId = (String)object;
 		
 		//test
 		userId = testUserId;
+		
+		if(userId == null) return false;
 		
 		//验证用户是否拥有此歌单
 		if(!playlistService.checkPossession(userId, playlistId))
@@ -233,11 +240,12 @@ public class PlaylistController {
 	@ResponseBody
 	public Boolean removeASong(HttpSession session, int playlistId, int songId) {
 		Object object = session.getAttribute(UserConstant.USER_ID);
-		if(object == null) return false;
 		String userId = (String)object;
 		
 		//test
 		userId = testUserId;
+		
+		if(userId == null) return false;
 		
 		//验证用户是否拥有此歌单
 		if(!playlistService.checkPossession(userId, playlistId))
@@ -257,11 +265,12 @@ public class PlaylistController {
 	@ResponseBody
 	public Boolean addPlaylistToPlaylist(HttpSession session, int fromId, int toId) {
 		Object object = session.getAttribute(UserConstant.USER_ID);
-		if(object == null) return false;
 		String userId = (String)object;
 		
 		//test
 		userId = testUserId;
+		
+		if(userId == null) return false;
 		
 		//验证用户是否拥有此歌单
 		if(!playlistService.checkPossession(userId, fromId))
@@ -283,12 +292,13 @@ public class PlaylistController {
 	@RequestMapping(value = "/addAlbum", method = RequestMethod.GET)
 	@ResponseBody
 	public Boolean addAlbumToPlaylist(HttpSession session, int albumId, int playlistId) {
-		Object object = session.getAttribute(UserConstant.USER_ID);
-		if(object == null) return false;
+		Object object = session.getAttribute(UserConstant.USER_ID);	
 		String userId = (String)object;
 		
 		//test
 		userId = testUserId;
+		
+		if(userId == null) return false;
 		
 		//验证用户是否拥有此歌单
 		if(!playlistService.checkPossession(userId, playlistId))
@@ -305,13 +315,17 @@ public class PlaylistController {
 	@ResponseBody
 	public List<SimplePlaylistView> showPlaylists(HttpSession session) {
 		Object object = session.getAttribute(UserConstant.USER_ID);
-		if(object == null) return null;
 		String userId = (String)object;
 		
 		//test
 		userId = testUserId;
 		
+		if(userId == null) return null;
+
 		List<Playlist> playlistList = playlistService.getPlaylistList(userId);
+		System.out.println(playlistList.size());
+		if(playlistList == null)
+			playlistList = new ArrayList<>();
 		ArrayList<SimplePlaylistView> viewList = new ArrayList<SimplePlaylistView>();
 		for(Playlist playlist: playlistList) {
 			SimplePlaylistView view = new SimplePlaylistView();

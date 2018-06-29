@@ -95,6 +95,8 @@ public class SongServiceImpl implements SongService {
 					String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 					String filePath = WebInfoPath + song.getFilePath();
 					song.setDuration(DurationUtil.computeDuration(filePath));
+					if(song.getImage() == null)
+						song.setImage(cacheService.getAndCacheAlbumByAlbumID(song.getAlbumId()).getImage());
 				}
 				redisUtil.hset("rank", String.valueOf(type), songs, TimeConstant.A_DAY);//将排行榜放进缓存
 			}
@@ -270,17 +272,31 @@ public class SongServiceImpl implements SongService {
 	/**
 	 * @see SongService#lookUpNewSongs(int)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Song> lookUpNewSongs(int region) {//有问题，新歌还有分地区
-		List<Song> songs = null;
-		songs = songDao.selectLatest(region, DisplayConstant.HOME_PAGE_NEW_SONG_SIZE);//待改
-		for(Song song: songs) {
-			String classPath = this.getClass().getClassLoader().getResource("").getPath();
-			String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
-			String filePath = WebInfoPath + song.getFilePath();
-			song.setDuration(DurationUtil.computeDuration(filePath));
+		Object object = redisUtil.hget("new_song", String.valueOf(region));
+		if(object == null) {
+			List<Song> songs = null;
+			songs = songDao.selectLatest(region, DisplayConstant.HOME_PAGE_NEW_SONG_SIZE);//待改
+			for(Song song: songs) {
+				String classPath = this.getClass().getClassLoader().getResource("").getPath();
+				String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
+				String filePath = WebInfoPath + song.getFilePath();
+				song.setDuration(DurationUtil.computeDuration(filePath));
+				if(song.getImage() == null)
+					song.setImage(cacheService.getAndCacheAlbumByAlbumID(song.getAlbumId()).getImage());
+			}
+			redisUtil.hset("new_song", String.valueOf(region), songs, TimeConstant.A_DAY);
+			for(Song song: songs) {
+				redisUtil.hset("song", String.valueOf(song.getId()), song, TimeConstant.A_DAY);
+			}
+			return songs;
+		} else {
+			return (List<Song>)object;
 		}
-		return songs;
+		
+
 	}
 
 	/**

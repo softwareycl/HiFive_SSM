@@ -198,15 +198,15 @@ public class ArtistServiceImpl implements ArtistService {
 			//删音乐缓存、数据库
 			for(Song song: songList) {
 				redisUtil.hdel("song", String.valueOf(song.getId()));
-				playlistDao.deleteSongInAll(song.getId());
-				userDao.deleteLikeSongInAll(song.getId());
-				songDao.delete(song.getId());
+//				playlistDao.deleteSongInAll(song.getId());
+//				userDao.deleteLikeSongInAll(song.getId());
+//				songDao.delete(song.getId());
 			}
 			//删专辑缓存、数据库
 			redisUtil.hdel("album", String.valueOf(album.getId()));
 			redisUtil.hdel("album_songs", String.valueOf(album.getId()));
-			userDao.deleteLikeAlbumInAll(album.getId());
-			albumDao.delete(album.getId());
+//			userDao.deleteLikeAlbumInAll(album.getId());
+//			albumDao.delete(album.getId());
 			//删专辑图片
 			String albumImageFilePath = WebInfoPath + album.getImage();
 			FileUtil.deleteFile(new File(albumImageFilePath));

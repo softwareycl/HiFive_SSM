@@ -269,6 +269,12 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean addLikeAlbum(String userId, int albumId) {
 		userId.trim();
+		List<Album> oldAlbumList = getLikeAlbums(userId);
+		for(Album al: oldAlbumList) {
+			if(al.getId() == albumId)
+				return true;
+		}
+		
 		userDao.insertLikeAlbum(userId, albumId);
 		List<Album> albumList;
 		Object object = redisUtil.hget(USER_ALBUMS, userId);
@@ -294,6 +300,13 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean addLikeSong(String userId, int songId) {
 		userId.trim();
+		
+		List<Song> oldSongList = getLikedSongs(userId);
+		for(Song s: oldSongList) {
+			if(s.getId() == songId)
+				return true;
+		}
+		
 		userDao.insertLikeSong(userId, songId);
 		List<Song> songList;
 		Object object = redisUtil.hget(USER_SONGS, userId);
@@ -404,10 +417,11 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public boolean modifyPassword(String id, String oldPwd, String newPwd) {
-		oldPwd.trim();
-		newPwd.trim();
-		id.trim();
+		oldPwd = oldPwd.trim();
+		newPwd = newPwd.trim();
+		id = id.trim();
 		User user = cacheService.getAndCacheUserByUserID(id);
+		System.out.println(user.getPwd());
 		if(!MD5Util.getMD5(oldPwd).equals(user.getPwd())) return false;
 		String pwd = MD5Util.getMD5(newPwd);
 		user.setPwd(pwd);

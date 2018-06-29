@@ -229,7 +229,7 @@ public class AlbumServiceImpl implements AlbumService {
 				//删除歌曲缓存
 				redisUtil.hdel(redisSong, String.valueOf(songId));
 				//删除歌曲数据库
-				songDao.delete(songId);
+//				songDao.delete(songId);
 				//删除歌曲playcount
 				redisUtil.hdel(redisSongPlayCount, String.valueOf(songId));
 	
@@ -237,7 +237,7 @@ public class AlbumServiceImpl implements AlbumService {
 				playlistDao.deleteSongInAll(songId);
 				
 				//删除数据库用户喜欢的歌
-				userDao.deleteLikeSongInAll(songId);
+//				userDao.deleteLikeSongInAll(songId);
 			}
 		}
 		
@@ -258,7 +258,7 @@ public class AlbumServiceImpl implements AlbumService {
 		redisUtil.del(redisNewAlbum);
 		
 		//删除数据库用户喜欢的专辑
-		userDao.deleteLikeAlbumInAll(id);
+//		userDao.deleteLikeAlbumInAll(id);
 		//删除缓存用户喜欢的专辑
 		redisUtil.del(redisUserAlbums);
 		//删除数据库用户喜欢的歌
