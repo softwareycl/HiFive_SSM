@@ -49,6 +49,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 	private RedisUtil redisUtil;
 
 	//定义Redis中有关歌单的键名静态常量
+	private static final String SONG = "song"; //歌单缓存<歌曲ID，歌曲对象>
 	private static final String PLAYLIST = "playlist"; //歌单缓存<歌单ID，歌单对象>
 	private static final String PLAYLIST_SONGS = "playlist_songs";//歌单_歌曲缓存<歌单ID，歌单中的歌曲列表>
 	private static final String USER_PLAYLISTS = "user_playlists";//用户_歌单缓存<用户ID，用户的歌单列表>
@@ -220,6 +221,10 @@ public class PlaylistServiceImpl implements PlaylistService {
 		redisUtil.hdel(PLAYLIST_SONGS, String.valueOf(toId));
 		playlistDao.insertPlaylistToPlaylist(fromId, toId);
 		List<Song> songList = getSongList(toId);
+		for(Song song: songList) {
+			if(redisUtil.hget(SONG, String.valueOf(song.getId())) == null)
+				redisUtil.hset(SONG, String.valueOf(song.getId()), song, TimeConstant.A_DAY);
+		}
 		redisUtil.hset(PLAYLIST_SONGS, String.valueOf(toId), songList);
 		return true;
 	}
@@ -235,6 +240,10 @@ public class PlaylistServiceImpl implements PlaylistService {
 		redisUtil.hdel(PLAYLIST_SONGS, String.valueOf(playlistId));
 		playlistDao.insertAlbumToPlaylist(albumId, playlistId);
 		List<Song> songList = getSongList(playlistId);
+		for(Song song: songList) {
+			if(redisUtil.hget(SONG, String.valueOf(song.getId())) == null)
+				redisUtil.hset(SONG, String.valueOf(song.getId()), song, TimeConstant.A_DAY);
+		}
 		redisUtil.hset(PLAYLIST_SONGS, String.valueOf(playlistId), songList);
 		return true;
 	}
