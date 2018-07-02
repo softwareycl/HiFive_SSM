@@ -16,7 +16,7 @@
 			<mvc:mapping path="/**" />
 			<mvc:exclude-mapping path="/index.html" />
 			<mvc:exclude-mapping path="/static/**" />
-			<mvc:exclude-mapping path="/image/**" />
+			<!-- <mvc:exclude-mapping path="/image/**" /> -->
 			<!-- <mvc:exclude-mapping path="/lyrics/**" /> -->
 			<mvc:exclude-mapping path="/music/**" />
 			<bean class="com.musicweb.service.interceptor.CORSInterceptor"></bean>
@@ -30,5 +30,10 @@
 	<!--对静态资源文件的访问 -->
 	<mvc:resources mapping="/**" location="/WEB-INF/" />
 
-
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="104857600"/>
+		<property name="maxInMemorySize" value="4096"/>
+		<property name="defaultEncoding" value="UTF-8"/>
+	</bean>
+	
 </beans>

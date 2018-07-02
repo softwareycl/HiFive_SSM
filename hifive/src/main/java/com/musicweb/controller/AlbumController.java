@@ -6,6 +6,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -106,7 +107,7 @@ public class AlbumController {
 	 */
 	@RequestMapping(value = "/modifyAlbum", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean modifyAnAlbum(AlbumView album, HttpSession session) {//post
+	public Boolean modifyAnAlbum(@RequestBody AlbumView album, HttpSession session) {//post
 		boolean isOnline = session.getAttribute(UserConstant.ADMIN_ID) == null ? false : true;
 		
 		//test
@@ -160,7 +161,7 @@ public class AlbumController {
 	 */
 	@RequestMapping(value = "/addAlbum", method = RequestMethod.POST)
 	@ResponseBody
-	public Integer addAnAlbum(AlbumView album, HttpSession session) {//post
+	public Integer addAnAlbum(@RequestBody AlbumView album, HttpSession session) {//post
 		
 		//test，部署时将下列语句取消注释
 //		if(session.getAttribute(UserConstant.ADMIN_ID) == null)

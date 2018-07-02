@@ -180,13 +180,11 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public boolean modifyInfo(User user) {
-		user.setId(user.getId().trim());
-		user.setImage(user.getImage().trim());
-		user.setName(user.getName().trim());
-		user.setPwd(MD5Util.getMD5(user.getPwd().trim()));
-		user.setSecurityAnswer(MD5Util.getMD5(user.getSecurityAnswer().trim()));
-		userDao.update(user);
-		redisUtil.hset(USER, user.getId(), user, TimeConstant.A_DAY);
+		User oldUser = cacheService.getAndCacheUserByUserID(user.getId());
+		oldUser.setName(user.getName().trim());
+		oldUser.setGender(user.getGender());
+		userDao.update(oldUser);
+		redisUtil.hset(USER, oldUser.getId(), oldUser, TimeConstant.A_DAY);
 		return true;
 	}
 

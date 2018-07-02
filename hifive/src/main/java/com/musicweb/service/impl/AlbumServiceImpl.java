@@ -303,7 +303,8 @@ public class AlbumServiceImpl implements AlbumService {
 		//补全album属性
 		album.setPlayCount(oldAlbum.getPlayCount());
 		album.setImage(oldAlbum.getImage());
-		Artist artist = cacheService.getAndCacheSingerBySingerID(album.getArtistId());
+		Artist artist = cacheService.getAndCacheSingerBySingerID(oldAlbum.getArtistId());
+		album.setArtistId(oldAlbum.getArtistId());
 		album.setArtistName(artist.getName());
 		
 		//修改数据库

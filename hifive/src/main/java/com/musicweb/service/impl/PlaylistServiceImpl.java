@@ -259,7 +259,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 		redisUtil.hdel(PLAYLIST_SONGS, String.valueOf(id));
 		redisUtil.hdel(PLAYLIST, String.valueOf(id));
 		redisUtil.del(USER_PLAYLISTS);
-		return false;
+		return true;
 	}
 
 	/**

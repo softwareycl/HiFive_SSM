@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -139,7 +140,7 @@ public class SongController {
 	 */
 	@RequestMapping(value = "/addSong", method = RequestMethod.POST)
 	@ResponseBody
-	public Integer addASong(SongView songView) {//返回值问题
+	public Integer addASong(@RequestBody SongView songView) {//返回值问题
 		Song song = new Song();
 		BeanUtils.copyProperties(songView, song);
 		int songId = songService.add(song);
@@ -167,7 +168,7 @@ public class SongController {
 	 */
 	@RequestMapping(value = "/modifySong", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean modifyASong(SongView songView) {//post
+	public Boolean modifyASong(@RequestBody SongView songView) {//post
 		Song song = new Song();
 		BeanUtils.copyProperties(songView, song);
 		boolean b = songService.modify(song);

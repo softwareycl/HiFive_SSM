@@ -76,8 +76,6 @@
 			song
 		SET
 			name=#{name},
-			artist_id=#{artistId},
-			album_id=#{albumId},
 			language=#{language},
 			style=#{style},
 			release_date=#{releaseDate},

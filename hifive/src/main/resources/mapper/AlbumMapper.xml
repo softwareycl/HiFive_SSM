@@ -60,9 +60,7 @@
 			release_date=#{releaseDate},
 			region=#{region},
 			style=#{style},
-			intro=#{intro},
-			play_count=#{playCount},
-			artist_id=#{artistId}
+			intro=#{intro}
 		WHERE
 			id=#{id}
 	</update>

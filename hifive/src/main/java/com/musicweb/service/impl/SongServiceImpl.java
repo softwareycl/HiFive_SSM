@@ -240,6 +240,9 @@ public class SongServiceImpl implements SongService {
 	 */
 	@Override
 	public boolean modify(Song song) {
+		Song oldSong = cacheService.getAndCacheSongBySongID(song.getId());
+		song.setAlbumId(oldSong.getAlbumId());
+		song.setArtistId(song.getArtistId());
 		int i = songDao.update(song);//前端把歌曲id也一起发过来了
 		redisUtil.hdel("song", String.valueOf(song.getId()));//删除旧歌曲的缓存
 		cacheService.getAndCacheSongBySongID(song.getId());

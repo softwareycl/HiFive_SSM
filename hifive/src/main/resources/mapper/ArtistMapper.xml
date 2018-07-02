@@ -77,7 +77,6 @@
 			birthplace=#{birthplace},
 			occupation=#{occupation},
 			representative=#{representative},
-			play_count=#{playCount},
 			initial=#{initial},
 			intro=#{intro}
 		WHERE

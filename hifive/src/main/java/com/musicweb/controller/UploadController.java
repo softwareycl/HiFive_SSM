@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -72,36 +73,61 @@ public class UploadController {
 	@Resource
 	private SongService songService;
 	
-	@RequestMapping(value = "/uploadUserImage", method = RequestMethod.GET)
+	@RequestMapping(value = "/uploadUserImage", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean uploadUserImage(HttpSession session, CommonsMultipartFile file, String avatar_data) {
+	public Boolean uploadUserImage(HttpSession session, MultipartHttpServletRequest request) {
 		String id = (String) session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
 		id = "public@qq.com";
 		
 		if(id == null) return false;
-		String fileName = file.getOriginalFilename();
-		String prefix = WebInfoPath + "/image/user/" + userService.getInfo(id).getName() + "/";//获取用户头像路径
-		String filePath = prefix + fileName;
-		avatar_file = new File(filePath);
-		try {
-			file.transferTo(avatar_file);
-		} catch (IllegalStateException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
-		//裁剪头像
-		headPicAttr = JSON.parseObject(avatar_data, PicAttr.class);
-		try {
-			cut(filePath);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
-		userService.setImage(id, filePath);
+		
+		System.out.println("-----------------------------------------------asfd----------------------------------------");
+		
+		Iterator<?> iter = request.getFileNames();
+        if (iter.hasNext()) {
+        	String fileName = iter.next().toString();
+        	MultipartFile file = request.getFile(fileName);//从request中获取文件
+        	if (file != null) {
+        		fileName = file.getOriginalFilename();
+        		Song song = songService.getInfo(1);
+        		String prefix = WebInfoPath + "/music/" + song.getArtistName() + "/" + song.getAlbumName() + "/";//获取歌曲音频文件路径
+        		String filePath = prefix + fileName;
+        		try {
+        			//将文件存储在硬盘上
+					file.transferTo(new File(filePath));
+				} catch (IllegalStateException | IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return false;
+				}
+//            		songService.setFilePath(id, filePath);
+        	}
+        }
+		
+		
+//		String fileName = file.getOriginalFilename();
+//		String prefix = WebInfoPath + "/image/user/" + userService.getInfo(id).getName() + "/";//获取用户头像路径
+//		String filePath = prefix + fileName;
+//		avatar_file = new File(filePath);
+//		try {
+//			file.transferTo(avatar_file);
+//		} catch (IllegalStateException | IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			return false;
+//		}
+//		//裁剪头像
+//		headPicAttr = JSON.parseObject(avatar_data, PicAttr.class);
+//		try {
+//			cut(filePath);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			return false;
+//		}
+//		userService.setImage(id, filePath);
 		return true;
 	}
 
@@ -130,28 +156,39 @@ public class UploadController {
 		return true;
 	}
 
-	@RequestMapping(value = "/uploadAlbumImage", method = RequestMethod.GET)
+	@RequestMapping(value = "/uploadAlbumImage", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean uploadAlbumImage(HttpSession session, CommonsMultipartFile file, int id) {
+	public Boolean uploadAlbumImage(HttpSession session, MultipartHttpServletRequest request) {
 		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
 		userId = "public@qq.com";
 		
 		if(userId == null) return false;
+		String sid = request.getParameter("id");
+		int id = Integer.parseInt(sid);
+		System.out.println(id);
 		
-		String fileName = file.getOriginalFilename();
-		String prefix = WebInfoPath + "/image/album/" + albumService.getInfo(id).getArtistName() + "/";//获取专辑图片路径
-		String filePath = prefix + fileName;
-		avatar_file = new File(filePath);
-		try {
-			file.transferTo(avatar_file);
-		} catch (IllegalStateException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
-		albumService.setImage(id, filePath);
+		Iterator<?> iter = request.getFileNames();
+        if (iter.hasNext()) {
+        	String fileName = iter.next().toString();
+        	MultipartFile file = request.getFile(fileName);//从request中获取文件
+        	if (file != null) {
+        		fileName = file.getOriginalFilename();
+        		Song song = songService.getInfo(1);
+        		String prefix = WebInfoPath + "/music/" + song.getArtistName() + "/" + song.getAlbumName() + "/";//获取歌曲音频文件路径
+        		String filePath = prefix + fileName;
+        		try {
+        			//将文件存储在硬盘上
+					file.transferTo(new File(filePath));
+				} catch (IllegalStateException | IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return false;
+				}
+        	}
+        }
+		//albumService.setImage(id, filePath);
 		return true;
 	}
 

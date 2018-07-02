@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -141,7 +142,7 @@ public class ArtistController {
 	 */
 	@RequestMapping(value = "/addArtist", method = RequestMethod.POST)
 	@ResponseBody
-	public Integer addAnArtist(ArtistView artistView, HttpSession session) {//post
+	public Integer addAnArtist(@RequestBody ArtistView artistView, HttpSession session) {//post
 		//从session中取出管理员id， 若为空则返回-1拒绝请求
 		Object object = session.getAttribute(UserConstant.ADMIN_ID);
 		
@@ -185,7 +186,7 @@ public class ArtistController {
 	 */
 	@RequestMapping(value = "/modifyArtist", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean modifyAnArtist(ArtistView artistView, HttpSession session) {//post
+	public Boolean modifyAnArtist(@RequestBody ArtistView artistView, HttpSession session) {//post
 		Object object = session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
