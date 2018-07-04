@@ -55,7 +55,6 @@ public class SongController {
 		for(Song song: songs) {
 			SimpleSongView songView = new SimpleSongView();
 			BeanUtils.copyProperties(song, songView);
-			songView.setDuration(songService.getDuration(song.getId()));
 			songViews.add(songView);
 		}
 		return songViews;
@@ -140,7 +139,11 @@ public class SongController {
 	 */
 	@RequestMapping(value = "/addSong", method = RequestMethod.POST)
 	@ResponseBody
-	public Integer addASong(@RequestBody SongView songView) {//返回值问题
+	public Integer addASong(@RequestBody SongView songView, HttpSession session) {//返回值问题
+		//test，部署时将下列语句取消注释
+		//if(session.getAttribute(UserConstant.ADMIN_ID) == null)
+		//	return -1;
+		
 		Song song = new Song();
 		BeanUtils.copyProperties(songView, song);
 		int songId = songService.add(song);
@@ -155,7 +158,11 @@ public class SongController {
 	 */
 	@RequestMapping(value = "/removeSong", method = RequestMethod.GET)
 	@ResponseBody
-	public Boolean removeASong(int songId) {//get
+	public Boolean removeASong(int songId, HttpSession session) {//get
+		//test，部署时将下列语句取消注释
+		//if(session.getAttribute(UserConstant.ADMIN_ID) == null)
+		//	return false;
+		
 		boolean b = songService.remove(songId);
 		return b;
 	}
@@ -168,7 +175,11 @@ public class SongController {
 	 */
 	@RequestMapping(value = "/modifySong", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean modifyASong(@RequestBody SongView songView) {//post
+	public Boolean modifyASong(@RequestBody SongView songView, HttpSession session) {//post
+		//test，部署时将下列语句取消注释
+		//if(session.getAttribute(UserConstant.ADMIN_ID) == null)
+		//	return false;
+		
 		Song song = new Song();
 		BeanUtils.copyProperties(songView, song);
 		boolean b = songService.modify(song);

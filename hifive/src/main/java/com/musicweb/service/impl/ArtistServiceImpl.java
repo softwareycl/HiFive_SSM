@@ -227,14 +227,6 @@ public class ArtistServiceImpl implements ArtistService {
 	 */
 	@Override
 	public boolean modify(Artist artist) {
-		artist.setBirthplace(artist.getBirthplace().trim());
-		artist.setCountry(artist.getCountry().trim());
-		artist.setImage(artist.getImage().trim());
-		artist.setInitial(artist.getInitial().trim());
-		artist.setIntro(artist.getIntro().trim());
-		artist.setName(artist.getName().trim());
-		artist.setRepresentative(artist.getRepresentative().trim());
-		artist.setOccupation(artist.getOccupation().trim());
 		
 		//artist名称变化
 		Artist artistOld = cacheService.getAndCacheSingerBySingerID(artist.getId());
@@ -273,7 +265,7 @@ public class ArtistServiceImpl implements ArtistService {
  			}
 			redisUtil.hset("artist_albums", String.valueOf(artist.getId()), albumList, TimeConstant.A_DAY);
 		}
-		
+		artist.setImage(artistOld.getImage());
 		artistDao.update(artist);
 		redisUtil.hset("artist", String.valueOf(artist.getId()), artist, TimeConstant.A_DAY);
 		return true;

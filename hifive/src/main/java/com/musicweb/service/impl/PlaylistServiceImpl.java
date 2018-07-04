@@ -75,20 +75,18 @@ public class PlaylistServiceImpl implements PlaylistService {
 	public int create(String userId, Playlist playlist) {
 		//对字符串类型的属性进行预处理
 		playlist.setName(playlist.getName().trim());
-		playlist.setIntro(playlist.getIntro().trim());
+		if(playlist.getIntro() != null)
+			playlist.setIntro(playlist.getIntro().trim());
 		
 		playlistDao.insert(userId,playlist);
 		//新增歌单存入歌单缓存，用户_歌单缓存
 		redisUtil.hset(PLAYLIST, String.valueOf(playlist.getId()), playlist, TimeConstant.A_DAY);
-//		redisUtil.hset(USER_PLAYLISTS, userId, playlist, TimeConstant.A_DAY);
 		
 		Object object = redisUtil.hget(USER_PLAYLISTS, userId);
 		if(object == null) {
 			List<Playlist> playlistList = getPlaylistList(userId);
 			if(playlistList == null)
 				playlistList = new ArrayList<>();
-			playlistList.add(playlist);
-			redisUtil.hset(USER_PLAYLISTS, userId, playlistList, TimeConstant.A_DAY);
 		} else {
 			@SuppressWarnings("unchecked")
 			List<Playlist> playlistList = (List<Playlist>)object;

@@ -94,7 +94,7 @@ public class CacheServiceImpl implements CacheService {
 			Song song = songDao.selectById(songID);
 			if(song != null) {
 				if(song.getImage() == null) {
-					song.setImage(albumDao.selectImage(song.getAlbumId()));
+					song.setImage(getAndCacheAlbumByAlbumID(song.getAlbumId()).getImage());
 				}
 				//拼接出歌曲音频文件的绝对路径
 				String classPath = this.getClass().getClassLoader().getResource("").getPath();

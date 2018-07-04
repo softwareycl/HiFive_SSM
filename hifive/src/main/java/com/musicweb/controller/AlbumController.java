@@ -183,8 +183,8 @@ public class AlbumController {
 	@ResponseBody
 	public Boolean removeAnAlbum(int id, HttpSession session) {//get
 		//test，部署时将下列语句取消注释
-//		if(session.getAttribute(UserConstant.ADMIN_ID) == null)
-//			return false;
+		//if(session.getAttribute(UserConstant.ADMIN_ID) == null)
+		//	return false;
 		
 		return albumService.remove(id);
 	}

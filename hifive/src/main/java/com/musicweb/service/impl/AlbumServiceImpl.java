@@ -110,7 +110,7 @@ public class AlbumServiceImpl implements AlbumService {
 			List<Song> songList = albumDao.selectAllSongs(id);
 			if(songList != null) {
 				String classPath = this.getClass().getClassLoader().getResource("").getPath();
-				String WebInfPath = "/home/brian/apache-tomcat-9.0.8/webapps/hifive/WEB-INF";//classPath.substring(0, classPath.indexOf("/classes"));
+				String WebInfPath = classPath.substring(0, classPath.indexOf("/classes"));
 				for(Song song: songList) {
 					if(song.getImage() == null) {
 						song.setImage(album.getImage());
@@ -200,13 +200,16 @@ public class AlbumServiceImpl implements AlbumService {
 	@Override
 	public boolean remove(int id) {
 		Album album = cacheService.getAndCacheAlbumByAlbumID(id);
+		if(album == null) return true;
 		
 		String classPath = this.getClass().getClassLoader().getResource("").getPath();
 		String WebInfPath = classPath.substring(0, classPath.indexOf("/classes"));//"/home/brian/apache-tomcat-9.0.8/webapps/hifive/WEB-INF";//;
 		
 		//删除专辑图片
-		String albumImageFilePath = WebInfPath + album.getImage();
-		FileUtil.deleteFile(new File(albumImageFilePath));
+		if(album.getImage() != null) {
+			String albumImageFilePath = WebInfPath + album.getImage();
+			FileUtil.deleteFile(new File(albumImageFilePath));
+		}
 		
 		//获取歌曲列表
 		List<Song> songList = getSongList(id);
@@ -217,11 +220,11 @@ public class AlbumServiceImpl implements AlbumService {
 			FileUtil.deleteFolder(new File(songImageFolderPath));
 			//删除歌词
 			String lyricsPath = songList.get(0).getLyricsPath();
-			String lyricsFolderPath = WebInfPath + lyricsPath.substring(0, lyricsPath.lastIndexOf('/'));
+			String lyricsFolderPath = WebInfPath + "/lyrics/" + firstSong.getArtistName() + "/" + firstSong.getAlbumName();
 			FileUtil.deleteFolder(new File(lyricsFolderPath));
 			//删除音乐文件
 			String musicPath = songList.get(0).getFilePath();
-			String musicFolderPath = WebInfPath + musicPath.substring(0, musicPath.lastIndexOf('/'));
+			String musicFolderPath = WebInfPath + "/music/" + firstSong.getArtistName() + "/" + firstSong.getAlbumName();
 			FileUtil.deleteFolder(new File(musicFolderPath));
 			
 			for(Song song: songList) {

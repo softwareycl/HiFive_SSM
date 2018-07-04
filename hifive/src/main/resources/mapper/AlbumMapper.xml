@@ -297,7 +297,7 @@
 		SELECT
 			image
 		FROM
-			song
+			album
 		WHERE
 			id=#{id}
 	</select>

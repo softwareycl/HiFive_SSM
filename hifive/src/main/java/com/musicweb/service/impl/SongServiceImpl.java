@@ -48,8 +48,10 @@ public class SongServiceImpl implements SongService {
 	@Override
 	public List<Song> search(String name, int page) {
 		int count = DisplayConstant.SEARCH_PAGE_SONG_SIZE;//每页显示多少条搜索结果
-		List<Song>songs = songDao.selectByName(name, (page-1)*count, count);
+		List<Song> songs = songDao.selectByName(name, (page-1)*count, count);
 		for(Song song: songs) {
+			if(song.getImage() == null)
+				song.setImage(cacheService.getAndCacheAlbumByAlbumID(song.getAlbumId()).getImage());
 			String classPath = this.getClass().getClassLoader().getResource("").getPath();
 			String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 			String filePath = WebInfoPath + song.getFilePath();
@@ -81,10 +83,10 @@ public class SongServiceImpl implements SongService {
 				songs = songDao.selectRankByRegion(2, count);
 				break;
 			case 5:
-				songs = songDao.selectRankByRegion(4, count);
+				songs = songDao.selectRankByRegion(3, count);
 				break;
 			case 6:
-				songs = songDao.selectRankByRegion(3, count);
+				songs = songDao.selectRankByRegion(4, count);
 				break;
 			default:
 				break;
@@ -179,6 +181,11 @@ public class SongServiceImpl implements SongService {
 	 */
 	@Override
 	public int add(Song song) {
+		Album album = cacheService.getAndCacheAlbumByAlbumID(song.getAlbumId());
+		song.setArtistId(album.getArtistId());
+		song.setStyle(album.getStyle());
+		song.setRegion(album.getRegion());
+		
 		int i = songDao.insert(song);//返回歌曲id
 		if(i == 0)
 			return -1;

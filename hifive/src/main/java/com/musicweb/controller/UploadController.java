@@ -211,7 +211,9 @@ public class UploadController {
         		fileName = file.getOriginalFilename();
         		//待改
         		Song song = songService.getInfo(1);
-        		String prefix = WebInfoPath + "/music/" + song.getArtistName() + "/" + song.getAlbumName() + "/";//获取歌手图片路径
+        		String prefix = WebInfoPath + "/image/singer/";//获取歌手图片路径
+        		if(!new File(prefix).exists())
+        			new File(prefix).mkdirs();
         		String filePath = prefix + fileName;
         		try {
         			//将文件存储在硬盘上
@@ -220,9 +222,10 @@ public class UploadController {
 					e.printStackTrace();
 					return false;
 				}
+        		artistService.setImage(id, "/image/singer/" + fileName);
         	}
         }
-		//artistService.setImage(id, filePath);
+		
 		return true;
 	}
 
