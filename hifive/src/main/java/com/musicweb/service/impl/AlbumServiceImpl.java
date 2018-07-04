@@ -26,12 +26,13 @@ import com.musicweb.domain.Song;
 
 /**
  * ArtistServiceImpl
+ * AlbumServiceImpl完成有关歌手模块的业务逻辑实现<br/>
+ * 接受AlbumController的调用，通过对Dao层各类方法的调用，完成业务逻辑<br/>
+ * 操作完成后，将操作结果返回给AlbumController<br/>
+ * Service层针对业务数据增加各类缓存操作
+ * 
  * @author zhanghuakui
  * @Date 2018.6.23
- * AlbumServiceImpl完成有关歌手模块的业务逻辑实现
- * 接受AlbumController的调用，通过对Dao层各类方法的调用，完成业务逻辑
- * 操作完成后，将操作结果返回给AlbumController
- * Service层针对业务数据增加各类缓存操作
  */
 @Service("albumService")
 public class AlbumServiceImpl implements AlbumService {
@@ -70,6 +71,7 @@ public class AlbumServiceImpl implements AlbumService {
 	
 	/**
 	 * 以名字为关键字搜索歌手
+	 * 
 	 * @param name 歌手名字
 	 * @param page 目标页码
 	 * @return List<Album> 歌手列表
@@ -88,6 +90,7 @@ public class AlbumServiceImpl implements AlbumService {
 
 	/**
 	 * 显示歌手详情
+	 * 
 	 * @param id 专辑id
 	 * @return 专辑 Album
 	 */
@@ -98,6 +101,7 @@ public class AlbumServiceImpl implements AlbumService {
 
 	/**
 	 * 查看专辑的歌曲列表
+	 * 
 	 * @param id 专辑id
 	 * @return 歌曲列表
 	 */
@@ -131,6 +135,7 @@ public class AlbumServiceImpl implements AlbumService {
 
 	/**
 	 * 根据地区，更风格类别筛选歌手
+	 * 
 	 * @param region 地区
 	 * @param style 风格
 	 * @param page 目标页码
@@ -160,6 +165,7 @@ public class AlbumServiceImpl implements AlbumService {
 
 	/**
 	 * 添加专辑
+	 * 
 	 * @param album 专辑
 	 * @return 新增的专辑ID
 	 */
@@ -194,6 +200,7 @@ public class AlbumServiceImpl implements AlbumService {
 
 	/**
 	 * 删除专辑
+	 * 
 	 * @param id 专辑ID
 	 * @return 操作状态
 	 */
@@ -203,7 +210,7 @@ public class AlbumServiceImpl implements AlbumService {
 		if(album == null) return true;
 		
 		String classPath = this.getClass().getClassLoader().getResource("").getPath();
-		String WebInfPath = classPath.substring(0, classPath.indexOf("/classes"));//"/home/brian/apache-tomcat-9.0.8/webapps/hifive/WEB-INF";//;
+		String WebInfPath = classPath.substring(0, classPath.indexOf("/classes"));
 		
 		//删除专辑图片
 		if(album.getImage() != null) {
@@ -219,11 +226,9 @@ public class AlbumServiceImpl implements AlbumService {
 			String songImageFolderPath = WebInfPath + "/image/song/" + firstSong.getArtistName() + "/" + firstSong.getAlbumName();
 			FileUtil.deleteFolder(new File(songImageFolderPath));
 			//删除歌词
-			String lyricsPath = songList.get(0).getLyricsPath();
 			String lyricsFolderPath = WebInfPath + "/lyrics/" + firstSong.getArtistName() + "/" + firstSong.getAlbumName();
 			FileUtil.deleteFolder(new File(lyricsFolderPath));
 			//删除音乐文件
-			String musicPath = songList.get(0).getFilePath();
 			String musicFolderPath = WebInfPath + "/music/" + firstSong.getArtistName() + "/" + firstSong.getAlbumName();
 			FileUtil.deleteFolder(new File(musicFolderPath));
 			
@@ -232,7 +237,7 @@ public class AlbumServiceImpl implements AlbumService {
 				//删除歌曲缓存
 				redisUtil.hdel(redisSong, String.valueOf(songId));
 				//删除歌曲数据库
-//				songDao.delete(songId);
+				songDao.delete(songId);
 				//删除歌曲playcount
 				redisUtil.hdel(redisSongPlayCount, String.valueOf(songId));
 	
@@ -240,7 +245,7 @@ public class AlbumServiceImpl implements AlbumService {
 				playlistDao.deleteSongInAll(songId);
 				
 				//删除数据库用户喜欢的歌
-//				userDao.deleteLikeSongInAll(songId);
+				userDao.deleteLikeSongInAll(songId);
 			}
 		}
 		
@@ -261,7 +266,7 @@ public class AlbumServiceImpl implements AlbumService {
 		redisUtil.del(redisNewAlbum);
 		
 		//删除数据库用户喜欢的专辑
-//		userDao.deleteLikeAlbumInAll(id);
+		userDao.deleteLikeAlbumInAll(id);
 		//删除缓存用户喜欢的专辑
 		redisUtil.del(redisUserAlbums);
 		//删除数据库用户喜欢的歌
@@ -280,6 +285,7 @@ public class AlbumServiceImpl implements AlbumService {
 
 	/**
 	 * 修改专辑信息
+	 * 
 	 * @param album 专辑
 	 * @return 操作状态
 	 */
@@ -311,7 +317,6 @@ public class AlbumServiceImpl implements AlbumService {
 		album.setArtistName(artist.getName());
 		
 		//修改数据库
-		//int id = albumDao.update(album);
 		albumDao.update(album);
 		//放入缓存，其实是更新了缓存
 		redisUtil.hset(redisAlbum, String.valueOf(album.getId()), album, TimeConstant.A_DAY);
@@ -342,13 +347,13 @@ public class AlbumServiceImpl implements AlbumService {
 	 * 
 	 * @param id 专辑id
 	 * @param image 专辑图片路径
-	 * @return 是否操作成功
+	 * @return true表示成功，false表示失败
 	 */
 	@Override
 	public boolean setImage(int id, String image) {
 		Album album = cacheService.getAndCacheAlbumByAlbumID(id);
 		String classPath = this.getClass().getClassLoader().getResource("").getPath();
-		String WebInfPath = classPath.substring(0, classPath.indexOf("/classes"));//"/home/brian/apache-tomcat-9.0.8/webapps/hifive/WEB-INF";//classPath.substring(0, classPath.indexOf("/classes"));
+		String WebInfPath = classPath.substring(0, classPath.indexOf("/classes"));
 		//删除旧图片
 		FileUtil.deleteFile(new File(WebInfPath + album.getImage()));
 		album.setImage(image);
@@ -388,6 +393,7 @@ public class AlbumServiceImpl implements AlbumService {
 
 	/**
 	 * 获取最新发布的专辑
+	 * 
 	 * @param region 地区
 	 * @return 专辑列表
 	 */
@@ -406,6 +412,7 @@ public class AlbumServiceImpl implements AlbumService {
 
 	/**
 	 * 获取搜索结果的记录条数
+	 * 
 	 * @param name 搜索关键字
 	 * @return 记录数
 	 */
@@ -416,6 +423,7 @@ public class AlbumServiceImpl implements AlbumService {
 
 	/**
 	 * 获取筛选后的歌手数目
+	 * 
 	 * @param region 地区
 	 * @param style 风格
 	 * @return 专辑数目

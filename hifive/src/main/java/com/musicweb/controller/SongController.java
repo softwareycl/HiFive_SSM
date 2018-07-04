@@ -194,7 +194,7 @@ public class SongController {
 	 */
 	@RequestMapping(value = "/getNewSongs", method = RequestMethod.GET)
 	@ResponseBody
-	public List<SimpleSongView> showNewSongs(int region) {//service未搞定，先不写
+	public List<SimpleSongView> showNewSongs(int region) {
 		List<Song> songs = songService.lookUpNewSongs(region);
 		List<SimpleSongView> songViews = new ArrayList<>();
 		if(songs != null) {
