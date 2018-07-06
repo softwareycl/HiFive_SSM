@@ -69,8 +69,6 @@ public class UploadController {
 		
 		if(id == null) return false;
 		
-		System.out.println("-----------------------------------------------asfd----------------------------------------");
-		
 		Iterator<?> iter = request.getFileNames();
         if (iter.hasNext()) {
         	String fileName = iter.next().toString();
@@ -109,7 +107,7 @@ public class UploadController {
 		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
-//		userId = "public@qq.com";
+		userId = "public@qq.com";
 		
 		if(userId == null) return false;
 		
@@ -149,21 +147,21 @@ public class UploadController {
 	 * @param session 浏览器与后台的session对象
 	 * @param request 包含文件流的http request
 	 * @return true表示成功，false表示失败
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/uploadAlbumImage", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean uploadAlbumImage(HttpSession session, MultipartHttpServletRequest request) {
+	public Boolean uploadAlbumImage(HttpSession session, MultipartHttpServletRequest request) throws Exception {
 		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
 		userId = "public2@qq.com";
-		
+
 		if(userId == null) return false;
 		
 		String sid = request.getParameter("id");
 		int id = Integer.parseInt(sid);
 		System.out.println(id);
-		System.out.println("-----------------------upload Album Image 1-------------------");
 		Iterator<?> iter = request.getFileNames();
         if (iter.hasNext()) {
         	String fileName = iter.next().toString();
@@ -187,7 +185,6 @@ public class UploadController {
         		albumService.setImage(id, prefix + fileName);
         	}
         }
-        System.out.println("-----------------------upload Album Image 2-------------------");
 		return true;
 	}
 
@@ -254,6 +251,7 @@ public class UploadController {
 		userId = "public2@qq.com";
 		
 		if(userId == null) return false;
+		
 		
 		String sid = request.getParameter("id");
 		int id = Integer.parseInt(sid);
