@@ -146,7 +146,7 @@ public class ArtistServiceImpl implements ArtistService {
 		
 		int id = artistDao.insert(artist);
 		redisUtil.hset("artist", String.valueOf(id), artist, TimeConstant.A_DAY);
-		return id;
+		return artist.getId();
 	}
 
 	/**
