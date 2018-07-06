@@ -53,9 +53,9 @@
 	<insert id="insert"
 			parameterType="com.musicweb.domain.Artist" keyProperty="id">
 		INSERT INTO 
-			artist(name,gender,birthplace,occupation,birthday,representative,region,initial,play_count,image,intro)
+			artist(name,gender,birthplace,occupation,birthday,representative,region,initial,play_count,image,intro,country)
 		VALUES 
-			(#{name},#{gender},#{birthplace},#{occupation},#{birthday},#{representative},#{region},#{initial},#{playCount},#{image},#{intro})
+			(#{name},#{gender},#{birthplace},#{occupation},#{birthday},#{representative},#{region},#{initial},#{playCount},#{image},#{intro},#{country})
 	</insert>
 	
 		<!--  delete   -->
