@@ -131,12 +131,15 @@ public class ArtistServiceImpl implements ArtistService {
 		//对String值属性进行预处理
 		artist.setBirthplace(artist.getBirthplace().trim());
 		artist.setCountry(artist.getCountry().trim());
-		artist.setImage(artist.getImage().trim());
 		artist.setInitial(artist.getInitial().trim());
-		artist.setIntro(artist.getIntro().trim());
+		
 		artist.setName(artist.getName().trim());
-		artist.setRepresentative(artist.getRepresentative().trim());
-		artist.setOccupation(artist.getOccupation().trim());
+		if(artist.getRepresentative() != null)
+			artist.setRepresentative(artist.getRepresentative().trim());
+		if(artist.getOccupation() != null)
+			artist.setOccupation(artist.getOccupation().trim());
+		if(artist.getRepresentative() != null)
+			artist.setIntro(artist.getIntro().trim());
 		
 		redisUtil.del("artist_filter");
 		redisUtil.del("artist_filter_count");
@@ -179,43 +182,41 @@ public class ArtistServiceImpl implements ArtistService {
 		for(Album album:albumList) {
 			List<Song> songList = albumDao.selectAllSongs(album.getId());
 			//删音乐文件
-			if(songList != null) {
+			if(songList != null && songList.size() > 0) {
 				//删除歌曲图片
-				Song firstSong = songList.get(0);
-				String songImageFolderPath = WebInfoPath + "/image/song/" + firstSong.getArtistName() + "/" + firstSong.getAlbumName();
+				String songImageFolderPath = WebInfoPath + "/image/song/" + artist.getName();
 				FileUtil.deleteFolder(new File(songImageFolderPath));
 			
 				//删除歌词
-				String lyricsPath = songList.get(0).getLyricsPath();
-				String lyricsFolderPath = WebInfoPath + lyricsPath.substring(0, lyricsPath.lastIndexOf('/'));
+				String lyricsFolderPath = WebInfoPath + "/lyrics/" + artist.getName();
 				FileUtil.deleteFolder(new File(lyricsFolderPath));
 			
 				//删除音乐文件
-				String musicPath = songList.get(0).getFilePath();
-				String musicFolderPath = WebInfoPath + musicPath.substring(0, lyricsPath.lastIndexOf('/'));
+				String musicFolderPath = WebInfoPath + "/music/" + artist.getName();
 				FileUtil.deleteFolder(new File(musicFolderPath));
 			}
 			//删音乐缓存、数据库
 			for(Song song: songList) {
 				redisUtil.hdel("song", String.valueOf(song.getId()));
-//				playlistDao.deleteSongInAll(song.getId());
-//				userDao.deleteLikeSongInAll(song.getId());
-//				songDao.delete(song.getId());
 			}
 			//删专辑缓存、数据库
 			redisUtil.hdel("album", String.valueOf(album.getId()));
 			redisUtil.hdel("album_songs", String.valueOf(album.getId()));
-//			userDao.deleteLikeAlbumInAll(album.getId());
-//			albumDao.delete(album.getId());
 			//删专辑图片
-			String albumImageFilePath = WebInfoPath + album.getImage();
-			FileUtil.deleteFile(new File(albumImageFilePath));
+			if(album.getImage() != null) {
+				String albumImageFilePath = WebInfoPath + album.getImage();
+				FileUtil.deleteFile(new File(albumImageFilePath));
+			}
+
 		}
 
 		//删歌手数据库、文件
 		artistDao.delete(id);
-		String artistImageFilePath = WebInfoPath + artist.getImage();
-		FileUtil.deleteFile(new File(artistImageFilePath));
+		if(artist.getImage() != null) {
+			String artistImageFilePath = WebInfoPath + artist.getImage();
+			FileUtil.deleteFile(new File(artistImageFilePath));
+		}
+
 		
 		return true;
 	}

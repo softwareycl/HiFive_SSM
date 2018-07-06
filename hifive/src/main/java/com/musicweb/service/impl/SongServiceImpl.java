@@ -209,15 +209,24 @@ public class SongServiceImpl implements SongService {
 		String classPath = this.getClass().getClassLoader().getResource("").getPath();
 		String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 		//删除歌曲图片
-		imagePath = WebInfoPath + song.getImage();
-		System.out.println(imagePath);
-		FileUtil.deleteFile(new File(imagePath));
+		if(song.getImage() != null) {
+			imagePath = WebInfoPath + song.getImage();
+			System.out.println(imagePath);
+			FileUtil.deleteFile(new File(imagePath));
+		}
+		
 		//删除歌词文件
-		lyricsPath = WebInfoPath + song.getLyricsPath();
-		FileUtil.deleteFile(new File(lyricsPath));
+		if(song.getImage() != null) {
+			lyricsPath = WebInfoPath + song.getLyricsPath();
+			FileUtil.deleteFile(new File(lyricsPath));
+		}
+
 		//删除歌曲音频文件
-		songPath = WebInfoPath + song.getFilePath();
-		FileUtil.deleteFile(new File(songPath));
+		if(song.getFilePath() != null) {
+			songPath = WebInfoPath + song.getFilePath();
+			FileUtil.deleteFile(new File(songPath));
+		}
+
 		//删除数据库中的歌曲记录
 		songDao.delete(id);
 		//删除相关缓存

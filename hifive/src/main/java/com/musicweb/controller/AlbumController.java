@@ -167,6 +167,7 @@ public class AlbumController {
 //		if(session.getAttribute(UserConstant.ADMIN_ID) == null)
 //			return -1;
 		
+		System.out.println(album.getName());
 		Album al = new Album();
 		BeanUtils.copyProperties(album, al);
 		int id = albumService.add(al);

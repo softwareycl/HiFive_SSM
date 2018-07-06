@@ -109,13 +109,12 @@ public class UploadController {
 		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
-		userId = "public@qq.com";
+//		userId = "public@qq.com";
 		
 		if(userId == null) return false;
 		
 		String sid = request.getParameter("id");
 		int id = Integer.parseInt(sid);
-		System.out.println(id);
 		
 		Iterator<?> iter = request.getFileNames();
         if (iter.hasNext()) {
@@ -124,9 +123,13 @@ public class UploadController {
         	if (file != null) {
         		fileName = file.getOriginalFilename();
         		Playlist playlist = playlistService.getInfo(id);
-        		String prefix = "/image/user/" + playlist.getUserId() + "/";//获取歌单图片路径
+        		String prefix = "/image/user/" + userId + "/" + playlist.getId() + "/";//获取歌单图片路径
         		String absolute = WebInfoPath + prefix;
         		String filePath = absolute + fileName;
+        		
+        		//新建文件夹
+        		String folderPath = filePath.substring(0, filePath.lastIndexOf('/'));
+        		new File(folderPath).mkdirs();
         		try {
         			//将文件存储在硬盘上
 					file.transferTo(new File(filePath));
@@ -137,7 +140,7 @@ public class UploadController {
         		playlistService.setImage(id, prefix + fileName);
         	}
         }
-		return true;
+		return false;
 	}
 
 	/**
@@ -153,14 +156,14 @@ public class UploadController {
 		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
-		userId = "public@qq.com";
+		userId = "public2@qq.com";
 		
 		if(userId == null) return false;
 		
 		String sid = request.getParameter("id");
 		int id = Integer.parseInt(sid);
 		System.out.println(id);
-		
+		System.out.println("-----------------------upload Album Image 1-------------------");
 		Iterator<?> iter = request.getFileNames();
         if (iter.hasNext()) {
         	String fileName = iter.next().toString();
@@ -184,6 +187,7 @@ public class UploadController {
         		albumService.setImage(id, prefix + fileName);
         	}
         }
+        System.out.println("-----------------------upload Album Image 2-------------------");
 		return true;
 	}
 
@@ -200,7 +204,7 @@ public class UploadController {
 		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
-		userId = "public@qq.com";
+		userId = "public2@qq.com";
 		
 		if(userId == null) return false;
 		
@@ -247,7 +251,7 @@ public class UploadController {
 		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
-		userId = "public@qq.com";
+		userId = "public2@qq.com";
 		
 		if(userId == null) return false;
 		
@@ -294,7 +298,7 @@ public class UploadController {
 		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
-		userId = "public@qq.com";
+		userId = "public2@qq.com";
 		
 		if(userId == null) return false;
 		
@@ -341,7 +345,7 @@ public class UploadController {
 		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
-		userId = "public@qq.com";
+		userId = "public2@qq.com";
 		
 		if(userId == null) return false;
 		

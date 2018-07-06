@@ -173,7 +173,9 @@ public class AlbumServiceImpl implements AlbumService {
 	public int add(Album album) {	
 		//补全album属性
 		album.setPlayCount(0);
+		System.out.println("artist: " + album.getArtistId());
 		Artist artist = cacheService.getAndCacheSingerBySingerID(album.getArtistId());
+		
 		album.setArtistName(artist.getName());
 		//插入数据库
 		albumDao.insert(album);
@@ -220,16 +222,15 @@ public class AlbumServiceImpl implements AlbumService {
 		
 		//获取歌曲列表
 		List<Song> songList = getSongList(id);
-		if (songList != null && songList.size()!=0) {
+		if (songList != null && songList.size() > 0) {
 			//删除歌曲图片
-			Song firstSong = songList.get(0);
-			String songImageFolderPath = WebInfPath + "/image/song/" + firstSong.getArtistName() + "/" + firstSong.getAlbumName();
+			String songImageFolderPath = WebInfPath + "/image/song/" + album.getArtistName() + "/" + album.getName();
 			FileUtil.deleteFolder(new File(songImageFolderPath));
 			//删除歌词
-			String lyricsFolderPath = WebInfPath + "/lyrics/" + firstSong.getArtistName() + "/" + firstSong.getAlbumName();
+			String lyricsFolderPath = WebInfPath + "/lyrics/" + album.getArtistName() + "/" + album.getName();
 			FileUtil.deleteFolder(new File(lyricsFolderPath));
 			//删除音乐文件
-			String musicFolderPath = WebInfPath + "/music/" + firstSong.getArtistName() + "/" + firstSong.getAlbumName();
+			String musicFolderPath = WebInfPath + "/music/" + album.getArtistName() + "/" + album.getName();
 			FileUtil.deleteFolder(new File(musicFolderPath));
 			
 			for(Song song: songList) {

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -130,10 +131,12 @@ public class PlaylistServiceImpl implements PlaylistService {
 	 */
 	@Override
 	public boolean modifyInfo(Playlist playlist) {
+		Playlist old = cacheService.getAndCachePlaylistByPlaylistID(playlist.getId());
 		playlist.setName(playlist.getName().trim());
-		playlist.setImage(playlist.getImage().trim());
-		playlist.setIntro(playlist.getIntro().trim());
+		if(playlist.getIntro() != null)
+			playlist.setIntro(playlist.getIntro().trim());
 		
+		playlist.setImage(old.getImage());
 		playlistDao.update(playlist);
 		redisUtil.hset(PLAYLIST, String.valueOf(playlist.getId()), playlist, TimeConstant.A_DAY);
 		redisUtil.del(USER_PLAYLISTS);
@@ -171,41 +174,36 @@ public class PlaylistServiceImpl implements PlaylistService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean removeSong(int playlistId, int songId) {
+		//删除数据库
 		playlistDao.deleteSong(playlistId, songId);
-		List<Song> songList;
+		List<Song> songList = null;
 		//先判断缓存是否有目标数据
 		Object object = redisUtil.hget(PLAYLIST_SONGS, String.valueOf(playlistId));
-		//若无，从数据库取出新增歌曲后的歌曲列表
+		//若无，直接返回
 		if(object == null) {
-			String classPath = this.getClass().getClassLoader().getResource("").getPath();
-			String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
-			
-			songList = playlistDao.selectAllSongs(playlistId);
-			for(Song song: songList) {
-				if(song.getImage() == null)
-					song.setImage(cacheService.getAndCacheAlbumByAlbumID(song.getAlbumId()).getImage());
-				//设置歌曲时长
-				String musicFilePath = WebInfoPath + song.getFilePath();
-				song.setDuration(DurationUtil.computeDuration(musicFilePath));
-			}
+			return true;
 		}
 		//若有，根据新增歌曲ID取出歌曲信息，并添加到歌单的歌曲列表
 		else {
 			songList = (List<Song>) object;
+			System.out.println("-----------------------------------" + songList.size() + "--------------------------");
 			//找到要删除的歌曲并删除
-			for(Song song: songList) {
-				if(song.getId() == songId)
-					songList.remove(song);
-			}
+			Iterator<Song> iterator = songList.iterator();
+	        while(iterator.hasNext()){
+	            Song song = iterator.next();
+	            if(song.getId()==songId)
+	                iterator.remove();
+	        }
 			//若删除歌曲后的歌曲列表为空，则删除歌单_歌曲缓存中的对应歌单
 			if(songList.size() == 0) {
 				redisUtil.hdel(PLAYLIST_SONGS, String.valueOf(playlistId));
 				return true;
-			}	
+			}
+			//存入缓存
+			redisUtil.hset(PLAYLIST_SONGS, String.valueOf(playlistId), songList, TimeConstant.A_DAY);
+			return true;
 		}
-		//存入缓存
-		redisUtil.hset(PLAYLIST_SONGS, String.valueOf(playlistId), songList, TimeConstant.A_DAY);
-		return true;
+		
 	}
 
 	/**
@@ -276,7 +274,6 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 			songList = playlistDao.selectAllSongs(playlistId);
 			if(songList == null) songList = new ArrayList<>();
-			System.out.println(songList.size());
 			for(Song song: songList) {
 				if(song.getImage() == null) {
 					String albumImage = cacheService.getAndCacheAlbumByAlbumID(songList.get(0).getAlbumId()).getImage();
