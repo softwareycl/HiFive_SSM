@@ -7,8 +7,11 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
+import org.apache.ibatis.javassist.bytecode.CodeAttribute;
+import org.omg.PortableInterceptor.ACTIVE;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,10 +36,11 @@ import com.musicweb.view.UserAnswerView;
 
 /**
  * UserController
- * @author likexin
- * @Date 2018.6.21
  * UserContoller负责接收前端的有关用户模块的请求，并调用Service层的服务，业务完成后返回结果给前端
  * 用户模块的操作除注册外都是在登录状态下进行，所以该类的方法都带有参数session，用以获得用户id
+ * 
+ * @author likexin
+ * @Date 2018.6.21
  */
 @Controller
 @RequestMapping("/user")
@@ -53,6 +57,7 @@ public class UserController {
 
 	/**
 	 * 用户注册
+	 * 
 	 * @param registerUserView 用户注册视图
 	 * @return 操作状态
 	 */
@@ -70,9 +75,22 @@ public class UserController {
 			user.setImage("/image/user/default2.jpg");
 		return userService.register(user);
 	}
+	
+	/**
+	 * 激活用户
+	 * 
+	 * @param code 激活码
+	 * @return true表示激活成功,false表示激活失败
+	 */
+	@RequestMapping(value = "/active/{code}", method = RequestMethod.GET)
+	@ResponseBody
+	public Boolean activeUser(@PathVariable String code) {
+		return userService.active(code);
+	}
 
 	/**
 	 * 用户登录
+	 * 
 	 * @param loginUserView 登录用户视图
 	 * @param session 连接回话
 	 * @return 登录状态
@@ -93,6 +111,7 @@ public class UserController {
 	
 	/**
 	 * 用户登出
+	 * 
 	 * @param session
 	 * @return
 	 */
@@ -106,6 +125,7 @@ public class UserController {
 	
 	/**
 	 * 显示用户详情
+	 * 
 	 * @param session
 	 * @return
 	 */
@@ -127,6 +147,7 @@ public class UserController {
 	
 	/**
 	 * 用户修改个人信息
+	 * 
 	 * @param userView 用户视图
 	 * @param session 获取用户id
 	 * @return 操作状态
@@ -148,6 +169,7 @@ public class UserController {
 	
 	/**
 	 * 用户修改密码
+	 * 
 	 * @param oldPwd 旧密码
 	 * @param newPwd 新密码	
 	 * @param session 获取用户id
@@ -171,6 +193,7 @@ public class UserController {
 	
 	/**
 	 * 显示我的音乐
+	 * 
 	 * @param session 获取用户id
 	 * @return 我的音乐视图
 	 */
@@ -228,6 +251,7 @@ public class UserController {
 	
 	/**
 	 * 判断用户id是否存在
+	 * 
 	 * @param id 用户ID
 	 * @return 判断结果
 	 */
@@ -239,6 +263,7 @@ public class UserController {
 	
 	/**
 	 * 获取用户的密保问题
+	 * 
 	 * @param id 用户id
 	 * @return 密保问题
 	 */
@@ -250,6 +275,7 @@ public class UserController {
 	
 	/**
 	 * 判断密保问题答案是否正确
+	 * 
 	 * @param id 用户id
 	 * @param securityAnswer 密保问题答案
 	 * @param session 用以设置用户id
@@ -269,6 +295,7 @@ public class UserController {
 	
 	/**
 	 * 重设密码
+	 * 
 	 * @param newPwd 新密码
 	 * @param session 用以获取用户id
 	 * @return 操作状态
@@ -288,6 +315,7 @@ public class UserController {
 	
 	/**
 	 * 收藏歌曲
+	 * 
 	 * @param songId 歌曲id
 	 * @param session 获取用户id
 	 * @return 操作状态
@@ -306,6 +334,7 @@ public class UserController {
 	
 	/**
 	 * 取消收藏歌曲
+	 * 
 	 * @param songId 歌曲id
 	 * @param session 获取用户id
 	 * @return 操作状态
@@ -324,6 +353,7 @@ public class UserController {
 	
 	/**
 	 * 收藏专辑
+	 * 
 	 * @param albumId 专辑id
 	 * @param session 获取用户id
 	 * @return 操作状态
@@ -342,6 +372,7 @@ public class UserController {
 	
 	/**
 	 * 取消收藏专辑
+	 * 
 	 * @param albumId 专辑id
 	 * @param session 获取用户id
 	 * @return 操作状态

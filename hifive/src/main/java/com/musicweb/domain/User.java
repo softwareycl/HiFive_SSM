@@ -8,6 +8,7 @@ public class User {
 	private int gender;
 	private int securityQuestion;
 	private String securityAnswer;
+	private String activationCode;
 	private int type;
 
 	public User() {}
@@ -85,6 +86,14 @@ public class User {
 
 	public void setType(int type) {
 		this.type = type;
+	}
+
+	public String getActivationCode() {
+		return activationCode;
+	}
+
+	public void setActivationCode(String activationCode) {
+		this.activationCode = activationCode;
 	}
 
 }
