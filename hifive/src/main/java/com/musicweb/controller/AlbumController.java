@@ -192,7 +192,7 @@ public class AlbumController {
 	
 	/**
 	 * 获取最新专辑
-	 * @param region 地区
+	 * @param region 专辑地区
 	 * @return 专辑列表
 	 */
 	@RequestMapping(value = "/getNewAlbums", method = RequestMethod.GET)
