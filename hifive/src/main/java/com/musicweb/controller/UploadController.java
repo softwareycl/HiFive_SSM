@@ -58,16 +58,18 @@ public class UploadController {
 	 * @param session 浏览器与后台的session对象
 	 * @param request 包含文件流的http request
 	 * @return true表示成功，false表示失败
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/uploadUserImage", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean uploadUserImage(HttpSession session, MultipartHttpServletRequest request) {
+	public Boolean uploadUserImage(HttpSession session, MultipartHttpServletRequest request) throws Exception {
 		String id = (String) session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
 		id = "public@qq.com";
 		
-		if(id == null) return false;
+		if(id == null)
+			throw new Exception();
 		
 		Iterator<?> iter = request.getFileNames();
         if (iter.hasNext()) {
@@ -86,7 +88,7 @@ public class UploadController {
 					file.transferTo(new File(filePath));
 				} catch (IllegalStateException | IOException e) {
 					e.printStackTrace();
-					return false;
+					throw new Exception();
 				}
         		userService.setImage(id, prefix + fileName);
         	}
@@ -100,16 +102,18 @@ public class UploadController {
 	 * @param session 浏览器与后台的session对象
 	 * @param request 包含文件流的http request
 	 * @return true表示成功，false表示失败
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/uploadPlaylistImage", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean uploadPlaylistImage(HttpSession session, MultipartHttpServletRequest request) {
+	public Boolean uploadPlaylistImage(HttpSession session, MultipartHttpServletRequest request) throws Exception {
 		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
 		userId = "public@qq.com";
 		
-		if(userId == null) return false;
+		if(userId == null)
+			throw new Exception();
 		
 		String sid = request.getParameter("id");
 		int id = Integer.parseInt(sid);
@@ -133,7 +137,7 @@ public class UploadController {
 					file.transferTo(new File(filePath));
 				} catch (IllegalStateException | IOException e) {
 					e.printStackTrace();
-					return false;
+					throw new Exception();
 				}
         		playlistService.setImage(id, prefix + fileName);
         	}
@@ -157,7 +161,8 @@ public class UploadController {
 		//test
 		userId = "public2@qq.com";
 
-		if(userId == null) return false;
+		if(userId == null) 
+			throw new Exception();
 		
 		String sid = request.getParameter("id");
 		int id = Integer.parseInt(sid);
@@ -180,7 +185,7 @@ public class UploadController {
 					file.transferTo(new File(filePath));
 				} catch (IllegalStateException | IOException e) {
 					e.printStackTrace();
-					return false;
+					throw new Exception();
 				}
         		albumService.setImage(id, prefix + fileName);
         	}
@@ -194,16 +199,18 @@ public class UploadController {
 	 * @param session 浏览器与后台的session对象
 	 * @param request 包含文件流的http request
 	 * @return true表示成功，false表示失败
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/uploadArtistImage", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean uploadArtistImage(HttpSession session, MultipartHttpServletRequest request) {
+	public Boolean uploadArtistImage(HttpSession session, MultipartHttpServletRequest request) throws Exception {
 		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
 		userId = "public2@qq.com";
 		
-		if(userId == null) return false;
+		if(userId == null)
+			throw new Exception();
 		
 		String sid = request.getParameter("id");
 		int id = Integer.parseInt(sid);
@@ -226,7 +233,7 @@ public class UploadController {
 					file.transferTo(new File(filePath));
 				} catch (IllegalStateException | IOException e) {
 					e.printStackTrace();
-					return false;
+					throw new Exception();
 				}
         		artistService.setImage(id, prefix + fileName);
         	}
@@ -241,16 +248,18 @@ public class UploadController {
 	 * @param session 浏览器与后台的session对象
 	 * @param request 包含文件流的http request
 	 * @return true表示成功，false表示失败
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/uploadSongImage", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean uploadSongImage(HttpSession session, MultipartHttpServletRequest request) {
+	public Boolean uploadSongImage(HttpSession session, MultipartHttpServletRequest request) throws Exception {
 		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
 		userId = "public2@qq.com";
 		
-		if(userId == null) return false;
+		if(userId == null)
+			throw new Exception();
 		
 		
 		String sid = request.getParameter("id");
@@ -263,7 +272,7 @@ public class UploadController {
         	MultipartFile file = request.getFile(fileName);//从request中获取文件
         	if (file != null) {
         		fileName = file.getOriginalFilename();
-        		Song song = songService.getInfo(1);
+        		Song song = songService.getInfo(id);
         		String prefix = "/image/song/" + song.getArtistName() + "/" + song.getAlbumName() + "/";//获取歌曲图片路径
         		String absolute = WebInfoPath + prefix;
         		if (!new File(absolute).exists()) {
@@ -275,7 +284,7 @@ public class UploadController {
 					file.transferTo(new File(filePath));
 				} catch (IllegalStateException | IOException e) {
 					e.printStackTrace();
-					return false;
+					throw new Exception();
 				}
         		songService.setImage(id, prefix + fileName);
         	}
@@ -289,16 +298,18 @@ public class UploadController {
 	 * @param session 浏览器与后台的session对象
 	 * @param request 包含文件流的http request
 	 * @return true表示成功，false表示失败
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/uploadLyrics", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean uploadlyrics(HttpSession session, MultipartHttpServletRequest request) {
+	public Boolean uploadlyrics(HttpSession session, MultipartHttpServletRequest request) throws Exception {
 		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
 		userId = "public2@qq.com";
 		
-		if(userId == null) return false;
+		if(userId == null)
+			throw new Exception();
 		
 		String sid = request.getParameter("id");
 		int id = Integer.parseInt(sid);
@@ -310,7 +321,7 @@ public class UploadController {
         	MultipartFile file = request.getFile(fileName);//从request中获取文件
         	if (file != null) {
         		fileName = file.getOriginalFilename();
-        		Song song = songService.getInfo(1);
+        		Song song = songService.getInfo(id);
         		String prefix = "/lyrics/" + song.getArtistName() + "/" + song.getAlbumName() + "/";//获取歌词路径
         		String absolute = WebInfoPath + prefix;
         		if (!new File(absolute).exists()) {
@@ -322,7 +333,7 @@ public class UploadController {
 					file.transferTo(new File(filePath));
 				} catch (IllegalStateException | IOException e) {
 					e.printStackTrace();
-					return false;
+					throw new Exception();
 				}
         		songService.setLyricsPath(id, prefix + fileName);
         	}
@@ -336,16 +347,18 @@ public class UploadController {
 	 * @param session 浏览器与后台的session对象
 	 * @param request 包含文件流的http request
 	 * @return true表示成功，false表示失败
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/uploadSongFile", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean uploadSong(HttpSession session, MultipartHttpServletRequest request) {
+	public Boolean uploadSong(HttpSession session, MultipartHttpServletRequest request) throws Exception {
 		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
 		userId = "public2@qq.com";
 		
-		if(userId == null) return false;
+		if(userId == null)
+			throw new Exception();
 		
 		String sid = request.getParameter("id");
 		int id = Integer.parseInt(sid);
@@ -357,7 +370,7 @@ public class UploadController {
         	MultipartFile file = request.getFile(fileName);//从request中获取文件
         	if (file != null) {
         		fileName = file.getOriginalFilename();
-        		Song song = songService.getInfo(1);
+        		Song song = songService.getInfo(id);
         		String prefix = "/music/" + song.getArtistName() + "/" + song.getAlbumName() + "/";//获取歌曲音频文件路径
         		String absolute = WebInfoPath + prefix;
         		if (!new File(absolute).exists()) {
@@ -369,7 +382,7 @@ public class UploadController {
 					file.transferTo(new File(filePath));
 				} catch (IllegalStateException | IOException e) {
 					e.printStackTrace();
-					return false;
+					throw new Exception();
 				}
         		songService.setFilePath(id, prefix + fileName);
         	}
