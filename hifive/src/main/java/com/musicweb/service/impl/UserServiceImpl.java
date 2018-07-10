@@ -107,6 +107,10 @@ public class UserServiceImpl implements UserService {
 		else if(userDB.getType() == 1)
 			//普通用户
 			return 1;
+		else if(userDB.getType() == -1){
+			//未激活
+			return 4;
+		}
 		return -1;
 	}
 
