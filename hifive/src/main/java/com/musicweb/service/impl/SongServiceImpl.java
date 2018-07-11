@@ -128,17 +128,15 @@ public class SongServiceImpl implements SongService {
 	public void play(int id) {
 		//缓存中没有歌曲播放量的话就去数据库拿歌曲对象，增加播放量，再把歌曲和歌曲播放量都放进缓存中
 		//缓存中有歌曲播放量的话就把缓存中的播放量加一
+		Song song = cacheService.getAndCacheSongBySongID(id);
 		Object object = redisUtil.hget("song_play_count", String.valueOf(id));
-		int albumId = 0;//该歌曲所属专辑的id
-		int artistId = 0;//该歌曲所属歌手的id
+		int albumId = song.getAlbumId();//该歌曲所属专辑的id
+		int artistId = song.getArtistId();//该歌曲所属歌手的id
 		//缓存中没有歌曲播放量
 		if(object == null) {
-			Song song = songDao.selectById(id);
 			song.setPlayCount(song.getPlayCount()+1);
 			redisUtil.hset("song", String.valueOf(id), song, TimeConstant.A_DAY);//把歌曲放进缓存中
 			redisUtil.hset("song_play_count", String.valueOf(id), song.getPlayCount());//把歌曲播放量放进缓存中
-			albumId = song.getAlbumId();
-			artistId = song.getArtistId();
 		}
 		else
 			redisUtil.hincr("song_play_count", String.valueOf(id), 1);//缓存中有歌曲播放量
@@ -146,9 +144,8 @@ public class SongServiceImpl implements SongService {
 		object = redisUtil.hget("album_play_count", String.valueOf(albumId));
 		//缓存中没有该歌曲所属专辑的播放量
 		if(object == null) {
-			Album album = albumDao.select(albumId);
+			Album album = cacheService.getAndCacheAlbumByAlbumID(albumId);
 			album.setPlayCount(album.getPlayCount()+1);
-			redisUtil.hset("album", String.valueOf(albumId), album, TimeConstant.A_DAY);//把该歌曲所属专辑放进缓存中
 			redisUtil.hset("album_play_count", String.valueOf(albumId), album.getPlayCount());//把该歌曲所属专辑的播放量放进缓存中
 		}
 		else
@@ -156,13 +153,12 @@ public class SongServiceImpl implements SongService {
 		object = redisUtil.hget("artist_play_count", String.valueOf(artistId));
 		//缓存中没有歌曲播放量
 		if(object == null) {
-			Artist artist = artistDao.select(artistId);
+			Artist artist = cacheService.getAndCacheSingerBySingerID(artistId);
 			artist.setPlayCount(artist.getPlayCount()+1);
-			redisUtil.hset("artist", String.valueOf(artistId), artist, TimeConstant.A_DAY);//把该歌曲所属歌手放进缓存中
 			redisUtil.hset("artist_play_count", String.valueOf(artistId), artist.getPlayCount());//把该歌曲所属歌手的播放量放进缓存中
 		}
 		else
-			redisUtil.hincr("album_play_count", String.valueOf(artistId), 1);//缓存中有该歌曲所属歌手的播放量
+			redisUtil.hincr("artist_play_count", String.valueOf(artistId), 1);//缓存中有该歌曲所属歌手的播放量
 	}
 
 	/**
@@ -209,7 +205,7 @@ public class SongServiceImpl implements SongService {
 		String classPath = this.getClass().getClassLoader().getResource("").getPath();
 		String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 		//删除歌曲图片
-		if(song.getImage() != null) {
+		if(songDao.selectById(id).getImage() != null) {
 			imagePath = WebInfoPath + song.getImage();
 			System.out.println(imagePath);
 			FileUtil.deleteFile(new File(imagePath));
@@ -282,11 +278,11 @@ public class SongServiceImpl implements SongService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Song> lookUpNewSongs(int region) {//有问题，新歌还有分地区
+	public List<Song> lookUpNewSongs(int region) {
 		Object object = redisUtil.hget("new_song", String.valueOf(region));
 		if(object == null) {
 			List<Song> songs = null;
-			songs = songDao.selectLatest(region, DisplayConstant.HOME_PAGE_NEW_SONG_SIZE);//待改
+			songs = songDao.selectLatest(region, DisplayConstant.HOME_PAGE_NEW_SONG_SIZE);
 			for(Song song: songs) {
 				String classPath = this.getClass().getClassLoader().getResource("").getPath();
 				String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
