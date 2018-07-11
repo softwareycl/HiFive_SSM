@@ -1,9 +1,12 @@
 package com.musicweb.service.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
+import javax.mail.MessagingException;
 
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,7 @@ import com.musicweb.domain.Song;
 import com.musicweb.domain.User;
 import com.musicweb.service.UserService;
 import com.musicweb.util.DurationUtil;
+import com.musicweb.util.EmailSenderUtil;
 import com.musicweb.util.FileUtil;
 import com.musicweb.util.MD5Util;
 import com.musicweb.util.RedisUtil;
@@ -53,12 +57,35 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean register(User user) {
 		if(checkUserExisted(user.getId().trim())) return false;
+		// 生成用户code
+        String code = UUID.randomUUID().toString().replace("-", "");
+        user.setActivationCode(code);
 		user.setPwd(MD5Util.getMD5(user.getPwd()));
 		user.setSecurityAnswer(MD5Util.getMD5(user.getSecurityAnswer()));
 		user.setType(1);
-		userDao.insert(user);
-		redisUtil.hset(USER, user.getId().trim(), user);
-		return true;
+		if(userDao.insert(user)>0) {
+			redisUtil.hset(USER, user.getId().trim(), user);
+			// 向用户发送激活邮件
+            EmailSenderUtil emailSender = new EmailSenderUtil();
+            boolean flag = true;
+            while(flag) {
+            	 try {
+     				emailSender.sendMail(user.getId(), code);
+     				flag = false;
+     			} catch (RuntimeException | IOException | MessagingException e) {
+     				// TODO Auto-generated catch block
+     				e.printStackTrace();
+     			}
+            }
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean active(String code) {
+		int i = userDao.updateActivation(code);
+		return i>0;
 	}
 	
 	/**
@@ -80,6 +107,10 @@ public class UserServiceImpl implements UserService {
 		else if(userDB.getType() == 1)
 			//普通用户
 			return 1;
+		else if(userDB.getType() == -1){
+			//未激活
+			return 4;
+		}
 		return -1;
 	}
 
@@ -427,5 +458,5 @@ public class UserServiceImpl implements UserService {
 		redisUtil.hset(USER, id, user, TimeConstant.A_DAY);
 		return true;
 	}
-	
+
 }

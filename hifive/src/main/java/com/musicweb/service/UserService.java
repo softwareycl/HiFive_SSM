@@ -19,13 +19,23 @@ import com.musicweb.domain.User;
 public interface UserService {
 	/**
 	 * 用户注册
+	 * 
 	 * @param user 用户注册信息
 	 * @return 注册操作状态
 	 */
 	boolean register(User user);
+	
+	/**
+	 * 激活用户
+	 * 
+	 * @param code 激活码
+	 * @return true表示激活成功，false表示激活失败
+	 */
+	boolean active(String code);
 
 	/**
 	 * 用户登录
+	 * 
 	 * @param user 用户信息
 	 * @return 登录状态
 	 */
@@ -33,6 +43,7 @@ public interface UserService {
 
 	/**
 	 * 查看用户是否存在
+	 * 
 	 * @param id 用户ID
 	 * @return 
 	 */
@@ -40,6 +51,7 @@ public interface UserService {
 
 	/**
 	 * 获取用户的密保问题
+	 * 
 	 * @param id 用户ID
 	 * @return 用户的密保问题
 	 */
@@ -47,6 +59,7 @@ public interface UserService {
 
 	/**
 	 * 检验密保问题答案是否正确
+	 * 
 	 * @param id 用户id
 	 * @param answer 用户输入的密保问题答案
 	 * @return 匹配状态
@@ -55,6 +68,7 @@ public interface UserService {
 
 	/**
 	 * 重置密码
+	 * 
 	 * @param id 用户id
 	 * @param pwd 新设密码
 	 * @return 操作状态
@@ -63,6 +77,7 @@ public interface UserService {
 
 	/**
 	 * 获取用户信息
+	 * 
 	 * @param id 用户id
 	 * @return 用户
 	 */
@@ -70,6 +85,7 @@ public interface UserService {
 
 	/**
 	 * 设置用户头像
+	 * 
 	 * @param id 用户id
 	 * @param image 图片路径
 	 * @return 操作状态
@@ -78,6 +94,7 @@ public interface UserService {
 
 	/**
 	 * 用户修改个人信息
+	 * 
 	 * @param user
 	 * @return 操作状态
 	 */
@@ -85,6 +102,7 @@ public interface UserService {
 
 	/**
 	 * 用户获取我的歌单
+	 * 
 	 * @param id 用户id
 	 * @return 用户的歌单列表
 	 */
@@ -92,6 +110,7 @@ public interface UserService {
 
 	/**
 	 * 用户获取收藏的音乐
+	 * 
 	 * @param userId 用户id
 	 * @return 用户喜欢的音乐列表
 	 */
@@ -99,6 +118,7 @@ public interface UserService {
 
 	/**
 	 * 用户获取收藏的专辑
+	 * 
 	 * @param userId 用户ID
 	 * @return 用户收藏的专辑列表
 	 */
@@ -106,6 +126,7 @@ public interface UserService {
 
 	/**
 	 * 添加喜欢的专辑
+	 * 
 	 * @param userId 用户id
 	 * @param albumId 专辑id
 	 * @return 操作状态
@@ -114,6 +135,7 @@ public interface UserService {
 
 	/**
 	 * 添加喜欢的歌曲
+	 * 
 	 * @param userId 用户id
 	 * @param songId 歌曲id
 	 * @return 操作状态
@@ -122,6 +144,7 @@ public interface UserService {
 
 	/**
 	 * 移除喜欢的专辑
+	 * 
 	 * @param userId 用户id
 	 * @param albumId 专辑id
 	 * @return
@@ -130,6 +153,7 @@ public interface UserService {
 
 	/**
 	 * 删除喜欢的歌曲
+	 * 
 	 * @param userId 用户id
 	 * @param songId 歌曲id
 	 * @return 操作状态
@@ -138,6 +162,7 @@ public interface UserService {
 	
 	/**
 	 * 修改密码
+	 * 
 	 * @param id 用户id
 	 * @param oldPwd 旧密码
 	 * @param newPwd 新密码

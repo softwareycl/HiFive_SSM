@@ -34,8 +34,9 @@ public interface UserDao {
 	public int updateImage(@Param("id")String id, @Param("image")String image);
 	
 	public int updatePassword(@Param("id")String id, @Param("pwd")String pwd);
-
 	
+	public int updateActivation(String code);
+
 	//查
 	public User select(String id);
 	
