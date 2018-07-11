@@ -16,7 +16,7 @@ public class EmailSenderUtil {
         Properties props = new Properties();
 
         //从配置文件读取内容
-        InputStream in = this.getClass().getClassLoader().getResourceAsStream("email.properties");
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream("properties/email.properties");
         props.load(in);
 
         Session mailSession = Session.getDefaultInstance(props);
@@ -28,9 +28,9 @@ public class EmailSenderUtil {
         msg.setSubject(props.getProperty("subject"));
         msg.setContent(
                 "<h5>" + props.getProperty("content1") + "</h5>"
-                        + "<h5><a href='" + props.getProperty("url") + "/" + code + "'>【激活账号】</a></h5>"
+                        + "<h5><a href='" + props.getProperty("url") + "?" + code + "'>【激活账号】</a></h5>"
                         + "<h5>" + props.getProperty("content2") + "</h5>"
-                        + "<h5>" + props.getProperty("url") + "/" + code + "</h5>",
+                        + "<h5>" + props.getProperty("url") + "?" + code + "</h5>",
                 "text/html;charset=UTF-8");
         msg.saveChanges();
 

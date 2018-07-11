@@ -47,8 +47,8 @@
     		parameterType="com.musicweb.domain.User"
     		useGeneratedKeys="true"
     		keyProperty="id">
-        	insert into user (id,name,gender,pwd,security_question,security_answer,image,type)
-        	values (#{id},#{name},#{gender},#{pwd},#{securityQuestion},#{securityAnswer},#{image},#{type})
+        	insert into user (id,name,gender,pwd,security_question,security_answer,image,type, activation_code)
+        	values (#{id},#{name},#{gender},#{pwd},#{securityQuestion},#{securityAnswer},#{image},#{type}, #{activationCode})
     </insert>
     
             <!--  insert Like Song  -->
@@ -109,17 +109,13 @@
     </update>
     
             <!--  update activation  -->
-    <update id="updateActivation">
+    <update id="updateActivation"
+    		parameterType="String">
     		update user set
-    			type=0
-    		where id=(
-    			select
-    				id
-    			from
-    				user
-    			where
-    				activation_code=#{code}
-    		)
+    			type=1
+   			where
+   				activation_code=#{code}
+    		
     </update>
     
             <!--  select user  -->

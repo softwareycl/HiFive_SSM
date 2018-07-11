@@ -62,21 +62,18 @@ public class UserServiceImpl implements UserService {
         user.setActivationCode(code);
 		user.setPwd(MD5Util.getMD5(user.getPwd()));
 		user.setSecurityAnswer(MD5Util.getMD5(user.getSecurityAnswer()));
-		user.setType(1);
+		user.setType(-1);
 		if(userDao.insert(user)>0) {
 			redisUtil.hset(USER, user.getId().trim(), user);
 			// 向用户发送激活邮件
             EmailSenderUtil emailSender = new EmailSenderUtil();
-            boolean flag = true;
-            while(flag) {
-            	 try {
-     				emailSender.sendMail(user.getId(), code);
-     				flag = false;
-     			} catch (RuntimeException | IOException | MessagingException e) {
-     				// TODO Auto-generated catch block
-     				e.printStackTrace();
-     			}
-            }
+        	 try {
+ 				emailSender.sendMail(user.getId(), code);
+ 			} catch (RuntimeException | IOException | MessagingException e) {
+ 				// TODO Auto-generated catch block
+ 				e.printStackTrace();
+ 				
+ 			}
 			return true;
 		}
 		return false;
