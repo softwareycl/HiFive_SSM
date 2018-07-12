@@ -147,7 +147,7 @@ public class ArtistController {
 		Object object = session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
-		object = testAdminId;
+		//object = testAdminId;
 		
 		if(object == null) {
 			return -1;
@@ -170,7 +170,7 @@ public class ArtistController {
 		Object object = session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
-		object = testUserId;
+		//object = testUserId;
 		
 		if(object == null) {
 			return false;
@@ -190,7 +190,7 @@ public class ArtistController {
 		Object object = session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
-		object = testUserId;
+		//object = testUserId;
 		
 		if(object == null) {
 			return false;
@@ -216,7 +216,7 @@ public class ArtistController {
 		Object object = session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
-		object = testUserId;
+		//object = testUserId;
 		
 		if(object == null) {
 			return false;

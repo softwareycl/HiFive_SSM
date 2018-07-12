@@ -90,7 +90,8 @@
     			name=#{name},
     			security_question=#{securityQuestion},
     			security_answer=#{securityAnswer},
-    			type=#{type}
+    			type=#{type},
+    			gender=#{gender}
     		where id=#{id}
     </update> 
      

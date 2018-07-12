@@ -63,10 +63,10 @@ public class UploadController {
 	@RequestMapping(value = "/uploadUserImage", method = RequestMethod.POST)
 	@ResponseBody
 	public Boolean uploadUserImage(HttpSession session, MultipartHttpServletRequest request) throws Exception {
-		String id = (String) session.getAttribute(UserConstant.ADMIN_ID);
+		String id = (String) session.getAttribute(UserConstant.USER_ID);
 		
 		//test
-		id = "public@qq.com";
+		//id = "public@qq.com";
 		
 		if(id == null)
 			throw new Exception();
@@ -107,10 +107,10 @@ public class UploadController {
 	@RequestMapping(value = "/uploadPlaylistImage", method = RequestMethod.POST)
 	@ResponseBody
 	public Boolean uploadPlaylistImage(HttpSession session, MultipartHttpServletRequest request) throws Exception {
-		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
+		String userId = (String)session.getAttribute(UserConstant.USER_ID);
 		
 		//test
-		userId = "public@qq.com";
+		//userId = "public@qq.com";
 		
 		if(userId == null)
 			throw new Exception();
@@ -159,7 +159,7 @@ public class UploadController {
 		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
-		userId = "public2@qq.com";
+		//userId = "public2@qq.com";
 
 		if(userId == null) 
 			throw new Exception();
@@ -207,7 +207,7 @@ public class UploadController {
 		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
-		userId = "public2@qq.com";
+		//userId = "public2@qq.com";
 		
 		if(userId == null)
 			throw new Exception();
@@ -256,7 +256,7 @@ public class UploadController {
 		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
-		userId = "public2@qq.com";
+		//userId = "public2@qq.com";
 		
 		if(userId == null)
 			throw new Exception();
@@ -306,7 +306,7 @@ public class UploadController {
 		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
-		userId = "public2@qq.com";
+		//userId = "public2@qq.com";
 		
 		if(userId == null)
 			throw new Exception();
@@ -355,7 +355,7 @@ public class UploadController {
 		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
-		userId = "public2@qq.com";
+		//userId = "public2@qq.com";
 		
 		if(userId == null)
 			throw new Exception();

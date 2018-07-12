@@ -135,7 +135,7 @@ public class CacheServiceImpl implements CacheService {
 	 */
 	@Override
 	public User getAndCacheUserByUserID(String userID) {
-		Object object = redisUtil.hget("singer", String.valueOf(userID));
+		Object object = redisUtil.hget("user", String.valueOf(userID));
 		if(object == null) {
 			User user = userDao.select(userID);
 			if(user != null) {

@@ -106,7 +106,7 @@ public class SongController {
 	@ResponseBody
 	public SongView showInfo(HttpSession session, int id) {//get
 		//test
-		session.setAttribute(UserConstant.USER_ID, testUserId);
+		//session.setAttribute(UserConstant.USER_ID, testUserId);
 		
 		Song song = songService.getInfo(id);
 		SongView songView = new SongView();
@@ -141,8 +141,8 @@ public class SongController {
 	@ResponseBody
 	public Integer addASong(@RequestBody SongView songView, HttpSession session) {//返回值问题
 		//test，部署时将下列语句取消注释
-		//if(session.getAttribute(UserConstant.ADMIN_ID) == null)
-		//	return -1;
+		if(session.getAttribute(UserConstant.ADMIN_ID) == null)
+			return -1;
 		
 		Song song = new Song();
 		BeanUtils.copyProperties(songView, song);
@@ -160,8 +160,8 @@ public class SongController {
 	@ResponseBody
 	public Boolean removeASong(int songId, HttpSession session) {//get
 		//test，部署时将下列语句取消注释
-		//if(session.getAttribute(UserConstant.ADMIN_ID) == null)
-		//	return false;
+		if(session.getAttribute(UserConstant.ADMIN_ID) == null)
+			return false;
 		
 		boolean b = songService.remove(songId);
 		return b;
@@ -177,8 +177,8 @@ public class SongController {
 	@ResponseBody
 	public Boolean modifyASong(@RequestBody SongView songView, HttpSession session) {//post
 		//test，部署时将下列语句取消注释
-		//if(session.getAttribute(UserConstant.ADMIN_ID) == null)
-		//	return false;
+		if(session.getAttribute(UserConstant.ADMIN_ID) == null)
+			return false;
 		
 		Song song = new Song();
 		BeanUtils.copyProperties(songView, song);

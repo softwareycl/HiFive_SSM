@@ -79,7 +79,7 @@ public class AlbumController {
 		boolean isOnline = (session.getAttribute(UserConstant.USER_ID) == null && session.getAttribute(UserConstant.ADMIN_ID) == null) ? false : true;
 		
 		//test
-		isOnline = true;
+		//isOnline = true;
 		
 		albumView.setOnline(isOnline);
 		if (album == null) return albumView;
@@ -111,7 +111,7 @@ public class AlbumController {
 		boolean isOnline = session.getAttribute(UserConstant.ADMIN_ID) == null ? false : true;
 		
 		//test
-		isOnline = true;
+		//isOnline = true;
 		
 		if(isOnline == false)
 			return false;
@@ -164,8 +164,8 @@ public class AlbumController {
 	public Integer addAnAlbum(@RequestBody AlbumView album, HttpSession session) {//post
 		
 		//test，部署时将下列语句取消注释
-//		if(session.getAttribute(UserConstant.ADMIN_ID) == null)
-//			return -1;
+		if(session.getAttribute(UserConstant.ADMIN_ID) == null)
+			return -1;
 		
 		System.out.println(album.getName());
 		Album al = new Album();
@@ -184,8 +184,8 @@ public class AlbumController {
 	@ResponseBody
 	public Boolean removeAnAlbum(int id, HttpSession session) {//get
 		//test，部署时将下列语句取消注释
-		//if(session.getAttribute(UserConstant.ADMIN_ID) == null)
-		//	return false;
+		if(session.getAttribute(UserConstant.ADMIN_ID) == null)
+			return false;
 		
 		return albumService.remove(id);
 	}

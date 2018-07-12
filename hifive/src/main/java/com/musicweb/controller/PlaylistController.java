@@ -53,7 +53,7 @@ public class PlaylistController {
 		String userId = (String)session.getAttribute(UserConstant.USER_ID);
 		
 		//test
-		userId = testUserId;
+		//userId = testUserId;
 		
 		
 		if(userId == null) return -1;
@@ -76,7 +76,7 @@ public class PlaylistController {
 		String userId = (String)object;
 		
 		//test
-		userId = testUserId;
+		//userId = testUserId;
 		
 		if(userId == null) return null;
 		
@@ -112,7 +112,7 @@ public class PlaylistController {
 		String userId = (String)object;
 		
 		//test
-		userId = testUserId;
+		//userId = testUserId;
 		
 		if(userId == null) return false;
 		
@@ -139,7 +139,7 @@ public class PlaylistController {
 		String userId = (String)object;
 		
 		//test
-		userId = testUserId;
+		//userId = testUserId;
 		
 		if(userId == null) return false;
 		
@@ -163,7 +163,7 @@ public class PlaylistController {
 		String userId = (String)object;
 		
 		//test
-		userId = testUserId;
+		//userId = testUserId;
 		
 		if(userId == null) return null;
 		
@@ -195,7 +195,7 @@ public class PlaylistController {
 		String userId = (String)object;
 		
 		//test
-		userId = testUserId;
+		//userId = testUserId;
 		
 		if(userId == null) return false;
 		
@@ -219,7 +219,7 @@ public class PlaylistController {
 		String userId = (String)object;
 		
 		//test
-		userId = testUserId;
+		//userId = testUserId;
 		
 		if(userId == null) return false;
 		
@@ -243,7 +243,7 @@ public class PlaylistController {
 		String userId = (String)object;
 		
 		//test
-		userId = testUserId;
+		//userId = testUserId;
 		
 		if(userId == null) return false;
 		
@@ -268,7 +268,7 @@ public class PlaylistController {
 		String userId = (String)object;
 		
 		//test
-		userId = testUserId;
+		//userId = testUserId;
 		
 		if(userId == null) return false;
 		
@@ -296,7 +296,7 @@ public class PlaylistController {
 		String userId = (String)object;
 		
 		//test
-		userId = testUserId;
+		//userId = testUserId;
 		
 		if(userId == null) return false;
 		
@@ -318,7 +318,7 @@ public class PlaylistController {
 		String userId = (String)object;
 		
 		//test
-		userId = testUserId;
+		//userId = testUserId;
 		
 		if(userId == null) return null;
 

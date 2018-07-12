@@ -56,8 +56,8 @@ public class DownloadController {
 		String userId = (String) session.getAttribute(UserConstant.USER_ID);
 		
 		//test
-		String testUserId = "public@qq.com";
-		userId = testUserId;
+		//String testUserId = "public@qq.com";
+		//userId = testUserId;
 		
 		if(userId != null) {
 			Song song = songService.getInfo(id);

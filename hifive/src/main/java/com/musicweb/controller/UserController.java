@@ -135,7 +135,7 @@ public class UserController {
 		String id = (String)session.getAttribute(UserConstant.USER_ID);
 		
 		//test
-		id = testUserId;
+		//id = testUserId;
 		
 		//id为空说明用户已离线，返回空
 		if(id == null) return null;
@@ -158,7 +158,7 @@ public class UserController {
 		String id = (String)session.getAttribute(UserConstant.USER_ID);
 		
 		//test
-		id = testUserId;
+		//id = testUserId;
 		
 		//id为空说明用户已离线，返回失败
 		if(id == null) return false;
@@ -181,7 +181,7 @@ public class UserController {
 		String id = (String)session.getAttribute(UserConstant.USER_ID);
 		
 		//test
-		id = testUserId;
+		//id = testUserId;
 	
 		if(id == null ) return false;
 		
@@ -203,7 +203,7 @@ public class UserController {
 		String id = (String)session.getAttribute(UserConstant.USER_ID);
 		
 		//test
-		id = testUserId;
+		//id = testUserId;
 		
 		if(id == null ) return null;
 		MyMusicView myMusicView = new MyMusicView();
@@ -307,7 +307,7 @@ public class UserController {
 		System.out.println(userAnswer.getNewPwd());
 		
 		//test
-		id = testUserId;
+		//id = testUserId;
 		
 		if(id == null ) return null;
 		return userService.resetPassword(id, userAnswer.getNewPwd());
@@ -326,7 +326,7 @@ public class UserController {
 		String id = (String)session.getAttribute(UserConstant.USER_ID);
 		
 		//test
-		id = testUserId;
+		//id = testUserId;
 		
 		if(id == null ) return false;
 		return userService.addLikeSong(id, songId);
@@ -345,7 +345,7 @@ public class UserController {
 		String id = (String)session.getAttribute(UserConstant.USER_ID);
 		
 		//test
-		id = testUserId;
+		//id = testUserId;
 		
 		if(id == null ) return false;
 		return userService.removeLikeSong(id, songId);
@@ -364,7 +364,7 @@ public class UserController {
 		String id = (String)session.getAttribute(UserConstant.USER_ID);
 		
 		//test
-		id = testUserId;
+		//id = testUserId;
 		
 		if(id == null ) return false;
 		return userService.addLikeAlbum(id, albumId);
@@ -383,7 +383,7 @@ public class UserController {
 		String id = (String)session.getAttribute(UserConstant.USER_ID);
 		
 		//test
-		id = testUserId;
+		//id = testUserId;
 		
 		if(id == null ) return false;
 		return userService.removeLikeAlbum(id, albumId);

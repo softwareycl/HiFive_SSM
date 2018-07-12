@@ -82,6 +82,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean active(String code) {
 		int i = userDao.updateActivation(code);
+		redisUtil.del(USER);
 		return i>0;
 	}
 	
@@ -192,7 +193,7 @@ public class UserServiceImpl implements UserService {
 		redisUtil.hset(USER, id, user, TimeConstant.A_DAY);
 		userDao.updateImage(id, image);
 		// 如果上传的图片名与原图片名不同，则删除原图片
-		if(!image.equals(imageOld)) {
+		if(!image.equals(imageOld) && !imageOld.equals("/image/user/default1.jpg") && !imageOld.equals("/image/user/default2.jpg")) {
 			String classPath = this.getClass().getClassLoader().getResource("").getPath();
 			String WebInfoPath = classPath.substring(0, classPath.indexOf("/classes"));
 			String userImageFilePath = WebInfoPath + imageOld;
