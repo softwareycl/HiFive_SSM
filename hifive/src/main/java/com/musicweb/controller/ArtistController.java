@@ -147,7 +147,7 @@ public class ArtistController {
 		Object object = session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
-		//object = testAdminId;
+		object = testAdminId;
 		
 		if(object == null) {
 			return -1;

@@ -25,9 +25,9 @@
 			parameterType="com.musicweb.domain.Song" keyProperty="id">
 		INSERT INTO 
 			song 
-				(name, artist_id, album_id, language, style, release_date, lyrics_path, image, play_count, file_path,region) 
+				(name, artist_id, album_id, language, style, release_date, play_count,region) 
 		VALUES 
-			(#{name},#{artistId},#{albumId},#{language},#{style},#{releaseDate},#{lyricsPath},#{image},#{playCount},#{filePath},#{region})
+			(#{name},#{artistId},#{albumId},#{language},#{style},#{releaseDate},#{playCount},#{region})
 	</insert>
 	
 			<!--  updateImage   -->

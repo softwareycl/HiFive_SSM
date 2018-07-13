@@ -185,7 +185,7 @@
 			</if>
 			<if test="gender != null and gender != 0">
 			AND
-				initial=#{initial}	
+				gender=#{gender}
 			</if>
 		</where>
 	</select>

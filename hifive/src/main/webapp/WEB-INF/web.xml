@@ -5,6 +5,10 @@
     version="2.5" xmlns="http://java.sun.com/xml/ns/javaee">
 	<display-name>云音乐网站</display-name>
 	
+	<session-config>
+		<session-timeout>120</session-timeout>
+	</session-config>
+	
 	<filter>
 		<filter-name>CharacterEncodingFilter</filter-name>
 		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>

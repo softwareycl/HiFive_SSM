@@ -159,7 +159,7 @@ public class UploadController {
 		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
-		//userId = "public2@qq.com";
+		userId = "public2@qq.com";
 
 		if(userId == null) 
 			throw new Exception();
@@ -207,7 +207,7 @@ public class UploadController {
 		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
-		//userId = "public2@qq.com";
+		userId = "public2@qq.com";
 		
 		if(userId == null)
 			throw new Exception();
@@ -256,13 +256,14 @@ public class UploadController {
 		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
-		//userId = "public2@qq.com";
+		userId = "public2@qq.com";
 		
 		if(userId == null)
 			throw new Exception();
 		
 		
 		String sid = request.getParameter("id");
+		System.out.println("-------------image id: " + sid + "----------------");
 		int id = Integer.parseInt(sid);
 		System.out.println(id);
 		
@@ -273,6 +274,7 @@ public class UploadController {
         	if (file != null) {
         		fileName = file.getOriginalFilename();
         		Song song = songService.getInfo(id);
+        		System.out.println("-------------image art: " + song.getArtistName() + "----------------");
         		String prefix = "/image/song/" + song.getArtistName() + "/" + song.getAlbumName() + "/";//获取歌曲图片路径
         		String absolute = WebInfoPath + prefix;
         		if (!new File(absolute).exists()) {
@@ -306,12 +308,13 @@ public class UploadController {
 		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
-		//userId = "public2@qq.com";
+		userId = "public2@qq.com";
 		
 		if(userId == null)
 			throw new Exception();
 		
 		String sid = request.getParameter("id");
+		System.out.println("-------------lyrics id: " + sid + "----------------");
 		int id = Integer.parseInt(sid);
 		System.out.println(id);
 		
@@ -322,6 +325,7 @@ public class UploadController {
         	if (file != null) {
         		fileName = file.getOriginalFilename();
         		Song song = songService.getInfo(id);
+        		System.out.println("-------------lyrics art: " + song.getArtistName() + "----------------");
         		String prefix = "/lyrics/" + song.getArtistName() + "/" + song.getAlbumName() + "/";//获取歌词路径
         		String absolute = WebInfoPath + prefix;
         		if (!new File(absolute).exists()) {
@@ -355,22 +359,26 @@ public class UploadController {
 		String userId = (String)session.getAttribute(UserConstant.ADMIN_ID);
 		
 		//test
-		//userId = "public2@qq.com";
+		userId = "public2@qq.com";
 		
 		if(userId == null)
 			throw new Exception();
 		
 		String sid = request.getParameter("id");
+		System.out.println("-------------songFile id: " + sid + "----------------");
 		int id = Integer.parseInt(sid);
 		System.out.println(id);
 		
 		Iterator<?> iter = request.getFileNames();
         if (iter.hasNext()) {
+        	System.out.println("-------------songFile 1----------------");
         	String fileName = iter.next().toString();
         	MultipartFile file = request.getFile(fileName);//从request中获取文件
         	if (file != null) {
+        		System.out.println("-------------songFile 2----------------");
         		fileName = file.getOriginalFilename();
         		Song song = songService.getInfo(id);
+        		System.out.println("-------------songFile art: " + song.getArtistName() + "----------------");
         		String prefix = "/music/" + song.getArtistName() + "/" + song.getAlbumName() + "/";//获取歌曲音频文件路径
         		String absolute = WebInfoPath + prefix;
         		if (!new File(absolute).exists()) {
